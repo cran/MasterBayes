@@ -1,0 +1,45 @@
+This is BibTeX, Version 0.99c (Web2C 7.4.5)
+The top-level auxiliary file: MasterBayes.Tutorial.aux
+The style file: plainnat.bst
+Database file #1: MasterBayes.bib
+You've used 15 entries,
+            2633 wiz_defined-function locations,
+            676 strings with 7520 characters,
+and the built_in function-call counts, 7211 in all, are:
+= -- 656
+> -- 412
+< -- 6
++ -- 150
+- -- 135
+* -- 577
+:= -- 1233
+add.period$ -- 45
+call.type$ -- 15
+change.case$ -- 105
+chr.to.int$ -- 15
+cite$ -- 15
+duplicate$ -- 299
+empty$ -- 540
+format.name$ -- 154
+if$ -- 1463
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 18
+newline$ -- 81
+num.names$ -- 60
+pop$ -- 145
+preamble$ -- 1
+purify$ -- 90
+quote$ -- 0
+skip$ -- 217
+stack$ -- 0
+substring$ -- 354
+swap$ -- 15
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 150
+warning$ -- 0
+while$ -- 56
+width$ -- 0
+write$ -- 202

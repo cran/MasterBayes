@@ -1,0 +1,603 @@
+This is pdfeTeX, Version 3.14159-1.10b-2.1 (Web2C 7.4.5) (format=pdflatex 2006.1.13)  29 SEP 2006 10:35
+entering extended mode
+**MasterBayes.Tutorial.tex
+(./MasterBayes.Tutorial.tex{/usr/share/texmf/pdftex/config/pdftex.cfg}
+LaTeX2e <2001/06/01>
+Babel <v3.7h> and hyphenation patterns for american, french, german, ngerman, b
+ahasa, basque, catalan, croatian, czech, danish, dutch, finnish, greek, iceland
+ic, irish, italian, latin, magyar, norsk, norsk, portuges, romanian, russian, s
+lovak, slovene, spanish, swedish, turkish, ukrainian, nohyphenation, loaded.
+(/usr/share/texmf/tex/latex/base/article.cls
+Document Class: article 2001/04/21 v1.4e Standard LaTeX document class
+(/usr/share/texmf/tex/latex/base/size10.clo
+File: size10.clo 2001/04/21 v1.4e Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texmf/tex/latex/graphics/graphics.sty
+Package: graphics 2001/07/07 v1.0n Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/share/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2001/08/31 v1.1 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 80.
+
+(/usr/share/texmf/tex/latex/graphics/pdftex.def
+File: pdftex.def 2002/06/19 v0.03k graphics/color for pdftex
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/share/texmf/tex/latex/natbib/natbib.sty
+Package: natbib 2000/07/24 7.0a (PWD)
+\bibhang=\skip43
+\bibsep=\skip44
+LaTeX Info: Redefining \cite on input line 508.
+\c@NAT@ctr=\count88
+)
+(/usr/share/texmf/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2001/10/25 v2.2f
+\@emptytoks=\toks15
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 132.
+)
+(/usr/share/texmf/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2002/01/22 v2.2d
+)
+(/usr/share/texmf/tex/latex/amscls/amsthm.sty
+Package: amsthm 2000/10/26 v2.08
+\thm@style=\toks16
+\thm@bodyfont=\toks17
+\thm@headfont=\toks18
+\thm@notefont=\toks19
+\thm@headpunct=\toks20
+\thm@preskip=\skip45
+\thm@postskip=\skip46
+\thm@headsep=\skip47
+\dth@everypar=\toks21
+)
+(/usr/share/texmf/tex/latex/tools/bm.sty
+Package: bm 1999/07/05 v1.0g Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup6
+\symboldletters=\mathgroup7
+\symboldsymbols=\mathgroup8
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 137.
+LaTeX Info: Redefining \bm on input line 195.
+) (/usr/lib/R/share/texmf/Sweave.sty
+
+LaTeX Warning: You have requested package `/usr/lib/R/share/texmf/Sweave',
+               but the package provides `Sweave'.
+
+Package: Sweave 
+(/usr/share/texmf/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/share/texmf/tex/latex/base/fontenc.sty
+Package: fontenc 2001/06/05 v1.94 Standard LaTeX package
+
+(/usr/share/texmf/tex/latex/base/t1enc.def
+File: t1enc.def 2001/06/05 v1.94 Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 38.
+))
+(/usr/share/texmf/tex/latex/ae/ae.sty
+Package: ae 2001/02/12 1.3 Almost European Computer Modern
+
+(/usr/share/texmf/tex/latex/base/fontenc.sty
+Package: fontenc 2001/06/05 v1.94 Standard LaTeX package
+
+(/usr/share/texmf/tex/latex/base/t1enc.def
+File: t1enc.def 2001/06/05 v1.94 Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 38.
+)
+LaTeX Font Info:    Try loading font information for T1+aer on input line 95.
+
+(/usr/share/texmf/tex/latex/ae/t1aer.fd
+File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
+)))
+(/usr/share/texmf/tex/latex/fancyvrb/fancyvrb.sty
+Package: fancyvrb 2000/03/21
+
+Style option: `fancyvrb' v2.7, with DG/SPQR fixes <2000/03/21> (tvz)
+\FV@CodeLineNo=\count89
+\FV@InFile=\read1
+\FV@TabBox=\box26
+\c@FancyVerbLine=\count90
+\FV@StepNumber=\count91
+\FV@OutFile=\write3
+))
+(./MasterBayes.Tutorial.aux)
+\openout1 = `MasterBayes.Tutorial.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+ (/usr/share/texmf/tex/context/base/supp-pdf.tex
+(/usr/share/texmf/tex/context/base/supp-mis.tex
+loading : Context Support Macros / Missing
+\protectiondepth=\count92
+\scratchcounter=\count93
+\scratchtoks=\toks22
+\scratchdimen=\dimen105
+\scratchskip=\skip48
+\scratchmuskip=\muskip10
+\scratchbox=\box27
+\scratchread=\read2
+\scratchwrite=\write4
+\zeropoint=\dimen106
+\minusone=\count94
+\thousandpoint=\dimen107
+\emptytoks=\toks23
+\nextbox=\box28
+\nextdepth=\dimen108
+\everyline=\toks24
+\!!counta=\count95
+\!!countb=\count96
+\recursecounter=\count97
+)
+loading : Context Support Macros / PDF
+\nofMPsegments=\count98
+\nofMParguments=\count99
+\everyMPtoPDFconversion=\toks25
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 26.
+ (/usr/share/texmf/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2002/01/19 v2.2g AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 26.
+
+(/usr/share/texmf/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2002/01/19 v2.2g AMS font definitions
+) [1
+
+{/var/lib/texmf/dvips/config/pdftex.map}] (./MasterBayes.Tutorial.toc
+LaTeX Font Info:    Try loading font information for T1+aett on input line 2.
+ (/usr/share/texmf/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+))
+\tf@toc=\write5
+\openout5 = `MasterBayes.Tutorial.toc'.
+
+ [2]
+Overfull \hbox (1.93517pt too wide) in paragraph at lines 64--65
+/aer10/many rou-tines have been writ-ten in com-piled C++ code for ef-fi-ciency
+. Netherthe-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 70--71
+
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 78--79
+
+ []
+
+<MasterBayesActive2-006.pdf, id=29, 433.62pt x 433.62pt>
+File: MasterBayesActive2-006.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-006.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 90--91
+
+ []
+
+[4 <./MasterBayesActive2-006.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 92--93
+
+ []
+
+
+LaTeX Font Warning: Font shape `T1/aett/bx/n' undefined
+(Font)              using `T1/aett/m/n' instead on input line 94.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 96--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 98--99
+
+ []
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 100--101
+
+ []
+
+<MasterBayesActive2-007.pdf, id=63, 433.62pt x 433.62pt>
+File: MasterBayesActive2-007.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-007.pdf> [6]
+Underfull \hbox (badness 10000) in paragraph at lines 120--121
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
+
+ []
+
+[7 <./MasterBayesActive2-007.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 127--128
+
+ []
+
+<MasterBayesActive2-008.pdf, id=80, 433.62pt x 433.62pt>
+File: MasterBayesActive2-008.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-008.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[8]
+Underfull \hbox (badness 10000) in paragraph at lines 145--146
+
+ []
+
+[9 <./MasterBayesActive2-008.pdf>]
+<MasterBayesActive2-009.pdf, id=96, 433.62pt x 433.62pt>
+File: MasterBayesActive2-009.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-009.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 169--170
+
+ []
+
+[10 <./MasterBayesActive2-009.pdf>]
+Overfull \hbox (34.06679pt too wide) in paragraph at lines 200--201
+/aer10/(/aett10/relational=FALSE/aer10/), or is to be trans-formed into a dis-t
+ance. /aett10/re-la-tional="OFFSPRING"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 200--201
+
+ []
+
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 211--212
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
+
+ []
+
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 250--251
+
+ []
+
+[13] [14] [15] <MasterBayesActive2-022.pdf, id=131, 433.62pt x 433.62pt>
+File: MasterBayesActive2-022.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-022.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[16] [17 <./MasterBayesActive2-022.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 451--452
+
+ []
+
+[18] <MasterBayesActive2-027.pdf, id=150, 433.62pt x 433.62pt>
+File: MasterBayesActive2-027.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-027.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 498--499
+
+ []
+
+[19] [20 <./MasterBayesActive2-027.pdf>]
+<MasterBayesActive2-030.pdf, id=167, 433.62pt x 433.62pt>
+File: MasterBayesActive2-030.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-030.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 545--546
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 547--548
+
+ []
+
+[21 <./MasterBayesActive2-030.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 556--557
+
+ []
+
+[22]
+Underfull \hbox (badness 10000) in paragraph at lines 602--603
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 617--618
+
+ []
+
+[23]
+Underfull \hbox (badness 10000) in paragraph at lines 626--627
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 628--629
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 630--631
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 638--639
+
+ []
+
+[24]
+Underfull \hbox (badness 10000) in paragraph at lines 659--660
+
+ []
+
+[25] <MasterBayesActive2-035.pdf, id=199, 433.62pt x 433.62pt>
+File: MasterBayesActive2-035.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-035.pdf> [26 <./MasterBayesActive2-035.pdf>]
+<MasterBayesActive2-039.pdf, id=212, 433.62pt x 433.62pt>
+File: MasterBayesActive2-039.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-039.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[27] [28 <./MasterBayesActive2-039.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 795--796
+
+ []
+
+[29]
+Underfull \hbox (badness 10000) in paragraph at lines 858--859
+
+ []
+
+<MasterBayesActive2-044.pdf, id=231, 433.62pt x 433.62pt>
+File: MasterBayesActive2-044.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-044.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[30] <MasterBayesActive2-047.pdf, id=235, 433.62pt x 433.62pt>
+File: MasterBayesActive2-047.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-047.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[31 <./MasterBayesActive2-044.pdf>] [32 <./MasterBayesActive2-047.pdf>]
+<MasterBayesActive2-050.pdf, id=261, 433.62pt x 433.62pt>
+File: MasterBayesActive2-050.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-050.pdf> [33 <./MasterBayesActive2-050.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 942--943
+
+ []
+
+[34] [35] [36] [37] <MasterBayesActive2-057.pdf, id=287, 433.62pt x 433.62pt>
+File: MasterBayesActive2-057.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-057.pdf> [38 <./MasterBayesActive2-057.pdf>]
+<MasterBayesActive2-060.pdf, id=300, 433.62pt x 433.62pt>
+File: MasterBayesActive2-060.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-060.pdf> [39 <./MasterBayesActive2-060.pdf>]
+<MasterBayesActive2-063.pdf, id=313, 433.62pt x 433.62pt>
+File: MasterBayesActive2-063.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-063.pdf> [40 <./MasterBayesActive2-063.pdf>] [41]
+Underfull \hbox (badness 10000) in paragraph at lines 1241--1242
+
+ []
+
+[42] [43] <MasterBayesActive2-068.pdf, id=336, 433.62pt x 433.62pt>
+File: MasterBayesActive2-068.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-068.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 1327--1328
+
+ []
+
+<MasterBayesActive2-070.pdf, id=337, 433.62pt x 433.62pt>
+File: MasterBayesActive2-070.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-070.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[44 <./MasterBayesActive2-068.pdf>]
+<MasterBayesActive2-073.pdf, id=350, 433.62pt x 433.62pt>
+File: MasterBayesActive2-073.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-073.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[45 <./MasterBayesActive2-070.pdf>]
+<MasterBayesActive2-076.pdf, id=363, 433.62pt x 433.62pt>
+File: MasterBayesActive2-076.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-076.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1387--1388
+
+ []
+
+<MasterBayesActive2-078.pdf, id=364, 433.62pt x 433.62pt>
+File: MasterBayesActive2-078.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-078.pdf> [46 <./MasterBayesActive2-073.pdf>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<MasterBayesActive2-081.pdf, id=377, 433.62pt x 433.62pt>
+File: MasterBayesActive2-081.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-081.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[47 <./MasterBayesActive2-076.pdf>]
+<MasterBayesActive2-084.pdf, id=390, 433.62pt x 433.62pt>
+File: MasterBayesActive2-084.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-084.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[48 <./MasterBayesActive2-078.pdf>] [49 <./MasterBayesActive2-081.pdf>]
+[50 <./MasterBayesActive2-084.pdf>]
+<MasterBayesActive2-087.pdf, id=431, 433.62pt x 433.62pt>
+File: MasterBayesActive2-087.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-087.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[51] [52 <./MasterBayesActive2-087.pdf>]
+<MasterBayesActive2-090.pdf, id=447, 433.62pt x 433.62pt>
+File: MasterBayesActive2-090.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-090.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[53] [54 <./MasterBayesActive2-090.pdf>]
+<MasterBayesActive2-093.pdf, id=463, 433.62pt x 433.62pt>
+File: MasterBayesActive2-093.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-093.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1615--1616
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1617--1618
+
+ []
+
+[55] [56 <./MasterBayesActive2-093.pdf>]
+<MasterBayesActive2-096.pdf, id=480, 433.62pt x 433.62pt>
+File: MasterBayesActive2-096.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-096.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<MasterBayesActive2-099.pdf, id=481, 433.62pt x 433.62pt>
+File: MasterBayesActive2-099.pdf Graphic file (type pdf)
+
+<use MasterBayesActive2-099.pdf>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1689--1690
+
+ []
+
+[57] [58 <./MasterBayesActive2-096.pdf>]
+Overfull \hbox (5.35938pt too wide) in paragraph at lines 1727--1728
+[]/aett10/varPed(x, gen-der="Female", lag=c(-1,-1), re-la-tional="OFFSPRING") 
+ []
+
+[59 <./MasterBayesActive2-099.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1752--1753
+
+ []
+
+(./MasterBayes.Tutorial.bbl [60]) [61] (./MasterBayes.Tutorial.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 2582 strings out of 94960
+ 33403 string characters out of 1182470
+ 78043 words of memory out of 1000001
+ 5620 multiletter control sequences out of 10000+50000
+ 36638 words of font info for 89 fonts, out of 500000 for 1000
+ 198 hyphenation exceptions out of 1000
+ 35i,7n,22p,1924b,288s stack positions out of 1500i,500n,5000p,200000b,5000s
+ 518 PDF objects out of 300000
+ 0 named destinations out of 131072
+ 135 words of extra memory for PDF output out of 65536
+{/usr/share/texmf/dvips/tetex/0ef0afca.enc}</usr/share/texmf/fonts/type1/blue
+sky/cm/cmr5.pfb>{/usr/share/texmf/dvips/tetex/74afc74c.enc}</usr/share/texmf/fo
+nts/type1/bluesky/cm/cmti10.pfb>{/usr/share/texmf/dvips/tetex/bbad153f.enc}</us
+r/share/texmf/fonts/type1/bluesky/cm/cmsy7.pfb>{/usr/share/texmf/dvips/tetex/aa
+e443f0.enc}</usr/share/texmf/fonts/type1/bluesky/cm/cmmi5.pfb></usr/share/texmf
+/fonts/type1/bluesky/cmextra/cmmib7.pfb></usr/share/texmf/fonts/type1/bluesky/c
+m/cmex10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmmi7.pfb>{/usr/share/tex
+mf/dvips/tetex/09fbbfac.enc}</usr/share/texmf/fonts/type1/bluesky/cm/cmtt12.pfb
+></usr/share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/share/texmf/fonts/ty
+pe1/bluesky/cm/cmmib10.pfb>{/usr/share/texmf/dvips/tetex/f7b6d320.enc}</usr/sha
+re/texmf/fonts/type1/bluesky/cm/cmr7.pfb></usr/share/texmf/fonts/type1/bluesky/
+cm/cmmi10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsltt10.pfb></usr/share
+/texmf/fonts/type1/bluesky/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/bluesky/
+cm/cmbx10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr10.pfb></usr/share/te
+xmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texmf/fonts/type1/bluesky/cm/c
+mbx12.pfb>
+Output written on MasterBayes.Tutorial.pdf (61 pages, 3463342 bytes).

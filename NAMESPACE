@@ -1,0 +1,38 @@
+useDynLib(MasterBayes)
+import(genetics)
+import(coda)
+export(
+  MCMCped,
+  mismatches,
+  MLE.beta,
+  MLE.popsize,
+  MLE.ped, 
+  PdataPed,
+  is.PdataPed,
+  beta.loglik,
+  popsize.loglik,
+  fillX.G,
+  GdataPed,
+  is.GdataPed,
+  genotype.list,
+  getXlist,
+  modeP,
+  priorPed,
+  is.priorPed,
+  reordXlist,
+  simgenotypes,
+  simpedigree,
+  startPed,
+  is.startPed,
+  tunePed,
+  is.tunePed,
+  varPed,
+#  getPost,
+#  ErrorCheck,
+#  getsPandtP,
+  legalG,
+  order.ped,
+  extractA 
+) 
+
+

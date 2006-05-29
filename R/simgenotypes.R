@@ -1,0 +1,83 @@
+"simgenotypes" <-function(A, E1=0, E2=0, pedigree, no_dup=1, ...){
+
+  id<-unique(pedigree[,1])
+   
+  pedigreeN<-matrix(1, nrow=length(id), ncol=3)
+  pedigreeN[,3]<-as.numeric(match(pedigree[,3], id, nomatch=NA))
+  pedigreeN[,2]<-as.numeric(match(pedigree[,2], id, nomatch=NA))
+  pedigreeN[,1]<-1:length(id)
+
+  if(length(names(A))==0){
+    names(A)<-paste("l", 1:length(A), sep="")
+  }
+  if(length(names(A[[1]]))==0){
+    alleles<-lapply(A, function(x){1:length(x)})
+  }else{
+    alleles<-lapply(A, function(x){names(x)})
+  }
+
+true_genotypes<-lapply(names(A), function(x){x=list()})
+obs_genotypes<-lapply(names(A), function(x){x=list()})
+Gobs<-lapply(names(A), function(x){x=list()})
+
+base_ind<-which(is.na(pedigreeN[,2])==TRUE & is.na(pedigreeN[,3])==TRUE)
+descend_ind<-which(is.na(pedigreeN[,2])==FALSE | is.na(pedigreeN[,3])==FALSE)
+
+
+for(l in 1:length(A)){
+
+true_genotypes[[l]]<-matrix(NA, length(pedigreeN[,1]),2)
+true_genotypes[[l]][base_ind,]<-matrix(sample(alleles[[l]],length(base_ind)*2, replace=TRUE, prob=A[[l]]), length(base_ind),2)
+
+if(length(descend_ind)>0){
+for(off in descend_ind){
+
+dam_o<-pedigreeN[,2][off]
+if(is.na(dam_o)==F){
+true_genotypes[[l]][,1][off]<-sample(true_genotypes[[l]][dam_o,], 1)
+}else{
+true_genotypes[[l]][,1][off]<-sample(alleles[[l]], 1, prob=A[[l]])
+}
+sire_o<-pedigreeN[,3][off]
+if(is.na(sire_o)==F){
+true_genotypes[[l]][,2][off]<-sample(true_genotypes[[l]][sire_o,], 1)
+}else{
+true_genotypes[[l]][,2][off]<-sample(alleles[[l]], 1, prob=A[[l]])
+}
+}
+}
+
+if(no_dup>0){
+Gobs[[l]]<-matrix(NA, 0, 2)
+for(i in 1:no_dup){
+obs_genotypes[[l]]<-true_genotypes[[l]]
+hets<-which(obs_genotypes[[l]][,1]!=obs_genotypes[[l]][,2])
+drop_out<-which(rbinom(length(hets),1, prob=(2*E1*(1-E1))/(1-(E1^2)))==1) # these genotypes drop out
+if(length(drop_out)>0){
+which_allele<-rbinom(length(drop_out),1, prob=0.5)+1 # which allele drops out
+obs_genotypes[[l]][,1][hets[drop_out][which(which_allele==1)]]<-obs_genotypes[[l]][,2][hets[drop_out][which(which_allele==1)]]
+obs_genotypes[[l]][,2][hets[drop_out][which(which_allele==2)]]<-obs_genotypes[[l]][,1][hets[drop_out][which(which_allele==2)]]
+}
+stochastic<-which(rbinom(length(obs_genotypes[[l]]), 1, prob=E2)==1)
+if(length(stochastic)>0){
+for(s in stochastic){
+alt_al<-alleles[[l]][-which(alleles[[l]]==obs_genotypes[[l]][s])]
+if(length(alt_al)!=1){
+obs_genotypes[[l]][s]<-sample(alt_al, 1)
+}else{
+obs_genotypes[[l]][s]<-alt_al
+}
+}
+}
+Gobs[[l]]<-rbind(Gobs[[l]],obs_genotypes[[l]])
+}
+Gobs[[l]]<-genotype(Gobs[[l]])
+}
+true_genotypes[[l]]<-genotype(true_genotypes[[l]])
+}
+names(true_genotypes)<-names(A)
+if(no_dup>0){
+names(Gobs)<-names(A)
+}
+list(G=true_genotypes, Gid=id[pedigreeN[,1]], Gobs=Gobs, id=rep(id[pedigreeN[,1]], no_dup))
+}
