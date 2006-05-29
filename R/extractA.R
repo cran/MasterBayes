@@ -10,7 +10,7 @@
      G<-genotype.list(G)
    }
 
-  A<-lapply(G, function(x){summary(x)$allele.freq[,2][1:nallele(genotype(x))]})
+  A<-lapply(G, function(x){summary(x)$allele.freq[,2][1:nallele(x)]})
 
   A
 }

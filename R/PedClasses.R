@@ -19,7 +19,7 @@ is.PdataPed<-function(x){
 inherits(x, "PdataPed")
  }
 
-GdataPed<-function(G=NULL, id=NULL, categories=NULL, ...){
+GdataPed<-function(G=NULL, id=NULL, categories=NULL, perlocus=FALSE, ...){
 
 if(length(G)!=0){
    if(length(id)==0){
@@ -46,7 +46,7 @@ if(length(G)!=0){
      G<-genotype.list(G)
    }
  }  
- object<-list(G=G, id=id, categories=categories)
+ object<-list(G=G, id=id, categories=categories, perlocus=perlocus)
  class(object)<-c("GdataPed", "list")
  object
 

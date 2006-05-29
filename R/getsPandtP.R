@@ -17,12 +17,18 @@
     }
   }
 
+  No.E<-length(unique(GdP$categories))*length(GdP$G)*GdP$perlocus+((1-GdP$perlocus)*length(unique(GdP$categories)))
+
   if(is.null(sP$E1)){       
     if(is.null(GdP$categories)){    
       sP$E1<-0.005
     }else{
-      sP$E1<-rep(0.005,length(unique(GdP$categories)))
-      names(sP$E1)<-unique(GdP$categories)
+      sP$E1<-rep(0.005,No.E)
+      if(GdP$perlocus==FALSE){
+        names(sP$E1)<-unique(GdP$categories)
+      }else{
+        names(sP$E1)<-paste(unique(GdP$categories), rep(names(GdP$G), each=length(unique(GdP$categories))), sep=".")
+      }
     }
   }else{
     if(sP$estG==TRUE){
@@ -34,8 +40,12 @@
     if(is.null(GdP$categories)){    
       sP$E2<-0.005
     }else{
-      sP$E2<-rep(0.005,length(unique(GdP$categories)))
-      names(sP$E2)<-unique(GdP$categories)
+      sP$E2<-rep(0.005,No.E)
+      if(GdP$perlocus==FALSE){
+        names(sP$E2)<-unique(GdP$categories)
+      }else{
+        names(sP$E2)<-paste(unique(GdP$categories), rep(names(GdP$G), each=length(unique(GdP$categories))), sep=".")
+      }
     }
   }else{
     if(sP$estG==TRUE){
@@ -133,17 +143,17 @@
 
       if(sP$estE1){
         if(is.null(tP$E1)){  
-          tP$E1<-chol(diag(unique(GdP$categories))*0.00003)
+          tP$E1<-chol(diag(No.E)*0.00003)
         }else{
-          tP$E1<-chol(diag(unique(GdP$categories))*0.00003*tP$E1)
+          tP$E1<-chol(diag(No.E)*0.00003*tP$E1)
         }
       }
 
       if(sP$estE2==TRUE){
-        if(is.null(tP$estE2)){
-          tP$E2<-chol(diag(unique(GdP$categories))*0.00003)
+        if(is.null(tP$E2)){
+          tP$E2<-chol(diag(No.E)*0.00003)
         }else{
-          tP$E2<-chol(diag(unique(GdP$categories))*0.00003*tP$E2)
+          tP$E2<-chol(diag(No.E)*0.00003*tP$E2)
         }
       }
 

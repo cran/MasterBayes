@@ -28,6 +28,8 @@
     if(sum(nbeta)==0){sP$estbeta<-FALSE}
   }
 
+  No.E<-length(unique(GdP$categories))*length(GdP$G)*GdP$perlocus+((1-GdP$perlocus)*length(unique(GdP$categories)))
+
   if(Gpresent==FALSE){
     sP$estG<-FALSE
     sP$estE1<-FALSE
@@ -108,18 +110,18 @@
 
   if(is.null(sP$E1)==FALSE){
     if(length(sP$E1)==1){
-      sP$E1<-rep(sP$E1, length(unique(GdP$categories)))
+      sP$E1<-rep(sP$E1, No.E)
     }
-    if(length(sP$E1)!=length(unique(GdP$categories))){
+    if(length(sP$E1)!=No.E){
       stop("number of error categories does not match length of sP$E1")
     } 
   }
  
   if(is.null(sP$E2)==FALSE){
     if(length(sP$E2)==1){
-      sP$E2<-rep(sP$E2, length(unique(GdP$categories)))
+      sP$E2<-rep(sP$E2, No.E)
     }
-    if(length(sP$E2)!=length(unique(GdP$categories))){
+    if(length(sP$E2)!=No.E){
       stop("number of error categories does not match length of sP$E2")
     } 
   }
@@ -240,7 +242,7 @@
 ########## checking whether prior specifications are valid ##########################################################
 
  if(pP$E1[1]!=999){
-   if(dim(pP$E1)[1]!=length(unique(GdP$categories))){
+   if(dim(pP$E1)[1]!=No.E){
      stop("Matrix specifying prior distribution of E1 is the wrong dimension")
    }
    if(dim(pP$E1)[2]!=2){
@@ -249,7 +251,7 @@
  }
 
  if(pP$E2[1]!=999){
-   if(dim(pP$E2)[1]!=length(unique(GdP$categories))){
+   if(dim(pP$E2)[1]!=No.E){
      stop("Matrix specifying prior distribution of E2 is the wrong dimension")
    }
    if(dim(pP$E2)[2]!=2){

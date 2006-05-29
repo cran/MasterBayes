@@ -599,7 +599,10 @@ for(off in 1:sum(PdP$offspring==1)){
       Gid<-grouped_by_id  
       X.list<-mismatches(X.list, G=G, mm.tol=mm.tol)
       if(is.null(A)==TRUE){
-        A=extractA(G)
+        A<-extractA(GdP$G)
+      }
+      if(is.null(E2)==TRUE){
+        E2<-0.005
       }
       X.list<-fillX.G(X.list, A=A, G=G, E2=E2)
       X.list<-reordXlist(X.list)

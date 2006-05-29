@@ -201,11 +201,17 @@ index  += maxall;
                 }
               }
             } 
-           if(G[i][(l*2)]==-999){G[i][(l*2)] = rmultinom_size1(A[l], nall[l]);}           
+            if(G[i][(l*2)]==-999){
+              G[i][(l*2)] = rmultinom_size1(A[l], nall[l]);
+            }           
           }
         }else{   // if parents have missing genotypes sample from allele frequencies
-          if(G[i][l*2]==-999){G[i][l*2] = rmultinom_size1(A[l], nall[l]);}
-          if(G[i][(l*2)+1]==-999){G[i][(l*2)+1] = rmultinom_size1(A[l], nall[l]);}
+          if(G[i][l*2]==-999){
+            G[i][l*2] = rmultinom_size1(A[l], nall[l]);
+          }
+          if(G[i][(l*2)+1]==-999){
+            G[i][(l*2)+1] = rmultinom_size1(A[l], nall[l]);
+          }
         }
       }
     }     

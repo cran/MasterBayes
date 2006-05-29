@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.14159-1.10b-2.1 (Web2C 7.4.5) (format=pdflatex 2006.1.13)  29 SEP 2006 10:35
+This is pdfeTeX, Version 3.14159-1.10b-2.1 (Web2C 7.4.5) (format=pdflatex 2006.1.13)  16 OCT 2006 14:15
 entering extended mode
 **MasterBayes.Tutorial.tex
 (./MasterBayes.Tutorial.tex{/usr/share/texmf/pdftex/config/pdftex.cfg}
@@ -131,18 +131,18 @@ Style option: `fancyvrb' v2.7, with DG/SPQR fixes <2000/03/21> (tvz)
 (./MasterBayes.Tutorial.aux)
 \openout1 = `MasterBayes.Tutorial.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
  (/usr/share/texmf/tex/context/base/supp-pdf.tex
 (/usr/share/texmf/tex/context/base/supp-mis.tex
 loading : Context Support Macros / Missing
@@ -171,11 +171,11 @@ loading : Context Support Macros / PDF
 \nofMParguments=\count99
 \everyMPtoPDFconversion=\toks25
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 26.
+LaTeX Font Info:    Try loading font information for U+msa on input line 27.
  (/usr/share/texmf/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2002/01/19 v2.2g AMS font definitions
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 26.
+LaTeX Font Info:    Try loading font information for U+msb on input line 27.
 
 (/usr/share/texmf/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2002/01/19 v2.2g AMS font definitions
@@ -190,18 +190,18 @@ File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 \openout5 = `MasterBayes.Tutorial.toc'.
 
  [2]
-Overfull \hbox (1.93517pt too wide) in paragraph at lines 64--65
+Overfull \hbox (1.93517pt too wide) in paragraph at lines 65--66
 /aer10/many rou-tines have been writ-ten in com-piled C++ code for ef-fi-ciency
 . Netherthe-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 70--71
+Underfull \hbox (badness 10000) in paragraph at lines 71--72
 
  []
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 78--79
+Underfull \hbox (badness 10000) in paragraph at lines 79--80
 
  []
 
@@ -209,31 +209,31 @@ Underfull \hbox (badness 10000) in paragraph at lines 78--79
 File: MasterBayesActive2-006.pdf Graphic file (type pdf)
 
 <use MasterBayesActive2-006.pdf>
-Underfull \hbox (badness 10000) in paragraph at lines 90--91
+Underfull \hbox (badness 10000) in paragraph at lines 91--92
 
  []
 
 [4 <./MasterBayesActive2-006.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 92--93
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
 
  []
 
 
 LaTeX Font Warning: Font shape `T1/aett/bx/n' undefined
-(Font)              using `T1/aett/m/n' instead on input line 94.
+(Font)              using `T1/aett/m/n' instead on input line 95.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 96--97
+Underfull \hbox (badness 10000) in paragraph at lines 97--98
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 98--99
+Underfull \hbox (badness 10000) in paragraph at lines 99--100
 
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 100--101
+Underfull \hbox (badness 10000) in paragraph at lines 101--102
 
  []
 
@@ -241,17 +241,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 100--101
 File: MasterBayesActive2-007.pdf Graphic file (type pdf)
 
 <use MasterBayesActive2-007.pdf> [6]
-Underfull \hbox (badness 10000) in paragraph at lines 120--121
+Underfull \hbox (badness 10000) in paragraph at lines 121--122
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 125--126
+Underfull \hbox (badness 10000) in paragraph at lines 126--127
 
  []
 
 [7 <./MasterBayesActive2-007.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 127--128
+Underfull \hbox (badness 10000) in paragraph at lines 128--129
 
  []
 
@@ -263,7 +263,7 @@ File: MasterBayesActive2-008.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [8]
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
+Underfull \hbox (badness 10000) in paragraph at lines 146--147
 
  []
 
@@ -272,38 +272,38 @@ Underfull \hbox (badness 10000) in paragraph at lines 145--146
 File: MasterBayesActive2-009.pdf Graphic file (type pdf)
 
 <use MasterBayesActive2-009.pdf>
-Underfull \hbox (badness 10000) in paragraph at lines 169--170
+Underfull \hbox (badness 10000) in paragraph at lines 170--171
 
  []
 
 [10 <./MasterBayesActive2-009.pdf>]
-Overfull \hbox (34.06679pt too wide) in paragraph at lines 200--201
+Overfull \hbox (34.06679pt too wide) in paragraph at lines 201--202
 /aer10/(/aett10/relational=FALSE/aer10/), or is to be trans-formed into a dis-t
 ance. /aett10/re-la-tional="OFFSPRING"
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 200--201
+Underfull \hbox (badness 10000) in paragraph at lines 201--202
 
  []
 
 [11]
-Underfull \hbox (badness 10000) in paragraph at lines 211--212
+Underfull \hbox (badness 10000) in paragraph at lines 212--213
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 230--231
 
  []
 
 [12]
-Underfull \hbox (badness 10000) in paragraph at lines 240--241
+Underfull \hbox (badness 10000) in paragraph at lines 241--242
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 250--251
+Underfull \hbox (badness 10000) in paragraph at lines 251--252
 
  []
 
@@ -315,7 +315,7 @@ File: MasterBayesActive2-022.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [16] [17 <./MasterBayesActive2-022.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 451--452
+Underfull \hbox (badness 10000) in paragraph at lines 452--453
 
  []
 
@@ -327,7 +327,7 @@ File: MasterBayesActive2-027.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 498--499
+Underfull \hbox (badness 10000) in paragraph at lines 499--500
 
  []
 
@@ -336,52 +336,52 @@ Underfull \hbox (badness 10000) in paragraph at lines 498--499
 File: MasterBayesActive2-030.pdf Graphic file (type pdf)
 
 <use MasterBayesActive2-030.pdf>
-Underfull \hbox (badness 10000) in paragraph at lines 545--546
+Underfull \hbox (badness 10000) in paragraph at lines 546--547
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 547--548
+Underfull \hbox (badness 10000) in paragraph at lines 548--549
 
  []
 
 [21 <./MasterBayesActive2-030.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 556--557
+Underfull \hbox (badness 10000) in paragraph at lines 557--558
 
  []
 
 [22]
-Underfull \hbox (badness 10000) in paragraph at lines 602--603
+Underfull \hbox (badness 10000) in paragraph at lines 603--604
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 617--618
+Underfull \hbox (badness 10000) in paragraph at lines 618--619
 
  []
 
 [23]
-Underfull \hbox (badness 10000) in paragraph at lines 626--627
+Underfull \hbox (badness 10000) in paragraph at lines 627--628
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 628--629
+Underfull \hbox (badness 10000) in paragraph at lines 629--630
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 630--631
+Underfull \hbox (badness 10000) in paragraph at lines 631--632
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 638--639
+Underfull \hbox (badness 10000) in paragraph at lines 639--640
 
  []
 
 [24]
-Underfull \hbox (badness 10000) in paragraph at lines 659--660
+Underfull \hbox (badness 10000) in paragraph at lines 660--661
 
  []
 
@@ -397,12 +397,12 @@ File: MasterBayesActive2-039.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [27] [28 <./MasterBayesActive2-039.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 795--796
+Underfull \hbox (badness 10000) in paragraph at lines 796--797
 
  []
 
 [29]
-Underfull \hbox (badness 10000) in paragraph at lines 858--859
+Underfull \hbox (badness 10000) in paragraph at lines 859--860
 
  []
 
@@ -425,7 +425,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 File: MasterBayesActive2-050.pdf Graphic file (type pdf)
 
 <use MasterBayesActive2-050.pdf> [33 <./MasterBayesActive2-050.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 942--943
+Underfull \hbox (badness 10000) in paragraph at lines 943--944
 
  []
 
@@ -441,7 +441,7 @@ File: MasterBayesActive2-060.pdf Graphic file (type pdf)
 File: MasterBayesActive2-063.pdf Graphic file (type pdf)
 
 <use MasterBayesActive2-063.pdf> [40 <./MasterBayesActive2-063.pdf>] [41]
-Underfull \hbox (badness 10000) in paragraph at lines 1241--1242
+Underfull \hbox (badness 10000) in paragraph at lines 1242--1243
 
  []
 
@@ -449,7 +449,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1241--1242
 File: MasterBayesActive2-068.pdf Graphic file (type pdf)
 
 <use MasterBayesActive2-068.pdf>
-Underfull \hbox (badness 10000) in paragraph at lines 1327--1328
+Underfull \hbox (badness 10000) in paragraph at lines 1328--1329
 
  []
 
@@ -477,7 +477,7 @@ File: MasterBayesActive2-076.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1387--1388
+Underfull \hbox (badness 10000) in paragraph at lines 1388--1389
 
  []
 
@@ -529,12 +529,12 @@ File: MasterBayesActive2-093.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1615--1616
+Underfull \hbox (badness 10000) in paragraph at lines 1616--1617
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1617--1618
+Underfull \hbox (badness 10000) in paragraph at lines 1618--1619
 
  []
 
@@ -554,17 +554,17 @@ File: MasterBayesActive2-099.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1689--1690
+Underfull \hbox (badness 10000) in paragraph at lines 1690--1691
 
  []
 
 [57] [58 <./MasterBayesActive2-096.pdf>]
-Overfull \hbox (5.35938pt too wide) in paragraph at lines 1727--1728
+Overfull \hbox (5.35938pt too wide) in paragraph at lines 1728--1729
 []/aett10/varPed(x, gen-der="Female", lag=c(-1,-1), re-la-tional="OFFSPRING") 
  []
 
 [59 <./MasterBayesActive2-099.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1752--1753
+Underfull \hbox (badness 10000) in paragraph at lines 1753--1754
 
  []
 
@@ -600,4 +600,4 @@ cm/cmmi10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsltt10.pfb></usr/share
 cm/cmbx10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr10.pfb></usr/share/te
 xmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texmf/fonts/type1/bluesky/cm/c
 mbx12.pfb>
-Output written on MasterBayes.Tutorial.pdf (61 pages, 3463342 bytes).
+Output written on MasterBayes.Tutorial.pdf (61 pages, 3463318 bytes).

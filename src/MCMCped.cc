@@ -71,7 +71,6 @@ void MCMCped(
         int *estimatingP,            // logicals inidcating whether parameters should be estimated or fixed
         int *store_postP){
 
-
 int 	nind = nindoffP[0],
         noff = nindoffP[1],
         nsamp = nsampP[0],        	
@@ -109,6 +108,7 @@ bool    estP = bool(estimatingP[0]),
         estE2 = bool(estimatingP[4]), 
         estbeta = bool(estimatingP[5]),      
         estUS = bool(estimatingP[6]), 
+        perlocus = bool(estimatingP[7]),
         est_pE1 = FALSE,           
         est_pE2 = FALSE,
         est_pbeta = FALSE,           
@@ -117,7 +117,7 @@ bool    estP = bool(estimatingP[0]),
         writeA = bool(store_postP[1]),     
         writeJP = bool(store_postP[2]),  
         verbose = bool(store_postP[3]);
-  
+
 /*************************************
 * declare some variable sized arrays *
 *************************************/
@@ -270,7 +270,6 @@ double  *pA,
 /*************************************
 * declare some variable sized arrays *
 *************************************/
-           
           
            int tot_par = npar[0]+npar[1]+npar[2]+npar[3]+npar[4]+npar[5],
                nus = nusd+nuss,
@@ -288,10 +287,12 @@ double  *pA,
                  DSuu[1] =0;
                }
 
-Matrix<double> E1_0 (ncat,1,st_E1P), 	        // starting vector of allelic dropout rate (new)
-               E1_1 (ncat,1,st_E1P),	        // starting vector of allelic dropout rate (old)
-	       E2_0 (ncat,1,st_E2P), 	        // starting vector of stochastic error rate (new)
-  	       E2_1 (ncat,1,st_E2P),	        // starting vector of stochastic error rate (old)
+           int ncatnloci = ncat*nloci*int(perlocus) + ncat*(1-int(perlocus));
+
+Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic dropout rate (new)
+               E1_1 (ncatnloci,1,st_E1P),	        // starting vector of allelic dropout rate (old)
+	       E2_0 (ncatnloci,1,st_E2P), 	        // starting vector of stochastic error rate (new)
+  	       E2_1 (ncatnloci,1,st_E2P),	        // starting vector of stochastic error rate (old)
                us_0 (nus,1,st_usP),             // starting vector of unsampled population size (new)
                us_1 (nus,1,st_usP),             // starting vector of unsampled population size (old)
                beta_0 (nbeta,1,st_betaP), 	// starting vector of beta (new)
@@ -330,10 +331,10 @@ Matrix<double> E1_0 (ncat,1,st_E1P), 	        // starting vector of allelic drop
 /************************/
 
                if(estE1){    
-                 int_E1 = Matrix<double>(ncat,ncat, int_E1P);
+                 int_E1 = Matrix<double>(ncatnloci,ncatnloci, int_E1P);
                }
                if(estE2){    
-                 int_E2 = Matrix<double>(ncat,ncat, int_E2P);
+                 int_E2 = Matrix<double>(ncatnloci,ncatnloci, int_E2P);
                }
                if(estbeta){    
                  int_beta = Matrix<double>(nbeta,nbeta, int_betaP);
@@ -347,11 +348,11 @@ Matrix<double> E1_0 (ncat,1,st_E1P), 	        // starting vector of allelic drop
 /***********************/
 
 	       if(int(prior_E1P[0])!=999){       
-          	 prior_E1 = Matrix<double> (ncat,2, prior_E1P);
+          	 prior_E1 = Matrix<double> (ncatnloci,2, prior_E1P);
                  est_pE1 = TRUE;
                }
                if(int(prior_E2P[0])!=999){       
-          	 prior_E2 = Matrix<double>(ncat,2, prior_E2P);
+          	 prior_E2 = Matrix<double>(ncatnloci,2, prior_E2P);
                  est_pE2 = TRUE;
                }
                if(int(prior_beta_muP[0])!=999){      
@@ -384,11 +385,12 @@ Matrix<double> E1_0 (ncat,1,st_E1P), 	        // starting vector of allelic drop
                    }
                  }
                }
-
-        ratio_0[0] = Matrix<double>(noff,1);
-        ratio_0[1] = Matrix<double>(noff,1);
-        ratio_1[0] = Matrix<double>(noff,1);
-        ratio_1[1] = Matrix<double>(noff,1);
+               if(noff>0){
+                 ratio_0[0] = ones<double>(noff,1);
+                 ratio_0[1] = ones<double>(noff,1);
+                 ratio_1[0] = ones<double>(noff,1);
+                 ratio_1[1] = ones<double>(noff,1);
+               }
 
 	map<int, int> Dams [noff];     // two way indexing vectors
 	map<int, int> Sires [noff];    // map[i][dam_id] = n   dam_id is the n^th mother of the i^th individual
@@ -396,9 +398,9 @@ Matrix<double> E1_0 (ncat,1,st_E1P), 	        // starting vector of allelic drop
 	int *sire = st_sireP;		
         Matrix<int> Dams_vec [noff];   // Matrix[i][n] = dam_id    the n^th mother of the i^th individul is dam.id 
 	Matrix<int> Sires_vec [noff];
- 			
+	
 	GetRNGstate();                                 // get seed for random number generation
-      
+ 
         if(nloci!=0){           
           read_stG(st_GP, st_AP, nind, nloci, G, A,nallP);
         }
@@ -408,7 +410,8 @@ Matrix<double> E1_0 (ncat,1,st_E1P), 	        // starting vector of allelic drop
         }   
                 
         read_stP(noff, ndamP, damidP, nsireP, sireidP,Dams,Sires,Dams_vec,Sires_vec);
-       
+        		        
+
         if(nbeta>0){
            read_X_beta(noff,ntdamP,ntsireP,npar,X_design_betaDusP, X_design_betaSusP,X_design_betaDSusP, X_design_betaDsP, X_design_betaSsP,X_design_betaDSsP, X_design_betaDus,X_design_betaSus,X_design_betaDSus, X_design_betaDs, X_design_betaSs,X_design_betaDSs);
            for(i = 0; i < tot_par; i++){
@@ -417,14 +420,13 @@ Matrix<double> E1_0 (ncat,1,st_E1P), 	        // starting vector of allelic drop
            llB_0 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP, nsireP, Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN);
            if(est_pbeta){
-              llB_0 = lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
-           }
+               llB_0 += lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
+             }
            llB_1 = llB_0;
            ratio_1[0] = ratio_0[0];
            ratio_1[1] = ratio_0[1];
          }
-           
-
+             
         if(estUS==TRUE){
           llUS_0 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_0, ratio_1);
           if(est_pus){
@@ -436,7 +438,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
         }
 
         if(estG==TRUE){      
-          Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false);
+          Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus);
           calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A);
         }else{
           if(estP==TRUE){
@@ -444,18 +446,18 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
            calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_cervus);         
           }
         }
-        
+ 
         if(estE1==TRUE || estE2==TRUE){    
-          Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true); 
+          Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus); 
             llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
           if(est_pE1){		
-            for(i = 0; i < ncat; i++){  
-              llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncat],1);
+            for(i = 0; i < ncatnloci; i++){  
+              llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
             }
           }
           if(est_pE2){		
-            for(i = 0; i < ncat; i++){  
-              llE_0 += dbeta(E2_0[i], prior_E2P[i], prior_E2P[i+ncat],1);
+            for(i = 0; i < ncatnloci; i++){  
+              llE_0 += dbeta(E2_0[i], prior_E2P[i], prior_E2P[i+ncatnloci],1);
             }
           }
           llE_1 = llE_0;
@@ -494,13 +496,13 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
           }
           if(estE1==TRUE){
 	   Rprintf("\n                        E1 = \n");
-	    for (i=0; i<ncat; ++i){
+	    for (i=0; i<ncatnloci; ++i){
 	      Rprintf("                            %10.5f\n", E1_0[i]);
             }  
           }
          if(estE2==TRUE){
            Rprintf("\n                        E2 = \n");
-	    for (i=0; i<ncat; ++i){
+	    for (i=0; i<ncatnloci; ++i){
 	      Rprintf("                            %10.5f\n", E2_0[i]);
             }
           }
@@ -525,7 +527,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                 llB_1 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_1, ratio_1, nmerge, mergeV, mergeUS, mergeN);
                 if(est_pbeta){
-                  llB_1 = lmvnormM(beta_1,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
+                  llB_1 += lmvnormM(beta_1,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
                 }
               }
               if(estUS==TRUE){
@@ -550,13 +552,13 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
               if(estE1==TRUE || estE2==TRUE){
                 llE_1 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
                 if(est_pE1){		
-                  for(i = 0; i < ncat; i++){  
-                   llE_1 += dbeta(E1_1[i], prior_E1P[i], prior_E1P[i+ncat],1);
+                  for(i = 0; i < ncatnloci; i++){  
+                   llE_1 += dbeta(E1_1[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
                   }
                 }
                 if(est_pE2){		
-                  for(i = 0; i < ncat; i++){  
-                   llE_1 += dbeta(E2_1[i], prior_E2P[i], prior_E2P[i+ncat],1);
+                  for(i = 0; i < ncatnloci; i++){  
+                   llE_1 += dbeta(E2_1[i], prior_E2P[i], prior_E2P[i+ncatnloci],1);
                   }
                 }    
               }
@@ -568,21 +570,21 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 
               if(estE1==TRUE){ 
 
-                E1_0 = fabs(rmvnormM(E1_1, int_E1, ncat));  
+                E1_0 = fabs(rmvnormM(E1_1, int_E1, ncatnloci));  
 
-                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true);
+                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
 
                 llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
 
                 if(est_pE1){		
-                  for(i = 0; i < ncat; i++){  
-                    llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncat],1);
+                  for(i = 0; i < ncatnloci; i++){  
+                    llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
                   }
                 }
 
                 if(est_pE2){		
-                  for(i = 0; i < ncat; i++){  
-                    llE_0 += dbeta(E2_0[i], prior_E2P[i], prior_E2P[i+ncat],1);
+                  for(i = 0; i < ncatnloci; i++){  
+                    llE_0 += dbeta(E2_0[i], prior_E2P[i], prior_E2P[i+ncatnloci],1);
                   }
                 }
 
@@ -591,10 +593,10 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 	        if(m_ll<log(runif(0.0,1.0))){       
                   llE_0 = llE_1;  
                   E1_0 = E1_1; 
-                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true);
+                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
                   acceptE1 --;
                 }else{                               
-                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false);
+                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus);
                 }
                 llE_1 = llE_0;
                 E1_1 = E1_0;                  
@@ -606,21 +608,21 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
        
               if(estE2==TRUE){ 
          
-                E2_0 = fabs(rmvnormM(E2_1, int_E2, ncat));  
+                E2_0 = fabs(rmvnormM(E2_1, int_E2, ncatnloci));  
    
-                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true);
+                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
 
                 llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
 
                 if(est_pE1){		
-                  for(i = 0; i < ncat; i++){  
-                    llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncat],1);
+                  for(i = 0; i < ncatnloci; i++){  
+                    llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
                   }
                 }
 
                 if(est_pE2){		
-                  for(i = 0; i < ncat; i++){  
-                    llE_0 += dbeta(E2_0[i], prior_E2P[i], prior_E2P[i+ncat],1);
+                  for(i = 0; i < ncatnloci; i++){  
+                    llE_0 += dbeta(E2_0[i], prior_E2P[i], prior_E2P[i+ncatnloci],1);
                   }
                 }
 
@@ -629,10 +631,10 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 	        if(m_ll<log(runif(0.0,1.0))){    
 	          llE_0 = llE_1;  
                   E2_0 = E2_1; 
-                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true);
+                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
                   acceptE2 --;
                 }else{                             
-                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false);
+                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus);
                 }
                 llE_1 = llE_0;
                 E2_1 = E2_0;
@@ -655,7 +657,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN);
 
               if(est_pbeta){
-                llB_0 = lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
+                llB_0 += lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
               }
 
  	      m_ll = std::min(1.0, llB_0-llB_1); 
@@ -714,7 +716,7 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
   
 	   if(itt>=burnin && itt%thin == 0){
 
-             for(i = 0; i < ncat; i++){
+             for(i = 0; i < ncatnloci; i++){
                if(estE1==TRUE){	
 	        post_E1P[write_postE]= E1_0[i];
                }
@@ -803,14 +805,14 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
           }
           if(estE1==TRUE){
 	   Rprintf("\n                        E1 = \n");
-	    for (i=0; i<ncat; ++i){
+	    for (i=0; i<ncatnloci; ++i){
 	      Rprintf("                            %10.5f\n", E1_0[i]);
             }  
             Rprintf("\nMetropolis acceptance rate =%10.5f\n", long(acceptE1)/1000.0);
           }
          if(estE2==TRUE){
            Rprintf("\n                        E2 = \n");
-	    for (i=0; i<ncat; ++i){
+	    for (i=0; i<ncatnloci; ++i){
 	      Rprintf("                            %10.5f\n", E2_0[i]);
             }
            Rprintf("\nMetropolis acceptance rate =%10.5f\n", long(acceptE2)/1000.0);

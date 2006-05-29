@@ -20,7 +20,7 @@
 #include "General.h"
 #endif
  
-void Error_Mat(Matrix<double> E1, Matrix<double> E2, double **E_mat, int ncat, int *nall, int nloci, bool LogL);
+void Error_Mat(Matrix<double> E1, Matrix<double> E2, double **E_mat, int ncat, int *nall, int nloci, bool LogL, bool perlocus);
 
 /* 
 * E1 [ncat] = vector of error rates for E1 

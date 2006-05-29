@@ -1324,7 +1324,7 @@ case 4: // has offspring but no parents, or one parent //
                Ppart[o] = vec[0][o];
                Ppart[nl+o] = vec[1][o];
              }                                              
-            for(ns=0; ns < n; ns++){               
+            for(ns=0; ns < n; ns++){             
               sample_cat = cat_tmp[ns];
               a1 =  obs_G[ns][0];
               a2 =  obs_G[ns][1];                         

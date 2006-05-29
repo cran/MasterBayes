@@ -31,17 +31,17 @@ output<-.C("fillXG",
         as.integer(noff),       # number of non-base (offspring) individuals
         as.integer(ndam),       # number of candidate dams per offspring
         as.integer(nsire),      # number of candidate sires per offspring
-        as.integer(nloci),	 # number of loci
+        as.integer(nloci),	# number of loci
         as.integer(nall),       # number of alleles per locus
         as.integer(maxall),     # number of alleles at most polymorhic locus
         as.integer(nbeta),
         as.integer(offid),      # offspring id
         as.integer(damid),      # candidate dam id's for each offspring
-        as.integer(sireid),	 # candidate sire id's for each offspring	
-        as.double(X_design_G),          # Mendelian transition probabilities dam and sire sampled			
-        as.double(unlist(A)),	 # starting allele frequencies
+        as.integer(sireid),	# candidate sire id's for each offspring	
+        as.double(X_design_G),  # Mendelian transition probabilities dam and sire sampled			
+        as.double(unlist(A)),	# starting allele frequencies
         as.double(E2),	        # starting values of E1 and E2
-        as.integer(G)        # starting true genotypes    
+        as.integer(G)           # starting true genotypes    
 )
 
 

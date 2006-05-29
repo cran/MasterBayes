@@ -97,6 +97,6 @@ index  += maxall;
             X_design_GP[cnt_ds] = X_design_G[i][p];
             cnt_ds++;
            }
-         }
+       }
   }
 }

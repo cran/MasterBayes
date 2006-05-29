@@ -40,7 +40,7 @@ function(PdP=PdataPed(),
     ncat<-max(1,length(unique(GdP$categories)))
     
 ############################### build design matrices ############################################################
- 
+
     X.list<-getXlist(PdP, GdP, A=sP$A, E=sP$E2, mm.tol=mm.tol) 
 
     noff<-length(X.list$X)	
@@ -204,7 +204,7 @@ function(PdP=PdataPed(),
     beta_map<--999
   }  
 
-estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE))
+estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus)
 store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
 
 Merge4C<-function(X.list){

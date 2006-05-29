@@ -108,7 +108,7 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                     }  
                     sslfl = sl*fl;
                   }
-                  if(s1==-999 && d1==-999){ // if nobody sampled
+                  if(s1==-999 && d1==-999){       // if nobody sampled
                     X_design_G[i][records_off] *= pG; 
                   }
                   if(d1!=-999 && s1==-999){      // if dam sampled only
