@@ -35,6 +35,7 @@ ped[,1]<-1:100
 G<-simgenotypes(A, E1=0.01, E2=0.01, ped=ped, no_dup=1)
 GdP<-GdataPed(G=G$Gobs, id=G$id)
 pP<-priorPed(E1=matrix(c(40,1600), nrow=1), E2=matrix(c(40,1600), nrow=1))
+
 model1<-MCMCped(GdP=GdP, pP=pP)
 
 #The posterior distribution recovers the prior distribution 

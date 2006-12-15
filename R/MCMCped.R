@@ -27,6 +27,12 @@ function(PdP=PdataPed(),
 ############################### re-arrange genetic data to match phenotype data ####################################
  
     if(is.null(GdP$G)==FALSE){        
+      if(is.null(sP$A)==FALSE & GdP$marker.type=="MS"){
+        for(i in 1:length(GdP$G)){
+          sP$A[[i]]<-sP$A[[i]][order(sP$A[[i]], decreasing=T)]
+          GdP$G[[i]]<-genotype(GdP$G[[i]], alleles=names(sP$A[[i]]), reorder="no")
+        }
+      }
       grouped_by_id<-order(match(GdP$id, unique_id))        
       GdP$id<-GdP$id[grouped_by_id]                                   # reorder genotype id's
       GdP$id<-match(GdP$id, unique_id)                                # convert genetic id's to numeric
@@ -41,7 +47,7 @@ function(PdP=PdataPed(),
     
 ############################### build design matrices ############################################################
 
-    X.list<-getXlist(PdP, GdP, A=sP$A, E=sP$E2, mm.tol=mm.tol) 
+    X.list<-getXlist(PdP, GdP, A=sP$A, E1=sP$E1, E2=sP$E2, mm.tol=mm.tol) 
 
     noff<-length(X.list$X)	
     ndam<-c(unlist(lapply(X.list$X,function(x){length(x$restdam.id)})))	
@@ -81,10 +87,9 @@ function(PdP=PdataPed(),
 ################################ write some C++ stuff #########################################################
 
   nloci<-length(sP$A)                      # number of loci
-  al_name<-lapply(sP$A, names)             # allele names
   l_name<-names(sP$A)                      # loci names
   if(nloci!=0){
-    nall<-unlist(sapply(al_name, length))    # number of alleles per locus
+    nall<-unlist(lapply(GdP$G, nallele))    # number of alleles per locus
   }else{
     nall<-0
   }
@@ -93,8 +98,7 @@ function(PdP=PdataPed(),
 ######################### empty vectors to which posterior distributions are written to #######################
 
   post<-list(beta=NULL, USdam=NULL, USsire=NULL, E1=NULL, E2=NULL, G=NULL, A=NULL, P=NULL)
-
-  post<-getPost(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id)
+  post<-getPost(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id, GdP$marker.type)
 
 ############################## Format for C++ ########################################################
 
@@ -116,7 +120,7 @@ function(PdP=PdataPed(),
       PdP$USdam<--999
     }
 
-   if(is.null(PdP$USdam)==FALSE){
+   if(is.null(PdP$USsire)==FALSE){
     if(length(PdP$USsire)==1){
       if(PdP$USsire==TRUE){
         PdP$USsire<-rep(1, sum(PdP$offspring))
@@ -151,24 +155,17 @@ function(PdP=PdataPed(),
    X_design_betaDSus[which(is.na(X_design_betaDSus)==TRUE)]<-0
    }
 
-
    if(sP$estG==TRUE){            # if geneotype data is present convert to c++ format
-     for(i in 1:nloci){
-      GdP$G[[i]]<-matrix(match(allele(GdP$G[[i]]),al_name[[i]], nomatch=-998), length(GdP$G[[i]]),2)
-     }
-     GdP$G<-c(t(matrix(unlist(GdP$G), nsamp,2*nloci)))
+     GdP$G<-GtoC(GdP$G, biallelic=(GdP$marker.type!="MS"))
    }else{
      GdP$G<-0  
      GdP$id<-0
      GdP$categories<-0
    }
-    
+
    if(length(sP$G)!=0){              # if sP$G is specified then convert to c++ format
-     for(i in 1:nloci){
-       sP$G[[i]]<-matrix(match(allele(sP$G[[i]]),al_name[[i]], nomatch=-998), length(sP$G[[i]]),2)
-     }
-       sP$G<-c(t(matrix(unlist(sP$G), nind,2*nloci)))
-   }else{
+       sP$G<-GtoC(sP$G, biallelic=(GdP$marker.type!="MS"))
+    }else{
       sP$G<-0  
       sP$A<-0
       sP$E1<-0
@@ -179,7 +176,7 @@ function(PdP=PdataPed(),
    sP$sire[which(is.na(sP$sire)==T)]<-nind+1+nusd
    tPus<-NULL
 
-   if(nusd+nuss>0){
+   if(((nusd+nuss)*(sP$estUSdam+sP$estUSsire))>0){
      tPus<-sqrt(diag(nusd+nuss)*c(tP$USdam, tP$USsire))
    }
 
@@ -204,7 +201,9 @@ function(PdP=PdataPed(),
     beta_map<--999
   }  
 
-estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus)
+  mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%GdP$marker.type*c(1:3))
+
+estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric)
 store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
 
 Merge4C<-function(X.list){
@@ -256,7 +255,7 @@ output<-.C("MCMCped",
 	as.integer(thin),		# thinning interval
 	as.integer(burnin),     	# burn in
         as.integer(GdP$id-1),           # numeric id relating samples to individuals
-	as.integer(GdP$G-1),            # observed genotypes	
+	as.integer(GdP$G),              # observed genotypes	
 	as.integer(off_id-1), 
 	as.integer(dam_id-1),
         as.integer(sire_id-1),
@@ -271,7 +270,7 @@ output<-.C("MCMCped",
 	as.double(sP$E2),	             # sPing values of E1 and E2
 	as.double(c(sP$beta)),	             # sPing vector of beta
 	as.double(c(sP$USdam, sP$USsire)),   # sPing vector of beta
-        as.integer(sP$G-1),                  # sPing true genotypes  
+        as.integer(sP$G),                  # sPing true genotypes  
 	as.integer(as.numeric(sP$dam)-1),	        # sPing vector of dams
 	as.integer(as.numeric(sP$sire)-1),	        # sPing vector of sires
 	as.double(post$A),	# posterior distribution of allele frequencies
@@ -327,7 +326,7 @@ output<-.C("MCMCped",
   post$G<-output[[48]]
   post$P<-output[[49]]
 
-  getPost(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id)
+  getPost(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id, GdP$marker.type)
 
 }
 

@@ -1,15 +1,16 @@
-getXlist<-function(PdP, GdP=NULL, A=NULL, E2=0.005, mm.tol=999, ...){
+getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...){
 
   if(is.null(PdP$id)){
     X.list<-list(id=NULL) 
-    X.list$id<-unique(GdP$id)
+    unique_id<-as.character(unique(GdP$id))
+    X.list$id<-unique_id
   }else{
 
   null_mat<-t(as.matrix(as.numeric(NULL)))
 
   X.list<-list(id=NULL, par_order=NULL, beta_map=NULL, merge=c(), mergeUS=c(), X=lapply(PdP$id[which(PdP$offspring==1)], function(x){x=list(dam.id=NULL,   sire.id=NULL, mergeN=matrix(NA,2,0), XDus=null_mat, vtDus=NULL, XDs=null_mat, vtDs=NULL, XSus=null_mat, vtSus=NULL, XSs=null_mat, vtSs=NULL, XDSus=null_mat, vtDSus=NULL,XDSs=null_mat, vtDSs=NULL, G=NULL)}))   
 
-  unique_id<-unique(PdP$id)
+  unique_id<-as.character(unique(PdP$id))
 
   X.list$id<-unique_id
 
@@ -17,7 +18,9 @@ getXlist<-function(PdP, GdP=NULL, A=NULL, E2=0.005, mm.tol=999, ...){
 
   if(length(PdP$USdam)!=1 | PdP$USdam[1]!=FALSE){
     PdP$id<-c(PdP$id, length(unique_id)+1) 
-    PdP$sex<-as.factor(c(as.character(PdP$sex), "Female"))  
+    if(is.null(PdP$sex)==FALSE){
+      PdP$sex<-as.factor(c(as.character(PdP$sex), "Female")) 
+    } 
     ud<-TRUE
   }else{
     ud<-FALSE
@@ -25,7 +28,9 @@ getXlist<-function(PdP, GdP=NULL, A=NULL, E2=0.005, mm.tol=999, ...){
 
   if(length(PdP$USsire)!=1 | PdP$USsire[1]!=FALSE){
     PdP$id<-c(PdP$id, length(unique_id)+ud+1)
-    PdP$sex<-as.factor(c(as.character(PdP$sex), "Male")) 
+    if(is.null(PdP$sex)==FALSE){
+      PdP$sex<-as.factor(c(as.character(PdP$sex), "Male")) 
+    }
     us<-TRUE
   }else{
     us<-FALSE
@@ -558,43 +563,74 @@ for(off in 1:sum(PdP$offspring==1)){
         ncolX=dim(X.list$X[[off]]$XDus)[2]
         base<-X.list$X[[off]]$XDus[1,]
         X.list$X[[off]]$XDus<-X.list$X[[off]]$XDus-matrix(rep(base,each=nrowX), nrowX, ncolX)  
+        col2scale<-which(X.list$X[[off]]$vtDus=="numeric")
+        if(length(col2scale)>0){
+          center.val<-colMeans(as.matrix(X.list$X[[off]]$XDus[,col2scale]), na.rm=T)
+          X.list$X[[off]]$XDus[,col2scale]<-scale(X.list$X[[off]]$XDus[,col2scale], center=center.val, scale=FALSE)
+        }
       }
       if(nvar[2]>0){
         nrowX=dim(X.list$X[[off]]$XDs)[1]
         ncolX=dim(X.list$X[[off]]$XDs)[2]
          base<-X.list$X[[off]]$XDs[1,]
-        X.list$X[[off]]$XDs<-X.list$X[[off]]$XDs-matrix(rep(base,each=nrowX), nrowX, ncolX)  
+        X.list$X[[off]]$XDs<-X.list$X[[off]]$XDs-matrix(rep(base,each=nrowX), nrowX, ncolX) 
+        col2scale<-which(X.list$X[[off]]$vtDs=="numeric")
+        if(length(col2scale)>0){
+          center.val<-colMeans(as.matrix(X.list$X[[off]]$XDs[,col2scale]), na.rm=T)
+          X.list$X[[off]]$XDs[,col2scale]<-scale(X.list$X[[off]]$XDs[,col2scale], center=center.val, scale=FALSE)
+        }
       }
       if(nvar[3]>0){
         nrowX=dim(X.list$X[[off]]$XSus)[1]
         ncolX=dim(X.list$X[[off]]$XSus)[2]
         base<-X.list$X[[off]]$XSus[1,]
-        X.list$X[[off]]$XSus<-X.list$X[[off]]$XSus-matrix(rep(base,each=nrowX), nrowX, ncolX)  
+        X.list$X[[off]]$XSus<-X.list$X[[off]]$XSus-matrix(rep(base,each=nrowX), nrowX, ncolX) 
+        col2scale<-which(X.list$X[[off]]$vtSus=="numeric")
+        if(length(col2scale)>0){
+          center.val<-colMeans(as.matrix(X.list$X[[off]]$XSus[,col2scale]), na.rm=T)
+          X.list$X[[off]]$XSus[,col2scale]<-scale(X.list$X[[off]]$XSus[,col2scale], center=center.val, scale=FALSE)
+        } 
       }
       if(nvar[4]>0){
         nrowX=dim(X.list$X[[off]]$XSs)[1]
         ncolX=dim(X.list$X[[off]]$XSs)[2]
         base<-X.list$X[[off]]$XSs[1,]
-        X.list$X[[off]]$XSs<-X.list$X[[off]]$XSs-matrix(rep(base,each=nrowX), nrowX, ncolX)  
+        X.list$X[[off]]$XSs<-X.list$X[[off]]$XSs-matrix(rep(base,each=nrowX), nrowX, ncolX)
+        col2scale<-which(X.list$X[[off]]$vtSs=="numeric")
+        if(length(col2scale)>0){
+          center.val<-colMeans(as.matrix(X.list$X[[off]]$XSs[,col2scale]), na.rm=T)
+          X.list$X[[off]]$XSs[,col2scale]<-scale(X.list$X[[off]]$XSs[,col2scale], center=center.val, scale=FALSE)
+        }   
       }
       if(nvar[5]>0){
         nrowX=dim(X.list$X[[off]]$XDSus)[1]
         ncolX=dim(X.list$X[[off]]$XDSus)[2]
         base<-X.list$X[[off]]$XDSus[1,]
         X.list$X[[off]]$XDSus<-X.list$X[[off]]$XDSus-matrix(rep(base,each=nrowX), nrowX, ncolX)  
+        col2scale<-which(X.list$X[[off]]$vtDSus=="numeric")
+        if(length(col2scale)>0){
+          center.val<-colMeans(as.matrix(X.list$X[[off]]$XDSus[,col2scale]), na.rm=T)
+          X.list$X[[off]]$XDSus[,col2scale]<-scale(X.list$X[[off]]$XDSus[,col2scale], center=center.val, scale=FALSE)
+        } 
+
       }
       if(nvar[6]>0){
         nrowX=dim(X.list$X[[off]]$XDSs)[1]
         ncolX=dim(X.list$X[[off]]$XDSs)[2]
         base<-X.list$X[[off]]$XDSs[1,]
-        X.list$X[[off]]$XDSs<-X.list$X[[off]]$XDSs-matrix(rep(base,each=nrowX), nrowX, ncolX)  
+        X.list$X[[off]]$XDSs<-X.list$X[[off]]$XDSs-matrix(rep(base,each=nrowX), nrowX, ncolX) 
+        col2scale<-which(X.list$X[[off]]$vtDSs=="numeric")
+        if(length(col2scale)>0){
+          center.val<-colMeans(as.matrix(X.list$X[[off]]$XDSs[,col2scale]), na.rm=T)
+          X.list$X[[off]]$XDSs[,col2scale]<-scale(X.list$X[[off]]$XDSs[,col2scale], center=center.val, scale=FALSE)
+        }  
       }
     }    
 
     if(is.null(GdP$G)==FALSE){
       Gid<-GdP$id[-duplicated(GdP$id)==FALSE]
       G<-lapply(GdP$G, function(x){x[-duplicated(GdP$id)==FALSE]})
-      grouped_by_id<-match(Gid, unique_id)        
+      grouped_by_id<-order(match(Gid, unique_id))        
       G<-lapply(G, function(x){x[grouped_by_id]}) 
       Gid<-grouped_by_id  
       X.list<-mismatches(X.list, G=G, mm.tol=mm.tol)
@@ -602,10 +638,13 @@ for(off in 1:sum(PdP$offspring==1)){
         A<-extractA(GdP$G)
       }
       if(is.null(E2)==TRUE){
+        E1<-0.005
+      }
+      if(is.null(E2)==TRUE){
         E2<-0.005
       }
-      X.list<-fillX.G(X.list, A=A, G=G, E2=E2)
-      X.list<-reordXlist(X.list)
+      X.list<-fillX.G(X.list, A=A, G=G, E1=E1, E2=E2, marker.type=GdP$marker.type)
+      X.list<-reordXlist(X.list, marker.type=GdP$marker.type)
     }
   }
 X.list

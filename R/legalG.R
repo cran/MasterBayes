@@ -1,4 +1,4 @@
-"legalG"<-function(G, A, ped, time_born=NULL, ...){
+"legalG"<-function(G, A, ped, time_born=NULL, marker.type="MS", ...){
 
   nind<-length(ped[,1])
   nloci<-length(A)
@@ -6,9 +6,14 @@
   maxall<-max(nall)
   namesG<-names(G)
 
-  for(i in 1:length(A)){  
-    G[[i]]<-matrix(match(allele(G[[i]]),names(A[[i]]), nomatch=-998), length(G[[i]]),2)
-  } 
+  if(is.genotypeD(G[[1]])){
+    for(i in 1:length(A)){  
+      G[[i]]<-as.matrix(cbind(as.matrix(G[[i]]), as.matrix(G[[i]])))
+      ones<-which(G[[i]][,1]=="1")
+      G[[i]][,1][ones]<-as.character(rbinom(length(ones), 1, A[[i]][2]))
+      G[[i]]<-as.genotype(G[[i]], alleles=c("0","1"))
+    }
+  }
 
   #################################### order pedigree and data #############################################
 
@@ -21,13 +26,13 @@
   sire<-match(oped[,3], oped[,1])-1
   sire[which(is.na(sire)==T)]<-nind
 
-  G<-lapply(G, function(x){x[rearrange_data,]})
+  G<-lapply(G, function(x){x[rearrange_data]})
 
   ###########################################################################################################
 
-  G<-c(t(matrix(unlist(G), nind,2*nloci)))-1
-
   legal<-TRUE
+
+  mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%marker.type*c(1:3))
 
   output<-.C("legalG",
 	as.integer(nind),		 
@@ -37,23 +42,39 @@
 	as.integer(nall),		
 	as.integer(maxall),		
         as.double(unlist(A)),                   
-        as.integer(G),                  
-        as.logical(legal))
+        as.integer(GtoC(G, marker.type!="MS")),                  
+        as.logical(legal),
+        as.integer(mtype.numeric))
 
-  tmp<-array(output[[8]], c(2, length(ped[,1]), length(A)))+1
+  tmp<-array(output[[8]], c(1+(marker.type=="MS"), length(ped[,1]), length(A)))+as.numeric(marker.type=="MS")
 
-  G<-as.data.frame(matrix(NA, length(ped[,1]), 2*length(A)))
+  Gnew<-as.data.frame(matrix(NA, length(ped[,1]), 2*length(A)))
 
-  for(i in 1:length(A)){
-    G[,c(((i*2)-1):(i*2))]<-t(tmp[,,i])
-    G[,(i*2)-1]<-names(A[[i]])[G[,(i*2)-1]]
-    G[,(i*2)]<-names(A[[i]])[G[,(i*2)]]
+  if(marker.type=="MS"){
+    for(i in 1:length(A)){
+      Gnew[,c(((i*2)-1):(i*2))]<-t(tmp[,,i])
+      Gnew[,(i*2)-1]<-names(A[[i]])[Gnew[,(i*2)-1]]
+      Gnew[,(i*2)]<-names(A[[i]])[Gnew[,(i*2)]]
+    }
+  }else{
+    for(i in 1:length(A)){
+      Gnew[,i*2]<-tmp[,,i]
+      Gnew[,(i*2)-1]<-0
+      hom1<-which(Gnew[,i*2]==2)
+      if(length(hom1)>0){
+        Gnew[,(i*2)-1:0][which(Gnew[,i*2]==2),]<-1
+      }
+    }
   }
 
-  G<-G[match(ped[,1], oped[,1]),]
-  G<-genotype.list(G)
-  names(G)<-namesG
-  list(G=G,valid=output[[9]]) 
+    Gnew<-Gnew[match(ped[,1], oped[,1]),]
+    gens <- list()
+    for (i in 1:(length(Gnew[1, ])/2)){
+       gens[[i]] <- genotype(as.matrix(Gnew[, ((i * 2) - 1):(i *2)]), alleles=names(A[[i]]), reorder="no")
+       names(gens)[i] <- names(G[i * 2])
+    }
+
+  list(G=gens,valid=output[[9]]) 
 
 }
        

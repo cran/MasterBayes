@@ -38,7 +38,7 @@ res2<-expression(varPed("terr", gender="Female", relational="OFFSPRING",
 
 PdP<-PdataPed(formula=list(var1,res1,res2), data=WarblerP, USsire=FALSE)
 
-X.list<-getXlist(PdP=PdP, GdP=GdP, E=0.005)
+X.list<-getXlist(PdP=PdP, GdP=GdP, E2=0.005)
 
 ped<-MLE.ped(X.list)
 beta<-MLE.beta(X.list, ped) 

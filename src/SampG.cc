@@ -9,23 +9,23 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         int n = 0;                // number of samples within indiviual
         int ns;                   // sample within indiviual
         int obs_G[maxrep][2];     // observed genotypes of an individual
-        int off_G[100][2];         // genotypes of individual's offspring
-        int sp_G[100][2];          // genotypes of individual's spouses
+        int off_G[50][2];         // genotypes of individual's offspring
+        int sp_G[50][2];          // genotypes of individual's spouses
         int da[2];                // genotypes of individual's dam
         int sa[2];                // genotypes of individual's sire
         int S_1;
         int S_2;
         int off_1;
         int off_2;
-        int off_pos[100];
-        int sire_pos[100];
+        int off_pos[50];
+        int sire_pos[50];
         int sp_1;
         int sp_2;
         double tac;
         double vec[2][maxall];
         int which_vec = 0;
         int offhom_sizeS;
-        int cat_tmp[100];      // categories to which those genotypes belong
+        int cat_tmp[50];      // categories to which those genotypes belong
         double Ppart[100];  // Probability vector for true genotypes
         int a1;                   // observed allele 1
         int a2;                   // observed allele 2
@@ -630,7 +630,7 @@ case 2: // contextual information provided by both parents only /
                               if(na1==na2){
                               eterm = E_mat[l][4+sample_cat];
                               }
-                              if((na1==a1 && na2==a2) || (na1==a2 && na2==a1) ){
+                              if((na1==a1 && na2==a2) || (na1==a2 && na2==a1)){
                                eterm = E_mat[l][3+sample_cat];
                               }
                               if(na1!=a1 && na2!=a2 && na1!=a2 && na2!=a1){
@@ -662,60 +662,61 @@ case 3:
              Ppart[2] = 1.0;
              Ppart[3] = 1.0;
 
-             for(itt_set=0; no_off[i] < itt_set; itt_set++){               
+             for(itt_set=0; itt_set < no_off[ind]; itt_set++){               
 
-         o = par[ind][itt_set];
+               o = par[ind][itt_set];
 
-         off_1 = G[o][l*2];       // offspring and spouse genotypes //
-         off_2 = G[o][(l*2)+1];
+               off_1 = G[o][l*2];       // offspring and spouse genotypes //
+               off_2 = G[o][(l*2)+1];
 
-         sp_1 = -999;
-         sp_2 = -999;
+               sp_1 = -999;
+               sp_2 = -999;
 
-         if(sire[o]!=ind){
-           if(sire[o]<nind){
-             sp_1 = G[sire[o]][l*2];
-             sp_2 = G[sire[o]][(l*2)+1];
-           }
-         }else{
-           if(dam[o]<nind){
-             sp_1 = G[dam[o]][l*2];
-             sp_2 = G[dam[o]][(l*2)+1];
-           }
-         }
+               if(sire[o]!=ind){
+                 if(sire[o]<nind){
+                   sp_1 = G[sire[o]][l*2];
+                   sp_2 = G[sire[o]][(l*2)+1];
+                 }
+               }else{
+                 if(dam[o]<nind){
+                   sp_1 = G[dam[o]][l*2];
+                   sp_2 = G[dam[o]][(l*2)+1];
+                 }
+               }
+
                u=PA[off_1];
                v=PA[off_2];
-                cnt=0;
-                for(S_1=0; S_1<2; S_1++){
-                  for(S_2=0; S_2<2; S_2++){  
-                    if(sp_1!=-999){
+               cnt=0;
+               for(S_1=0; S_1<2; S_1++){
+                 for(S_2=0; S_2<2; S_2++){  
+                   if(sp_1!=-999){
                      tac = 0.0;
                      if((da[S_1]==off_1 && off_2==sp_1) || (da[S_1]==off_2 && off_1==sp_1)){tac+=0.25;}
                      if((da[S_1]==off_1 && off_2==sp_2) || (da[S_1]==off_2 && off_1==sp_2)){tac+=0.25;}
                      if((sa[S_2]==off_1 && off_2==sp_1) || (sa[S_2]==off_2 && off_1==sp_1)){tac+=0.25;}
                      if((sa[S_2]==off_1 && off_2==sp_2) || (sa[S_2]==off_2 && off_1==sp_2)){tac+=0.25;}
                      Ppart[cnt] *= tac;
-                    }else{
-                      if(off_1==off_2){
+                   }else{
+                     if(off_1==off_2){
                        Ppart[cnt] *= (int(da[S_1]==off_1)+int(sa[S_2]==off_1))*u;
-                      }else{
-                        z=0.0;
-                        if(da[S_1]!=off_1 || sa[S_2]!=off_1){
-                          z+=u;
-                          if(da[S_1]==off_2 || sa[S_2]==off_2){
-                            z+=v;
-                            z/=2.0;
-                          }
-                        }else{
+                     }else{
+                       z=0.0;
+                       if(da[S_1]!=off_1 || sa[S_2]!=off_1){
+                         z+=u;
+                         if(da[S_1]==off_2 || sa[S_2]==off_2){
+                           z+=v;
+                           z/=2.0;
+                         }
+                       }else{
                          z+=v;
-                        }                  
-                        Ppart[cnt] *= (int(da[S_1]==off_1)+int(sa[S_2]==off_1))*z; 
-                      }
-                    }
-                    cnt++;
-                  }
-                }
-              }          
+                       }                  
+                     Ppart[cnt] *= (int(da[S_1]==off_1)+int(sa[S_2]==off_1))*z; 
+                     }
+                   }
+                   cnt++;
+                 }
+               }
+             }          
 
               cnt = 0;
 
@@ -740,7 +741,7 @@ case 3:
                               if(na1==na2){
                               eterm = E_mat[l][4+sample_cat];
                               }
-                              if(na1==a1 && na2==a2){
+                              if((na1==a1 && na2==a2) || (na1==a2 && na2==a1)){
                                eterm = E_mat[l][3+sample_cat];
                               }
                               if(na1!=a1 && na2!=a2 && na1!=a2 && na2!=a1){

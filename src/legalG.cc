@@ -13,7 +13,8 @@ void legalG(
         int *maxallP,
 	double *st_AP,	         // starting allele frequencies
         int *st_GP,              // starting true genotypes   
-        bool *legalP 
+        bool *legalP, 
+        int *mtypeP
 ){        
 
 // pointers to single variables are redefined
@@ -24,6 +25,7 @@ int 	nind = nindP[0],
         maxall = maxallP[0],
         i,
         l,
+        o,
         o1,
         o2,
         d1,
@@ -32,6 +34,14 @@ int 	nind = nindP[0],
         s2, 
         index=0;
 
+double  phom,
+        qhom,
+        pqhet;
+
+double  Pall[maxall];
+
+int mtype = mtypeP[0];
+
 // declare some variable sized arrays
 
 int     *pG,
@@ -39,7 +49,7 @@ int     *pG,
 double  *pA,
         **A;
  
-pG = new(nothrow) int [2*nind*nloci];
+pG = new(nothrow) int [(1+int(mtype==1))*nind*nloci];
 if(pG==NULL)
 {
 Rprintf("NO MEMORY for G\n");
@@ -66,7 +76,7 @@ exit(1);
 
 for (i=0; i<nind; ++i){
 G[i] = &pG[index];
-index  += (2*nloci);
+index  += ((1+int(mtype==1))*nloci);
 }
 
 index = 0;
@@ -76,13 +86,40 @@ A[i] = &pA[index];
 index  += maxall;
 }
         
-    bool TacP;
+    bool TacP = true;
     bool o1ind;
     bool o1ins;
     bool o2ind;
     bool o2ins;
 
-    read_stG(st_GP, st_AP, nind, nloci, G, A,nall);
+    read_G(st_GP, nind, nloci, G, mtype);
+    read_A(st_AP, nloci, A, nall);
+
+     int par[nind][50];
+     int no_off[nind];
+     int itt_set;
+
+     for(i=0; i < nind; i++){
+           no_off[i] = 0;
+     }
+
+     for(i=0; i < nind; i++){                         
+       if(sireP[i]<nind){
+         l = sireP[i];
+         par[l][no_off[l]] = i;
+         no_off[l]++;
+       } 
+       if(damP[i]<nind && damP[i]!=sireP[i]){
+         l = damP[i];
+         par[l][no_off[l]] = i;
+         no_off[l]++;
+       }
+     }
+
+
+  switch(mtype){
+
+    case 1:
 
     for(i=0; i<nind; ++i){
       for(l=0; l<nloci; ++l){
@@ -205,30 +242,203 @@ index  += maxall;
               G[i][(l*2)] = rmultinom_size1(A[l], nall[l]);
             }           
           }
-        }else{   // if parents have missing genotypes sample from allele frequencies
-          if(G[i][l*2]==-999){
-            G[i][l*2] = rmultinom_size1(A[l], nall[l]);
-          }
-          if(G[i][(l*2)+1]==-999){
-            G[i][(l*2)+1] = rmultinom_size1(A[l], nall[l]);
+        }else{  
+          if(no_off[i]==0){      // if founders have missing genotypes and no offspring
+            if(G[i][l*2]==-999){
+              G[i][l*2] = rmultinom_size1(A[l], nall[l]);
+              G[i][(l*2)+1] = rmultinom_size1(A[l], nall[l]);
+            }
+          }else{                // if founders have missing genotypes and offspring
+            if(G[i][l*2]==-999){
+              for(itt_set=0; itt_set < nall[l]; itt_set++){ 
+                Pall[itt_set] = 0.001;
+              }
+              index=0;
+              for(itt_set=0; itt_set < no_off[i]; itt_set++){ 
+                o = par[i][itt_set];
+                o1 = G[o][l*2];       // offspring and spouse genotypes //
+                o2 = G[o][(l*2)+1];
+                s1 = -999;
+                s2 = -999;
+                if(sireP[o]!=i){
+                  if(sireP[o]<nind){
+                    s1 = G[sireP[o]][l*2];
+                    s2 = G[sireP[o]][(l*2)+1];
+                  }
+                }else{
+                  if(damP[o]<nind){
+                    s1 = G[damP[o]][l*2];
+                    s2 = G[damP[o]][(l*2)+1];
+                  }
+                }
+                if(o1!=-999){
+                  if(index!=2 && o1!=s1 && o1!=s2 && o1!=G[i][(l*2)]){
+                     G[i][(l*2)+index]=o1;       // offspring and spouse genotypes //
+                     index++;
+                  }else{
+                     Pall[o1] ++;
+                  }
+                  if(index!=2 & o2!=s1 && o2!=s2 && o2!=G[i][(l*2)]){
+                     G[i][(l*2)+index]=o2;       // offspring and spouse genotypes //
+                     index++;
+                  }else{
+                     Pall[o2] ++;
+                  }
+
+                }
+              }
+              if(index!=2){
+                G[i][l*2] = rmultinom_size1(Pall, nall[l]);
+                if(Pall[G[i][l*2]]>1.0){Pall[G[i][l*2]]--;}
+                G[i][(l*2)+1] = rmultinom_size1(Pall, nall[l]);
+              }
+            }
           }
         }
       }
     }     
-    
-   int records = 0;           
+    break;
 
-   for(l = 0; l < nloci; l++){  
-      for(i = 0; i < nind; i++){	                        
+    case 2:
+     for(i=0; i<nind; ++i){
+      for(l=0; l<nloci; ++l){
+
+        phom = pow(A[l][0], 2.0);
+        qhom = pow(A[l][1], 2.0);
+        pqhet = 2.0*A[l][0]*A[l][1];
+ 
+        if(damP[i]!=nind || sireP[i]!=nind){
+ 
+          o1 = G[i][l];
+ 
+          if(damP[i]!=nind && sireP[i]!=nind){
+
+            d1 = G[damP[i]][l];
+
+            s1 = G[sireP[i]][l];
+
+            TacP=true;
+
+            if(d1==0 || s1==0){
+              if(s1==0){s1=d1;}
+              if(s1==0){
+                if(o1!=0){
+                  TacP=false;
+                  G[i][l]  = 0;
+                }
+              }
+              if(s1==1){
+                if(o1==2 || o1==-999){
+                  TacP=false;
+                  if((int)rbinom(1.0, qhom/(qhom+pqhet))==1){
+                    G[i][l] =0;
+                  }else{
+                    G[i][l] =1;
+                  }
+                }
+              }
+              if(s1==2){
+                if(o1!=1){
+                  TacP=false;
+                  G[i][l]  = 1;
+                }
+              }
+            }else{
+              if(d1==2 || s1==2){
+                if(s1==2){s1=d1;}
+                if(s1==2){
+                  if(o1!=2){
+                    TacP=false;
+                    G[i][l]  = 2;
+                  }
+                }
+                if(s1==1){
+                  if(o1==0 || o1==-999){
+                    TacP=false;
+                    if((int)rbinom(1.0, phom/(phom+pqhet))==1){
+                      G[i][l] =2;
+                    }else{
+                      G[i][l] =1;
+                    }
+                  }
+                }
+              }else{
+                if(o1==-999){
+                  G[i][l] =  int(rbinom(1.0, 0.5));     
+                  G[i][l] += int(rbinom(1.0, 0.5));   
+                }
+              }
+            }
+          }else{  // only one parent
+            if(damP[i]!=nind){
+              d1=G[damP[i]][l];
+            }else{
+              d1=G[sireP[i]][l];
+            }
+            if(d1==0){
+              if(o1==2 || o1==-999){
+                if((int)rbinom(1.0, phom/(phom+0.5*pqhet))==1){
+                  G[i][l]=0;
+                }else{
+                  G[i][l]=1;
+                }
+              }
+            }
+            if(d1==1 && o1==-999){
+              if((int)rbinom(1.0, 0.5)==1){
+                G[i][l]=1;
+              }else{
+                G[i][l] = 2*(int)rbinom(1.0, pow(qhom,0.5)/(pow(phom,0.5)+pow(qhom,0.5)));
+              }
+            }
+            if(d1==2){
+              if(o1==0 || o1==-999){
+                if((int)rbinom(1.0, qhom/(qhom+0.5*pqhet))==1){
+                  G[i][l]=2;
+                }else{
+                  G[i][l]=1;
+                }
+              }
+            }
+          }
+        }else{   // neither parent
+          if(G[i][l]==-999){
+            TacP==false;
+            G[i][l] = (int)rbinom(1.0, pow(qhom,0.5));     
+            G[i][l] += (int)rbinom(1.0, pow(qhom,0.5));     
+          } 
+        }       
+      }
+    }
+   
+    if(TacP==false){legalP[0]=false;}
+    break;
+
+    case 3:
+    break;
+  }
+
+    int records = 0;           
+
+    if(mtype==1){
+      for(l = 0; l < nloci; l++){  
+        for(i = 0; i < nind; i++){	                        
           st_GP[records] = G[i][(l*2)];  
           records ++;
           st_GP[records] = G[i][(l*2)+1];  
           records ++;
-       }
+        }
+      }
+    }else{
+      for(l = 0; l < nloci; l++){  
+        for(i = 0; i < nind; i++){	                        
+          st_GP[records] = G[i][l];  
+          records ++;
+        }
+      }
     }
-  }
-}
-
+ }
+ }
 
 
 

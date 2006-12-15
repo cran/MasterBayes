@@ -35,7 +35,7 @@ Most other techniques approximate this distribution as \eqn{p(\bf{P} | \bf{G})}{
 
 
 
-Unfortunately, genotype data are rarely observed with out error and the parents of some offspring may not be sampled.  I model allelic dropout and stochastic genotyping errors according to a model proposed by Wang (2001). Denoting the parameters associated with these two forms of genotyping error as \eqn{\varepsilon_{1}}{E1} and \eqn{\varepsilon_{2}}{E2}, and the vector of parental allele frequencies as \eqn{\omega}{w}, two solutions are implemented.  
+Unfortunately, genotype data are rarely observed with out error and the parents of some offspring may not be sampled.  I model allelic dropout and stochastic genotyping errors according to a model proposed by Wang (2001) when the genetic markers are codominant. When the markers are dominant I model the probabilities of a dominant allele being miscored as a recessive and \emph{vice versa}. Denoting the parameters associated with these two forms of genotyping error as \eqn{\varepsilon_{1}}{E1} and \eqn{\varepsilon_{2}}{E2}, and the vector of parental allele frequencies as \eqn{\omega}{w}, two solutions are implemented.  
 
 An exact solution:
 
@@ -49,7 +49,7 @@ The second solution is an approximation to the above equation, and uses point es
 
 \deqn{p(\bf{G}^{obs} | \bf{G}, \varepsilon_{1}, \varepsilon_{2})p(\bf{G} | \omega)}{p(G_obs | G,E1,E2)p(G | w)}
 
-The approximation can be derived analytically, whereas the exact solution requires the Markov chain to be augmented with the true genotypes of all individuals.  This becomes very computer intensive but for models in which the number of unsampled males and/or females is to be estimated the approximation breaks down. Unsampled parents are dealt with, and their number estimated using an approximation originally due to Nielsen (2001).  An exact solution to the problem has been proposed by Emery \emph{et.al.} (2001) but becomes impractical as the number of unsampled parents gets large. Nielsen's approximation is based around the Mendelian transition probability when a parental genotype is unknown.  This probability is derived using estimates of the allele frequencies at that locus and the assumption of Hardy-Weinberg equilibrium.  
+The approximation can be derived analytically, whereas the exact solution requires the Markov chain to be augmented with the true genotypes of all individuals.  This becomes very computer intensive but the approximation breaks down for dominant markers, or models in which the number of unsampled males and/or females is to be estimated. Unsampled parents are dealt with, and their number estimated using an approximation originally due to Nielsen (2001).  An exact solution to the problem has been proposed by Emery \emph{et.al.} (2001) but becomes impractical as the number of unsampled parents gets large. Nielsen's approximation is based around the Mendelian transition probability when a parental genotype is unknown.  This probability is derived using estimates of the allele frequencies at that locus and the assumption of Hardy-Weinberg equilibrium.  
 
 
 I deal with the fact that unsampled individuals have missing phenotype data by approximating the distribution of the sum of linear predictors across unsampled parents.  This approximation relies on the assumption that the unsampled indivdiuals come from the same statistical popluaion as sampled individuals, and that population sizes are large enough so that the distribution for the sum tends to a normal distribution under the central limit theorem.

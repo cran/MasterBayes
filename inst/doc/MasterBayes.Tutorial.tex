@@ -17,14 +17,13 @@
 
 
 
-
-
-
-
-
-
-
 \maketitle
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[height=2cm, width=2cm]{r}
+\end{center}
+\end{figure}
+
 
 \newpage
 
@@ -1599,10 +1598,9 @@ An extreme form of inbreeding is selfing in hermaphrodites.  MasterBayes is able
 \end{Sinput}
 \end{Schunk}
 
-
 \begin{figure}[!h]
 \begin{center}
-\includegraphics{MasterBayesActive2-093}
+\includegraphics[height=8.5cm]{MasterBayesActive2-093}
 \end{center}
 \caption{The posterior distribution of $\textrm{logit}^{-1}\beta$: the probability that an individual mates with itself compared to another random individual in a hermaphrodite system.}
 \label{Herm-fig}
@@ -1613,9 +1611,7 @@ The model is essentialy one of assortative mating for \texttt{id}, although the 
 \subsection{Schrodinger's Hermaphrodite Cat}
 \label{SHC}
 
-Monoecy in plants is a common phenomenon; each flower is unisexual but flowers of both sex can be found on the same plant.  The genotype data (unless the fruit or organelles have been typed) provide no information whether an offspring is produced from the male or female flowers of an individual. The only information the genotype data provide is whether the individual is a parent.\\
-
-  However, let's say we measure the proportion of male flowers on the adult plants and this measure positively covaries with pollen production but negatively covaries with seed production.  Alternatively, we could have measured something less sugestive like the distance beween offspring and parents.  MasterBayes can fit gender specific variables to hermaphrodite data but the resulting posteriors are ambiguous with respect to any notion of gender.\\
+Monoecy in plants is a common phenomenon; each flower is unisexual but flowers of both sex can be found on the same plant.  The genotype data (unless the fruit or organelles have been typed) provide no information whether an offspring is produced from the male or female flowers of an individual. The only information the genotype data provide is whether the individual is a parent.  However, let's say we measure the proportion of male flowers on the adult plants and this measure positively covaries with pollen production but negatively covaries with seed production.  Alternatively, we could have measured something less sugestive like the distance beween offspring and parents.  MasterBayes can fit gender specific variables to hermaphrodite data but the resulting posteriors are ambiguous with respect to any notion of gender.\\
 
   To illustrate, we will simulate data from a monoecious population in which the proportion of male flowers on each individual varies substantially. The number of offspring produced by each individual is independent of the proportion of male flowers, but individuals with proportionally more male flowers produce more offspring through pollination.  We will start with a very strong relationship between 'paternity' and the number of male flowers.
  
@@ -1626,12 +1622,9 @@ Monoecy in plants is a common phenomenon; each flower is unisexual but flowers o
 > Prop.male.flowers <- rbeta(100, 10, 10)
 > 
 > SeedPollen <- data.frame(id, offspring, Prop.male.flowers)
->
 > res1 <- expression(varPed(x = "offspring", restrict = 0))
-> var1 <- expression(varPed(x = "Prop.male.flowers", 
-+    gender = "Male"))
-> var2 <- expression(varPed(x = "Prop.male.flowers", 
-+    gender = "Female")) 
+> var1 <- expression(varPed(x = "Prop.male.flowers", gender = "Male"))
+> var2 <- expression(varPed(x = "Prop.male.flowers",gender = "Female")) 
 > # Male and Female variables are completely arbitrary
 >
 > PdP <- PdataPed(formula = list(res1, var1, var2), data = SeedPollen)
@@ -1655,7 +1648,6 @@ Monoecy in plants is a common phenomenon; each flower is unisexual but flowers o
 \caption{The posterior distribution of $\beta$: the parameters of the log-linear relationship between the number of male flowers on a monoecious plant and the probability of producing offspring from female and male flowers, respectively. The relationships are very strong and the chain gets stuck in a region of parameter space of high probability.  A mirror image of this distribution exists outside of the parameter space sampled.}
 \label{mon1-fig}
 \end{figure}
-
 
 Figure \ref{mon1-fig} looks reasonable but what happens if we simulate some data where the proportion of male flowers is not such a good predictor of 'paternity/maternity'?  
 
@@ -1736,7 +1728,7 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i,t-1}-\textr
 
 \begin{equation}
 p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(\textrm{\texttt{x}}_{i,t}+\textrm{\texttt{x}}_{j,t-1})...)
-\end{equation}
+\end{equation}\\
 
 For a categorical variable with two levels (\texttt{A} and \texttt{B}) the model specified by \texttt{varPed(x, gender="Female")} takes on the form
 

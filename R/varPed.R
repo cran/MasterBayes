@@ -19,6 +19,14 @@ function(x, gender=NULL, lag=c(0,0), relational=FALSE, lag_relational=c(0,0), re
       }     
       hermaphrodite<-length(sex)==0                    # is this an hermaphroditic system
       sex_specific<-length(gender)==1                  # is the variable sex-specific
+      ud<-with(parent.frame(), USdam)
+      if(length(ud)!=1 | ud[1]!=FALSE){
+        ud<-TRUE
+      }
+      us<-with(parent.frame(), USsire)
+      if(length(us)!=1 | us[1]!=FALSE){
+        us<-TRUE
+      }
 
 #####################################################################################################################
 ###################################  restricting variables ##########################################################
@@ -38,34 +46,37 @@ if(length(restrict)!=0){
   }else{
      PedDesMatrix$Dam$id<-unique(id[which(not_after_off)])
      PedDesMatrix$Sire$id<-unique(id[which(not_after_off)])
-     PedDesMatrix$Dam_restrict$id<-unique(id[which(not_after_off)])
-     PedDesMatrix$Sire_restrict$id<-unique(id[which(not_after_off)])
+     PedDesMatrix$Dam_restrict$id<-PedDesMatrix$Dam$id
+     PedDesMatrix$Sire_restrict$id<-PedDesMatrix$Sire$id
   }
 
+
   if(relational==FALSE){
-    if("Female"%in%gender){ 
-      PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (x==restrict | is.na(x)==TRUE) & not_after_off)])
-      if(keep==FALSE){
-         PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
+    if(hermaphrodite==FALSE){
+      if("Female"%in%gender | sex_specific==FALSE){ 
+        PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (x==restrict | is.na(x)==TRUE) & not_after_off)])
+        if(keep==FALSE){
+          PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
+        }
       }
-    }
-    if("Male"%in%gender){
-      PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (x==restrict | is.na(x)==TRUE) & not_after_off)])
-      if(keep==FALSE){
-         PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
+      if("Male"%in%gender | sex_specific==FALSE){
+        PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (x==restrict | is.na(x)==TRUE) & not_after_off)])
+        if(keep==FALSE){
+           PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
+        }
       }
-    }
-    if(sex_specific==FALSE & hermaphrodite==FALSE){
-      PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (x==restrict | is.na(x)==TRUE) & not_after_off)])
-      PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (x==restrict | is.na(x)==TRUE) & not_after_off)])
-      if(keep==FALSE){
-         PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
-         PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
+    }else{
+      if(sex_specific==TRUE){
+        if("Male"%in%gender){
+           PedDesMatrix$Sire_restrict$id<-unique(id[which((x==restrict | is.na(x)==TRUE) & not_after_off)])
+        }
+        if("Female"%in%gender){
+          PedDesMatrix$Dam_restrict$id<-unique(id[which((x==restrict | is.na(x)==TRUE) & not_after_off)])
+        }
+      }else{
+        PedDesMatrix$Dam_restrict$id<-unique(id[which((x==restrict | is.na(x)==TRUE) & not_after_off)])
+        PedDesMatrix$Sire_restrict$id<-unique(id[which((x==restrict | is.na(x)==TRUE) & not_after_off)])
       }
-    }
-    if(hermaphrodite==TRUE){
-      PedDesMatrix$Dam_restrict$id<-unique(id[which(x==restrict & not_after_off)])
-      PedDesMatrix$Sire_restrict$id<-unique(id[which(x==restrict & not_after_off)])
       if(keep==FALSE){
          PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
          PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
@@ -74,35 +85,51 @@ if(length(restrict)!=0){
   }
 
   if(relational=="OFFSPRING"){
-    if("Female"%in%gender){
-      PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & ((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
-      if(keep==FALSE){
-         PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
+    if(hermaphrodite==FALSE){
+      if("Female"%in%gender | sex_specific==FALSE){
+        PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & ((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
+        if(keep==FALSE){
+          PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
+        }
       }
-    }
-    if("Male"%in%gender){
-      PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & ((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
-      if(keep==FALSE){
-         PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
+      if("Male"%in%gender | sex_specific==FALSE){
+        PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & ((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
+        if(keep==FALSE){
+           PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
+        }
       }
-    }
-    if(sex_specific==FALSE & hermaphrodite==FALSE){
-      PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & ((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
-      PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & ((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
-      if(keep==FALSE){
-         PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
-         PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
+    }else{
+      if(sex_specific==TRUE){
+        if("Male"%in%gender){
+           PedDesMatrix$Sire_restrict$id<-unique(id[which(((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
+        }
+        if("Female"%in%gender){
+          PedDesMatrix$Dam_restrict$id<-unique(id[which(((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
+        }
+      }else{
+        PedDesMatrix$Dam_restrict$id<-unique(id[which(((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
+        PedDesMatrix$Sire_restrict$id<-unique(id[which(((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
       }
-    }
-    if(hermaphrodite==TRUE){
-      PedDesMatrix$Dam_restrict$id<-unique(id[which(((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
-      PedDesMatrix$Sire_restrict$id<-unique(id[which(((x==x[off_record])==restrict | is.na(x)==TRUE) & not_after_off)])
       if(keep==FALSE){
          PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
          PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
       }
     }
   }
+
+  if(hermaphrodite==TRUE){
+    if(us==TRUE){
+      PedDesMatrix$Dam$id<-PedDesMatrix$Dam$id[-match(max(id), PedDesMatrix$Dam$id)]
+      PedDesMatrix$Dam_restrict$id<-PedDesMatrix$Dam_restrict$id[-match(max(id), PedDesMatrix$Dam_restrict$id)]
+    }
+    if(ud==TRUE){
+      if(us==FALSE){
+        PedDesMatrix$Sire$id<-PedDesMatrix$Sire$id[-match(max(id), PedDesMatrix$Sire$id)]
+      }else{
+        PedDesMatrix$Sire_restrict$id<-PedDesMatrix$Sire_restrict$id[-match(id[which(id==c(max(id)-1))], PedDesMatrix$Sire_restrict$id)]
+         }
+       }
+     }
 }
 #####################################################################################################################
 ##########################################  true variables ##########################################################
@@ -254,7 +281,6 @@ if(length(restrict)==0){
       var_tmpF<-subset(x, id%in%keepDam==TRUE)
       time_tmpF<-subset(time_var, id%in%keepDam==TRUE)
       id_tmpF<-subset(id, id%in%keepDam==TRUE)
- 
       var_tmpM<-subset(x, id%in%keepSire==TRUE)
       time_tmpM<-subset(time_var, id%in%keepSire==TRUE)
       id_tmpM<-subset(id, id%in%keepSire==TRUE)
@@ -270,8 +296,8 @@ if(length(restrict)==0){
       }
 
       timePM<-c((time_tmpM>=(lagM[1]+off_time) & time_tmpM<=(lagM[2]+off_time)) | is.na(time_tmpM))
-      timePF<-c((time_tmpF>=(lagF[1]+off_time) & time_tmpF<=(lagF[2]+off_time)) | is.na(time_tmpM))
-
+      timePF<-c((time_tmpF>=(lagF[1]+off_time) & time_tmpF<=(lagF[2]+off_time)) | is.na(time_tmpF))
+ 
       var_tmpM<-as.matrix(subset(var_tmpM, timePM))
       var_tmpF<-as.matrix(subset(var_tmpF, timePF))
 
@@ -286,7 +312,6 @@ if(length(restrict)==0){
         for(d in 1:length(var_tmpM[1,])){
           distmat<-distmat+(outer(c(var_tmpM[,d]), c(var_tmpF[,d]), "-")^2)
         }
-       
         predict_ped<-tapply(c(distmat^0.5), id, mean, na.rm=T)
         predict_ped<-predict_ped[match(unique(id),names(predict_ped))]
 

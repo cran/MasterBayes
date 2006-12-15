@@ -1,6 +1,6 @@
 #include "calcX_G.h"
 
-void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *ndam, int *nsire, int nind, Matrix<int> Dams_vec [], Matrix<int> Sires_vec [], int **G, int nloci, double **A, double E_cervus){
+void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *ndam, int *nsire, int nind, Matrix<int> Dams_vec [], Matrix<int> Sires_vec [], int **G, int nloci, double **A, double E_cervus, double **E_mat, int mtype){
 
         int i;
         int l;
@@ -20,6 +20,10 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
         double o2inp;
         double sl;
         double fl;
+        double p;
+        double q;
+        double T[4];
+        double P[4];
         double TacP;
         double pG;
         double sslfl;
@@ -29,33 +33,37 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
          X_design_G[i] = ones<double>(ndam[i]*nsire[i], 1); 
        }
 
-       for(l = 0; l<nloci ; l++){             // iterates through loci  
+       switch(mtype){
 
-         for(i = 0; i < noff ; i++){         // iterate through offspring
-           off_poss = offid[i];   
-           o1 = G[off_poss][l*2];
-           o2 = G[off_poss][(l*2)+1];
+       case 1:
 
-            for(d = 0; d < ndam[i]; d++){    // gets position of offspring genotype in G
+         for(l = 0; l<nloci ; l++){             // iterates through loci  
 
-              dam_poss = Dams_vec[i][d];       // gets position of dam genotype in G
-              if(dam_poss<nind){
-                d1 = G[dam_poss][l*2];
-                d2 = G[dam_poss][(l*2)+1]; 
-              }else{
-                d1 = -999;
-              }
+           for(i = 0; i < noff ; i++){         // iterate through offspring
+             off_poss = offid[i];   
+             o1 = G[off_poss][l*2];
+             o2 = G[off_poss][(l*2)+1];
 
-              for(s = 0; s < nsire[i]; s++){      // iterate through sires
+             for(d = 0; d < ndam[i]; d++){    // gets position of offspring genotype in G
+ 
+             dam_poss = Dams_vec[i][d];       // gets position of dam genotype in G
+             if(dam_poss<nind){
+               d1 = G[dam_poss][l*2];
+               d2 = G[dam_poss][(l*2)+1]; 
+             }else{
+               d1 = -999;
+             }
+
+             for(s = 0; s < nsire[i]; s++){      // iterate through sires
 
                records_off = (nsire[i]*d)+s;
                sire_poss = Sires_vec[i][s];           // gets position of sire genotype in G   
 
                if(sire_poss<nind){ 
-                s1 = G[sire_poss][l*2];
-                s2 = G[sire_poss][(l*2)+1]; 
+                 s1 = G[sire_poss][l*2];
+                 s2 = G[sire_poss][(l*2)+1]; 
                }else{
-                s1 = -999;
+                 s1 = -999;
                }
 // all sampled and all genotypes known
 
@@ -128,11 +136,88 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                     TacP *= pow(1-E_cervus,3.0);
                     X_design_G[i][records_off] *=  ((E_cervus*pow(1-E_cervus,2.0)*(sslfl+dslfl+pG))+TacP+(pG*pow(E_cervus,2.0)*(4.0-(3.0*E_cervus))));
                   }
-              }
+               }
+             }
            }
-        }
-     }
-  }  
+         }
+       }
+       break;
 
+       case 2:     
+         for(l = 0; l<nloci ; l++){             // iterates through loci  
+             p=A[l][0];
+             q=A[l][1];
+             T[0] = p/(1.0+p);                           // Pr(0|1,0) 
+             T[1] = 1.0/(1.0+p);                         // Pr(1|1,0) 
+             T[2] = pow(T[0],2.0);                       // Pr(0|1,1) 
+             T[3] = (1.0+(2.0*p))/pow(1.0+p,2.0);        // Pr(1|1,1)  
+
+             P[0] = pow(p,2.0)*E_mat[l][0];              // Pr(act = 0 | obs = 0 )
+             P[1] = pow(p,2.0)*E_mat[l][3];              // Pr(act = 0 | obs = 1 )
+             o1inp = P[0]+P[1];
+             P[0] /= o1inp;              // Pr(act = 0 | obs = 0 )
+             P[1] /= o1inp;
+
+             P[2] = (pow(1.0-p,2.0)*E_mat[l][2])+(2.0*p*(1.0-p)*E_mat[l][1]);  // Pr(act = 1 | obs = 0 )
+             P[3] = (pow(1.0-p,2.0)*E_mat[l][5])+(2.0*p*(1.0-p)*E_mat[l][4]);  // Pr(act = 1 | obs = 1 )
+             o1inp = P[2]+P[3];
+             P[2] /= o1inp;              // Pr(act = 0 | obs = 0 )
+             P[3] /= o1inp;
+
+
+           for(i = 0; i < noff ; i++){         // iterate through offspring
+             off_poss = offid[i];   
+             o1 = G[off_poss][l];
+
+             for(d = 0; d < ndam[i]; d++){    // gets position of offspring genotype in G
+ 
+               dam_poss = Dams_vec[i][d];       // gets position of dam genotype in G
+ 
+               if(dam_poss<nind){
+                 d1 = G[dam_poss][l];
+               }else{
+                 d1 = -999;
+               }
+
+               for(s = 0; s < nsire[i]; s++){      // iterate through sires
+
+                 records_off = (nsire[i]*d)+s;
+                 sire_poss = Sires_vec[i][s];           // gets position of sire genotype in G   
+
+                 if(sire_poss<nind){ 
+                   s1 = G[sire_poss][l];
+                 }else{
+                   s1 = -999;
+                 }
+// all sampled and all genotypes known
+
+                 if(o1!=-999){
+                   if(d1!=-999 && s1!=-999){
+                    TacP = P[o1]*P[d1]*P[s1];
+                    TacP += ((T[0]*P[o1])+(T[1]*P[o1+2]))*((P[d1+2]*P[s1])+(P[d1]*P[s1+2]));
+                    TacP += ((T[2]*P[o1])+(T[3]*P[o1+2]))*P[d1+2]*P[s1+2];
+                   }else{
+                     if(d1!=-999 || s1!=-999){
+                       if(d1==-999){
+                         d1=s1;
+                       }
+                       TacP = P[o1]*P[d1]*p;
+                       TacP += P[o1]*P[d1+2]*p*(p/(1.0+p));
+                       TacP += P[o1+2]*P[d1]*(1-p);
+                       TacP += P[o1+2]*P[d1+2]*((1+p*(1-p))/(1+p));
+                     }else{
+                       TacP = P[o1]+P[o1+2];
+                     }
+                   }
+                   X_design_G[i][records_off] *= TacP;
+                 }
+               }
+             }
+           }
+         }
+       break;
+       case 3:
+       break;
+       }
 }
 

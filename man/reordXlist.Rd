@@ -4,14 +4,15 @@
 \description{Reorders design matrices so excluded parents appear last, and high probability parents appear first, thus increasing computational efficiency.
 }
 \usage{
-  reordXlist(X.list, ...)
+  reordXlist(X.list, marker.type="MS", ...)
 }
 \arguments{
   \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}. Mismatch information must be present (see \code{\link{mismatches}})}
+  \item{marker.type}{"MS" or "AFLP" for codominant or dominant markers respectively}
   \item{...}{Further arguments to be passed}
 }
 \details{
-  The design matrices are reordered by the number of mismatches between a parent and offspring
+  The design matrices are reordered by the number of mismatches between a parent and offspring for codominant markers, and by the probability of the offspring genotype conditional on parent genotype for dominant markers.
 }
 \value{
   \code{X.list} for which parents are reordered 

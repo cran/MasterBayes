@@ -15,13 +15,13 @@ void mismatches(
         int *sireidP,		 // candidate sire id's for each offspring	
         int *mmDP,             // number of misamtches per dam
         int *mmSP,             // number of misamtches per sire     
-        int *st_GP              // starting true genotypes    
+        int *st_GP              // starting true genotypes 
 ){         
 // pointers to single variables are redefined
 
 int 	nind = nindP[0],
         noff = noffP[0],  	
-	nloci = nlociP[0],      
+	nloci = nlociP[0],
         i,
         l=0;
 
@@ -58,15 +58,8 @@ l  += (2*nloci);
 	Matrix<int> Sires_vec [noff];
       
 	int records = 0;	// itterates through genotypes
-		
-        for(i = 0; i < nind; i++){	
-          for(l = 0; l < nloci; l++){                                
-            G[i][(l*2)] = st_GP[records];  
-            records ++;
-            G[i][(l*2)+1] = st_GP[records];  
-            records ++;                                           
-	  }
-        }
+	
+        read_G(st_GP, nind, nloci, G, 1);
 
         read_stP(noff, ndamP, damidP, nsireP, sireidP,Dams,Sires,Dams_vec,Sires_vec);
          

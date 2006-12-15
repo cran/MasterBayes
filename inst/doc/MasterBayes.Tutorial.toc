@@ -20,5 +20,5 @@
 \contentsline {subsection}{\numberline {3.7}Assortative Mating and Heritability}{49}
 \contentsline {subsection}{\numberline {3.8}Longitudinal Data and Multigenerational Pedigrees}{51}
 \contentsline {subsection}{\numberline {3.9}Hermaphrodites and Selfing Rates}{54}
-\contentsline {subsection}{\numberline {3.10}Schrodinger's Hermaphrodite Cat}{55}
-\contentsline {section}{\numberline {A}A Lightning Tour of Model Specification}{57}
+\contentsline {subsection}{\numberline {3.10}Schrodinger's Hermaphrodite Cat}{56}
+\contentsline {section}{\numberline {A}A Lightning Tour of Model Specification}{59}

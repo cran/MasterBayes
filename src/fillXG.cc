@@ -18,8 +18,10 @@ void fillXG(
         int *sireidP,		 // candidate sire id's for each offspring	
         double *X_design_GP,     // Mendelian transition probabilities dam and sire sampled
 	double *AP,	         // starting allele frequencies
-	double *EP,	         // starting values of E1 and E2
-        int *GP              // starting true genotypes    
+	double *E1P,	         // starting values of E1 and E2
+	double *E2P,	         // starting values of E1 and E2
+        int *GP,              // starting true genotypes    
+        int *mtypeP
 ){         // if TRUE joint posterior distribution of P is written (default = marginal)
 
 // pointers to single variables are redefined
@@ -31,16 +33,22 @@ int 	nind = nindP[0],
         *nall = nallP,
         *npar = nparP,
         i,
-        index=0;
+        index=0,
+        mtype = mtypeP[0],
+        ncat = 1;
+
+double E_cervus = E2P[0]*(2.0-E2P[0]);
 
 // declare some variable sized arrays
 
 int     *pG,
         **G;
 double  *pA,
-        **A;
+        **A,
+        *pE_mat,
+        **E_mat;
  
-pG = new(nothrow) int [2*nind*nloci];
+pG = new(nothrow) int [(1+int(mtype==1))*nind*nloci];
 if(pG==NULL)
 {
 Rprintf("NO MEMORY for G\n");
@@ -64,10 +72,21 @@ if(A==NULL)
 Rprintf("NO MEMORY for A\n");
 exit(1);
 }
+pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1)+2*int(mtype==2))*nloci];
+if(pE_mat==NULL){
+Rprintf("NO MEMORY for E_mat\n");
+exit(1);
+}
+
+E_mat = new(nothrow) double* [nloci];
+if(E_mat==NULL){
+Rprintf("NO MEMORY for E_mat\n");
+exit(1);
+}
 
 for (i=0; i<nind; ++i){
 G[i] = &pG[index];
-index  += (2*nloci);
+index  += ((1+int(mtype==1))*nloci);
 }
 
 index = 0;
@@ -75,6 +94,12 @@ index = 0;
 for (i=0; i<nloci; ++i){
 A[i] = &pA[index];
 index  += maxall;
+}
+
+index = 0;
+for (i=0; i<nloci; ++i){
+E_mat[i] = &pE_mat[index];
+index  += (ncat*(4+3*int(mtype==1)+2*int(mtype==2)));
 }
         
         Matrix<double> X_design_G [noff];
@@ -84,10 +109,13 @@ index  += maxall;
         Matrix<int> Dams_vec [noff];   // Matrix[i][n] = dam_id        the n^th mother of the i^th individul is dam.id 
 	Matrix<int> Sires_vec [noff];
       
-      
-         read_stG(GP, AP, nind, nloci, G, A,nall);
+         read_G(GP, nind, nloci, G, mtype);
+         read_A(AP, nloci, A, nall);
          read_stP(noff, ndamP, damidP, nsireP, sireidP,Dams,Sires,Dams_vec,Sires_vec); 
-         calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, EP[0]);
+
+         Error_Mat(E1P[0], E2P[0], E_mat, ncat, nall, nloci, false, false, mtype);
+         
+         calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_cervus, E_mat, mtype);
 
          int cnt_ds=0;
          int p;

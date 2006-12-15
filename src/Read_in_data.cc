@@ -1,43 +1,43 @@
 #include "Read_in_data.h" 
 
-void read_Gobs(int *GobsP, int nsamp, int nloci, int **Gobs){
+void read_G(int *GP, int nsamp, int nloci, int **G, int mtype){
 
 	int i;			// itterates through individuals
 	int l;			// itterates through loci
 	int records = 0;	// itterates through genotypes
-	for(i = 0; i < nsamp; i++){
-                for(l = 0; l < nloci; l++){	
-					Gobs[i][l*2] = GobsP[records];
-                                        records ++;        
-                                        Gobs[i][(l*2)+1] = GobsP[records];
-                                        records ++;
-			}
-		}
+
+        if(mtype==1){
+	  for(i = 0; i < nsamp; i++){
+            for(l = 0; l < nloci; l++){	
+	      G[i][l*2] = GP[records];
+              records ++;        
+              G[i][(l*2)+1] = GP[records];
+              records ++;
+            }
+          }
+        }else{		
+	  for(i = 0; i < nsamp; i++){
+            for(l = 0; l < nloci; l++){	
+	      G[i][l] = GP[records];
+              records ++;        
+            }
+          }
+       }
 }
  
-void read_stG(int *st_GP, double *st_AP, int nind, int nloci, int **G, double **A, int *nall){
+void read_A(double *AP, int nloci, double **A, int *nall){
 
-
-	int i;			// itterates through individuals
 	int l;			// itterates through loci
         int a;
 	int records = 0;	// itterates through genotypes
 		
-        for(i = 0; i < nind; i++){	
-                for(l = 0; l < nloci; l++){                                
-					G[i][(l*2)] = st_GP[records];  
-                                        records ++;
-					G[i][(l*2)+1] = st_GP[records];  
-                                        records ++;                                           
-			}
-		}
-		records = 0;   
-                for(l = 0; l < nloci; l++){
-                             for(a = 0; a < nall[l]; a++){                        
-					A[l][a] = st_AP[records];
-                                        records ++;                                                
-			}
-		}			
+        records = 0;   
+        for(l = 0; l < nloci; l++){
+          for(a = 0; a < nall[l]; a++){                        
+	    A[l][a] = AP[records];
+            records ++;                                                
+	  }
+        }			
 }
 
 void read_X_beta(int noff, int *ndam, int *nsire, int *npar, double *X_design_betaDusP, double *X_design_betaSusP, double *X_design_betaDSusP,  double *X_design_betaDsP, double *X_design_betaSsP, double *X_design_betaDSsP, Matrix<double> X_design_betaDus [], Matrix<double> X_design_betaSus [], Matrix<double> X_design_betaDSus [], Matrix<double> X_design_betaDs [], Matrix<double> X_design_betaSs [], Matrix<double> X_design_betaDSs []){

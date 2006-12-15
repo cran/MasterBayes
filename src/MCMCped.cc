@@ -25,14 +25,14 @@ void MCMCped(
         int *mergeVP,
         int *mergeUSP,
         int *nmergeP,
- 	int *nittP,		 // number of itterations
-	int *thinP,		 // thinning interval
-	int *burninP,     	 // burn in
-        int *idP,                // numeric id relating samples to individuals
-	int *GobsP,              // observed genotypes	
-        int *offidP,             // offspring id
-        int *damidP,             // candidate dam id's for each offspring
-        int *sireidP,		 // candidate sire id's for each offspring
+ 	int *nittP,		    // number of itterations
+	int *thinP,		    // thinning interval
+	int *burninP,     	    // burn in
+        int *idP,                   // numeric id relating samples to individuals
+	int *GobsP,                 // observed genotypes	
+        int *offidP,                // offspring id
+        int *damidP,                // candidate dam id's for each offspring
+        int *sireidP,		    // candidate sire id's for each offspring
         double *X_design_betaDusP,  // design matrices for dam variables for each offspring	
         double *X_design_betaSusP,  // design matrices for sire variables for each offspring	
         double *X_design_betaDSusP, // design matrices for dam:sire interactions/relational variables 
@@ -118,6 +118,8 @@ bool    estP = bool(estimatingP[0]),
         writeJP = bool(store_postP[2]),  
         verbose = bool(store_postP[3]);
 
+int mtype = estimatingP[8];
+
 /*************************************
 * declare some variable sized arrays *
 *************************************/
@@ -135,7 +137,7 @@ double  *pA,
         *pLE_mat,
         **LE_mat;
  
-  pG = new(nothrow) int [2*nind*nloci];
+  pG = new(nothrow) int [(1+int(mtype==1))*nind*nloci];
   if(pG==NULL){
     Rprintf("NO MEMORY for G\n");
     exit(1);
@@ -147,7 +149,7 @@ double  *pA,
     exit(1);
   }
 
-  pGobs = new(nothrow) int [2*nsamp*nloci];
+  pGobs = new(nothrow) int [(1+int(mtype==1))*nsamp*nloci];
   if(pGobs==NULL){
     Rprintf("NO MEMORY for Gobs\n");
     exit(1);
@@ -171,7 +173,7 @@ double  *pA,
     exit(1);
   }
 
-  pE_mat = new(nothrow) double [ncat*7*nloci];
+  pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1)+2*int(mtype==2))*nloci];
   if(pE_mat==NULL){
     Rprintf("NO MEMORY for E_mat\n");
     exit(1);
@@ -183,7 +185,7 @@ double  *pA,
     exit(1);
   }
 
-  pLE_mat = new(nothrow) double [ncat*7*nloci];
+  pLE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1)+2*int(mtype==2))*nloci];
   if(pLE_mat==NULL){
     Rprintf("NO MEMORY for LE_mat\n");
     exit(1);
@@ -198,13 +200,13 @@ double  *pA,
   cnt = 0;
   for (i=0; i<nind; ++i){
     G[i] = &pG[cnt];
-    cnt  += (2*nloci);
+    cnt  += ((1+int(mtype==1))*nloci);
   }
 
   cnt = 0;
   for (i=0; i<nsamp; ++i){
     Gobs[i] = &pGobs[cnt];
-    cnt  += (2*nloci);
+    cnt  += ((1+int(mtype==1))*nloci);
   }
 
   cnt = 0;
@@ -216,13 +218,13 @@ double  *pA,
   cnt = 0;
   for (i=0; i<nloci; ++i){
     E_mat[i] = &pE_mat[cnt];
-    cnt  += (ncat*7);
+    cnt  += (ncat*(4+3*int(mtype==1)+2*int(mtype==2)));
   }
 
   cnt = 0;
   for (i=0; i<nloci; ++i){
     LE_mat[i] = &pLE_mat[cnt];
-    cnt  += (ncat*7);
+    cnt  += (ncat*(4+3*int(mtype==1)+2*int(mtype==2)));
   }
 
   if(writeG==true){
@@ -275,7 +277,8 @@ double  *pA,
                nus = nusd+nuss,
                DSuu[2];  // when DS exists and is formed by mate relational npar[4] may be greater than 0
                          // but ambiguity exists as to whether both sexes are unsampled, or one, and if one
-                         // - which one  DSuu[0] is 1 if missing Dam data exists,2 if missing Sire data exists
+                         // - which one  DSuu[0] is 1 if missing Dam data exists,2 if missing Sire data
+                         // exists hack hack hack
                if(npar[0]>1 || (npar[4]>0 && nusd>0)){
                  DSuu[0] =1;
                }else{
@@ -401,12 +404,13 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
 	
 	GetRNGstate();                                 // get seed for random number generation
  
-        if(nloci!=0){           
-          read_stG(st_GP, st_AP, nind, nloci, G, A,nallP);
-        }
+        if(nloci!=0){  
+          read_G(st_GP, nind, nloci, G, mtype);
+          read_A(st_AP, nloci, A, nall);
+                 }
 
         if(nsamp!=0 & estG==TRUE){
-	  read_Gobs(GobsP, nsamp, nloci, Gobs);
+          read_G(GobsP, nsamp, nloci, Gobs, mtype);
         }   
                 
         read_stP(noff, ndamP, damidP, nsireP, sireidP,Dams,Sires,Dams_vec,Sires_vec);
@@ -438,18 +442,19 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
         }
 
         if(estG==TRUE){      
-          Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus);
-          calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A);
+          Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus, mtype);
+          calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, mtype);
         }else{
           if(estP==TRUE){
            double E_cervus = E2_0[0]*(2-E2_0[0]); 
-           calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_cervus);         
+           Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus, mtype);
+           calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_cervus, E_mat, mtype);         
           }
         }
  
         if(estE1==TRUE || estE2==TRUE){    
-          Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus); 
-            llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
+            Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus,mtype); 
+            llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
           if(est_pE1){		
             for(i = 0; i < ncatnloci; i++){  
               llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
@@ -508,7 +513,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
           }
         }
 
-//***************************************************************************************************************
+ //***************************************************************************************************************
 //************************************ MCMC MCMC MCMC MCMC MCMC MCMC MCMC ***************************************
 //***************************************************************************************************************
 
@@ -517,7 +522,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 /**************
 * sample P    *
 ***************/
-
+            
 	    if(estP==TRUE){ 
               for(i = 0; i < tot_par; i++){
                 beta_mapped[i] = beta_1[beta_mapP[i]];
@@ -544,13 +549,22 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 * sample G & A*
 ***************/
 
-	    if(estG==TRUE){                         
-              sampG(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
+	    if(estG==TRUE){  
+              switch(mtype){ 
+                 case 1:                      
+                 sampG(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
+                 break;
+                 case 2:
+                 sampDomG(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
+                 break;
+                 case 3:
+                 break;
+              }
               if(estP==TRUE){
-                calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci,A);
+                calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci,A, mtype);
               }
               if(estE1==TRUE || estE2==TRUE){
-                llE_1 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
+                llE_1 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
                 if(est_pE1){		
                   for(i = 0; i < ncatnloci; i++){  
                    llE_1 += dbeta(E1_1[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
@@ -572,9 +586,9 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 
                 E1_0 = fabs(rmvnormM(E1_1, int_E1, ncatnloci));  
 
-                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
+                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus, mtype);
 
-                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
+                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
 
                 if(est_pE1){		
                   for(i = 0; i < ncatnloci; i++){  
@@ -593,10 +607,10 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 	        if(m_ll<log(runif(0.0,1.0))){       
                   llE_0 = llE_1;  
                   E1_0 = E1_1; 
-                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
+                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus, mtype);
                   acceptE1 --;
                 }else{                               
-                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus);
+                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus, mtype);
                 }
                 llE_1 = llE_0;
                 E1_1 = E1_0;                  
@@ -607,13 +621,12 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 ************/
        
               if(estE2==TRUE){ 
-         
                 E2_0 = fabs(rmvnormM(E2_1, int_E2, ncatnloci));  
    
-                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
+                Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus, mtype);
 
-                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat);
-
+                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
+ 
                 if(est_pE1){		
                   for(i = 0; i < ncatnloci; i++){  
                     llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
@@ -631,10 +644,10 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 	        if(m_ll<log(runif(0.0,1.0))){    
 	          llE_0 = llE_1;  
                   E2_0 = E2_1; 
-                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus);
+                  Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus, mtype);
                   acceptE2 --;
                 }else{                             
-                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus);
+                  Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus, mtype);
                 }
                 llE_1 = llE_0;
                 E2_1 = E2_0;
@@ -747,9 +760,10 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
                  }
               }
               if(writeG==true){
-               tall_tmp = 0;
-                 for(l=0; l<nloci; l++){ 
-                  nl = nall[l];
+                if(mtype==1){
+                  tall_tmp = 0;
+                  for(l=0; l<nloci; l++){ 
+                    nl = nall[l];
                     for(i=0; i<nind; i++){
                      na1 = G[i][(l*2)];
                      na2 = G[i][(l*2)+1];
@@ -760,9 +774,17 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
                        a1=na2;
                        a2=na1;
                      }  
-                     post_G[i][int(a1*(nl-(0.5*(a1+1)))+tall_tmp+a2)] += 1;
+                     post_G[i][int(a1*(nl-(0.5*(a1+1)))+tall_tmp+a2)] ++;
                     }
                   tall_tmp += int(0.5*nl*(nl+1.0));  
+                  }
+                }else{
+                  for(l=0; l<nloci; l++){ 
+                    for(i=0; i<nind; i++){
+                      na1 = G[i][l];
+                      post_G[i][(l*3)+na1] ++;
+                    }
+                  }
                 }
               }
             if(estP==true){      
@@ -829,9 +851,9 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
         if(writeG==true){
 	 write_postG = 0;
             for(l = 0; l < tall ; l++){
-               for(i = 0; i < nind ; i++){	   
-	        post_GP[write_postG] = post_G[i][l];
-                write_postG++;
+               for(i = 0; i < nind ; i++){	
+	         post_GP[write_postG] = post_G[i][l+a1 ];
+                 write_postG++;
 	       }
 	   }
         }

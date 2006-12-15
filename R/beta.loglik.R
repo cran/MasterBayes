@@ -33,11 +33,9 @@
 
       if(is.null(merge)==FALSE){
         for(m in 1:length(merge)){
-          beta_tmp[m]<-inv.logit(beta_tmp[m])
           n1<-mergeN[[i]][,m][1]  
           n2<-mergeN[[i]][,m][2] 
-          beta_tmp[m]<-(beta_tmp[m]/n1)/((beta_tmp[m]/n1)+((1-beta_tmp[m])/n2))
-          beta_tmp[m]<-logit(beta_tmp[m])
+          beta_tmp[m]<-beta_tmp[m]+log(n2/n1)
         }
       }
      

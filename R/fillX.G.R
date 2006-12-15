@@ -1,4 +1,6 @@
-fillX.G<-function(X.list, A, G, E2=0.005){
+fillX.G<-function(X.list, A, G, E1=0.005, E2=0.005, marker.type="MS", ...){
+
+       mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%marker.type*c(1:3))
 
        noff<-length(X.list$X)
        ndam<-c(unlist(lapply(X.list$X,function(x){length(x$dam.id)})))	
@@ -16,13 +18,8 @@ fillX.G<-function(X.list, A, G, E2=0.005){
        if(is.null(E2)){
          E2<-0.005
        }
-       E2<-E2*(2-E2)
-
-       for(i in 1:length(A)){  
-         G[[i]]<-matrix(match(allele(G[[i]]),names(A[[i]]), nomatch=-998), length(G[[i]]),2)
-       } 
-
-       G<-c(t(matrix(unlist(G), nind,2*nloci)))-1
+  
+       G<-GtoC(G, marker.type!="MS")
 
        X_design_G<-rep(0, sum(ndam*nsire))
 
@@ -40,8 +37,10 @@ output<-.C("fillXG",
         as.integer(sireid),	# candidate sire id's for each offspring	
         as.double(X_design_G),  # Mendelian transition probabilities dam and sire sampled			
         as.double(unlist(A)),	# starting allele frequencies
-        as.double(E2),	        # starting values of E1 and E2
-        as.integer(G)           # starting true genotypes    
+        as.double(E1),	        # starting values of E1 and E2
+        as.double(E2),	       
+        as.integer(G),           # starting true genotypes    
+        as.integer(mtype.numeric)
 )
 
 

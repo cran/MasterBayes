@@ -1,6 +1,6 @@
 #include "LikFunctions.h"
 
-double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories, double **LE_mat){
+double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories, double **LE_mat, int mtype){
 
 	int l;			// itterates through loci
 	int s;	                // itterates through duplicate samples
@@ -14,45 +14,70 @@ double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories
         int ind;
         double LLB = 0.0;
 
+        
+        switch(mtype){
 
-            for(s = 0; s < nsamp; s++){
+          case 1:
+          for(s = 0; s < nsamp; s++){
 
-             ind = id[s];
-             cat = categories[s]*7;
+            ind = id[s];
+            cat = categories[s]*7;
 
-                for(l = 0; l < nloci; l++){
+            for(l = 0; l < nloci; l++){
                           
-                          oa1 = Gobs[s][(l*2)];    
-                          oa2 = Gobs[s][(l*2)+1];           
-                          aa1 = G[ind][(l*2)];
-                          aa2 = G[ind][(l*2)+1]; 
+              oa1 = Gobs[s][(l*2)];    
+              oa2 = Gobs[s][(l*2)+1];           
+              aa1 = G[ind][(l*2)];
+              aa2 = G[ind][(l*2)+1]; 
                           
-                             if(oa1 != -999){
+              if(oa1 != -999){            
+                if(oa1==oa2){                                      
+                  eterm = 1;  
+                  if(aa1==oa1 && aa2==oa1){
+                    eterm = 0;
+                  }
+                  if(aa1!=oa1 && aa2!=oa1){
+                    eterm = 2;
+                  }                        
+                }else{    
+                  eterm = 5;
+                  if(aa1==aa2){
+                    eterm = 4;
+                  }
+                  if((aa1==oa1 && aa2==oa2) || (aa1==oa2 && aa2==oa1)){
+                    eterm = 3;
+                  }
+                  if(aa1!=oa1 && aa2!=oa2 && aa1!=oa2 && aa2!=oa1){
+                    eterm = 6;
+                  }
+                }
+                LLB += LE_mat[l][eterm+cat];
+              }  
+            }      
+          }
+          break;
+
+          case 2:
+          for(s = 0; s < nsamp; s++){
+
+            ind = id[s];
+            cat = categories[s]*6;
+
+            for(l = 0; l < nloci; l++){
                           
-                                 if(oa1==oa2){                                      
-                                       eterm = 1;  
-                                      if(aa1==oa1 && aa2==oa1){
-                                       eterm = 0;
-                                      }
-                                      if(aa1!=oa1 && aa2!=oa1){
-                                       eterm = 2;
-                                      }                        
-                                 }else{    
-                                       eterm = 5;
-                                      if(aa1==aa2){
-                                       eterm = 4;
-                                      }
-                                      if((aa1==oa1 && aa2==oa2) || (aa1==oa2 && aa2==oa1)){
-                                       eterm = 3;
-                                      }
-                                      if(aa1!=oa1 && aa2!=oa2 && aa1!=oa2 && aa2!=oa1){
-                                       eterm = 6;
-                                      }
-                                 }
-                              LLB += LE_mat[l][eterm+cat];
-                            }  
-                          }      
-                       }                              
+              oa1 = Gobs[s][l];    
+              aa1 = G[ind][l];
+              if(oa1 != -999){            
+                LLB += LE_mat[l][oa1*3+aa1+cat];
+              }  
+            }      
+          }
+          break;
+        
+          case 3:
+          break;
+        }
+                                                      
 return LLB; 
 }
 
@@ -107,6 +132,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
         Matrix<double> Dpred;
         Matrix<double> Spred;
         Matrix<double> DSpred;
+
 	for(i = 0; i < noff; i++){   
 
 /***************************/
@@ -115,7 +141,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
 
            if(nmerge>0){
              for(dv = 0; dv < nmerge; dv++){  
-               inv_log_beta = exp(beta[dv])/(1.0+exp(beta[dv]));
+//               inv_log_beta = exp(beta[dv])/(1.0+exp(beta[dv]));
                mvar = mergeV[dv];
                n1 = mergeN[dv](0,i);
                n2 = mergeN[dv](1,i);
@@ -126,9 +152,10 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                  if(mergeUS[dv]==1){
                    n2 += us[usdamcat[i]];
                  }
-                 betaD[mvar] = inv_log_beta/n1;
-                 betaD[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-                 betaD[mvar] = log(betaD[mvar]/(1.0-betaD[mvar]));
+                 betaD[mvar] = betaD[mvar]+log(n2/n1);
+//                 betaD[mvar] = inv_log_beta/n1;
+//                 betaD[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
+//                 betaD[mvar] = log(betaD[mvar]/(1.0-betaD[mvar]));
                }else{
                  mvar -= npar[0]+npar[1];
                  if(mergeUS[dv]==0){
@@ -137,20 +164,18 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                  if(mergeUS[dv]==1){
                    n2 += us[nusd+ussirecat[i]];
                  }
-                 betaS[mvar] = inv_log_beta/n1;
-                 betaS[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-                 betaS[mvar] = log(betaS[mvar]/(1.0-betaS[mvar]));
+                 betaS[mvar] = betaS[mvar]+log(n2/n1);
+//                 betaS[mvar] = inv_log_beta/n1;
+//                 betaS[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
+//                 betaS[mvar] = log(betaS[mvar]/(1.0-betaS[mvar]));
                }
              }    
            }
 
-           d = dam[offid[i]];
-           s = sire[offid[i]];          
-           d = Dams[i][d]; 
-           s = Sires[i][s];
+
            if(damV){
              if(npar[0]>0 && npar[1]>0){
-	       Dpred = cbind(X_design_betaDus[i], X_design_betaDs[i])*betaD;         
+	         Dpred = cbind(X_design_betaDus[i], X_design_betaDs[i])*betaD;         
              }else{
                if(npar[0]>0){
                  Dpred = X_design_betaDus[i]*betaD;   
@@ -162,7 +187,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
 
            if(sireV){
              if(npar[2]>0 && npar[3]>0){
-	       Spred = cbind(X_design_betaSus[i], X_design_betaSs[i])*betaS;         
+	         Spred = cbind(X_design_betaSus[i], X_design_betaSs[i])*betaS;         
              }else{
                if(npar[2]>0){
                  Spred = X_design_betaSus[i]*betaS;   
@@ -174,7 +199,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
 
            if(damsireV){
              if(npar[4]>0 && npar[5]>0){
-	       DSpred = cbind(X_design_betaDSus[i], X_design_betaDSs[i])*betaDS;         
+	        DSpred = cbind(X_design_betaDSus[i], X_design_betaDSs[i])*betaDS;         
              }else{
                if(npar[4]>0){
                  DSpred = X_design_betaDSus[i]*betaDS;   
@@ -184,16 +209,19 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
              }
            }
 
+           d = dam[offid[i]];
+           s = sire[offid[i]];          
+           d = Dams[i][d]; 
+           s = Sires[i][s];
+
            if(damsireV){    
-             if(damV==false && sireV==false){
-               DSpred = exp(DSpred);
-             }else{
+             if(sireV==true || damV==true){
                cnt = 0;
                if(damV && sireV){              // D S and DS exist
                  for(dv = 0; dv < ntdam[i]; dv++){  
                    dvar = Dpred[dv];
                    for(sv = 0; sv < ntsire[i]; sv++){  
-                     DSpred[cnt] = exp(DSpred[cnt]+dvar+Spred[sv]);
+                     DSpred[cnt] += dvar+Spred[sv];
                      cnt ++;
                    }
                  }
@@ -202,20 +230,23 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                    for(dv = 0; dv < ntdam[i]; dv++){  
                      dvar = Dpred[dv];
                      for(sv = 0; sv < ntsire[i]; sv++){  
-                       DSpred[cnt] = exp(DSpred[cnt]+dvar);
+                       DSpred[cnt] += dvar;
                        cnt ++;
                      }
                    }
                  }else{                                 // S and DS exist
                    for(dv = 0; dv < ntdam[i]; dv++){  
                      for(sv = 0; sv < ntsire[i]; sv++){  
-                       DSpred[cnt] = exp(DSpred[cnt]+Spred[sv]);
+                       DSpred[cnt] += Spred[sv];
                        cnt ++;
                      }
                    }
                  }
                }
              }
+
+             DSpred = DSpred - (maxc(DSpred)[0] - 500.0);
+             DSpred = exp(DSpred);
 
 	     pos_in_a = (d*ntsire[i])+s;
 	     l_par = log(DSpred[pos_in_a]);                
@@ -264,9 +295,10 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
             }        
           }else{
             if(sireV){                // S exists
-              Spred = exp(Spred);
+               Spred = Spred - (maxc(Spred)[0] - 500.0);
+               Spred = exp(Spred);
                l_par = log(Spred[s]);  
-                ll_sum = sumc(Spred)[0];       
+                ll_sum = sumc(Spred)[0];  
                 if(npar[2]==0){
                   if(nuss>0){
                     ll_P_b += l_par - log(ll_sum+(Spred[nsire[i]-1]*(us[nusd+ussirecat[i]]-1.0)));
@@ -284,6 +316,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                 }
               }
                if(damV){  
+                 Dpred = Dpred - (maxc(Dpred)[0] - 500.0);
                  Dpred = exp(Dpred);
 	         l_par = log(Dpred[d]);            // log(Pr(P|beta, X)) for the parent not normalised          
 	         ll_sum = sumc(Dpred)[0];	    // sum(log(Pr(P|beta, X))) not normalised  

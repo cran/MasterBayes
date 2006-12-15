@@ -75,7 +75,7 @@
         X[[i]]$S<-matrix(NA, nsire[i], sum(nbeta[3:4]))
       }
       if(sum(nbeta[5:6])>0){
-        X[[i]]$DS<-matrix(NA, ndam[i]*nsire[i], sum(nbeta[5:6])) 
+        X[[i]]$DS<-matrix(NA, ndam[i]*nsire[i], sum(nbeta[1:6])) 
       }
       if(nbeta[1]>0){
         X[[i]]$D[,1:nbeta[1]]<-X.list$X[[i]]$XDus
@@ -101,7 +101,7 @@
           X[[i]]$D<-NULL
         }
         if(sum(nbeta[3:4])>0){
-          X[[i]]$DS[,sum(nbeta[1:2])+(1:sum(nbeta[5:6]))]<-apply(X[[i]]$S, 2, rep, ndam[i])
+          X[[i]]$DS[,sum(nbeta[1:2])+(1:sum(nbeta[3:4]))]<-apply(X[[i]]$S, 2, rep, ndam[i])
           X[[i]]$S<-NULL
         }
       }

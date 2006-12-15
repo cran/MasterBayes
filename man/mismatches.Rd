@@ -1,7 +1,7 @@
 \name{mismatches}
 \alias{mismatches}
 \title{Parent-Offspring Genotype Mismatches}
-\description{Calculates the number of mismatches between  parental and offspring genotypes, assuming the genotypes of spouses are unknown. Primarily intended to be used inside the function \code{\link{getXlist}} where potential parents can be excluded based on the number of mismatches.
+\description{Calculates the number of mismatches between  parental and offspring genotypes, assuming the genotypes of spouses are unknown. Primarily intended to be used inside the function \code{\link{getXlist}} where potential parents can be excluded based on the number of mismatches. Dominant markers do not produce mismatches.
 }
 \usage{
 mismatches(X.list, G, mm.tol=999, ...)

@@ -11,14 +11,14 @@
 
 
   if(Ppresent==TRUE){
-    if(length(PdP$USdam)==1 & PdP$USdam==FALSE){
+    if(length(PdP$USdam)==1 & PdP$USdam[1]==FALSE){
       sP$estUSdam<-FALSE
       nusd<-0
     }else{
       nusd<-length(unique(PdP$USdam))
     }
 
-    if(length(PdP$USsire)==1 & PdP$USsire==FALSE){
+    if(length(PdP$USsire)==1 & PdP$USsire[1]==FALSE){
       sP$estUSsire<-FALSE
       nuss<-0
     }else{
@@ -51,6 +51,11 @@
     sP$estUSdam<-FALSE
   }
 
+  if(is.null(PdP$sex)==FALSE){
+    if(sum(names(table(PdP$sex))%in%c("Male", "Female")==FALSE)>0){
+      stop("sex levels != Male Female")
+    }
+  }  
 ############### check starting parameteristations if they exist ###############################################
 
   if(is.null(sP$id)==FALSE & Ppresent==TRUE){
@@ -166,7 +171,7 @@
     if(is.null(PdP$sex)==FALSE){
       if("Male"%in%PdP$sex[match(na.omit(sP$dam), unique_id)]){
        stop("some starting dams are recorded as males")
-      }           
+      }            
     }
   }
 

@@ -2,9 +2,10 @@
 \alias{extractA}
 \title{Allele Frequencies}
 \description{extracts allele frequencies from genotype data}
-\usage{extractA(G, ...)}
+\usage{extractA(G, marker.type="MS", ...)}
 \arguments{
   \item{G}{data frame or list of \code{genotype} objects}
+  \item{marker.type}{optional "MS" or "AFLP" for codominant or dominant markers respectively}
   \item{...}{further arguments to be passed}
 }
 \value{list of allele frequnecies at each loci}

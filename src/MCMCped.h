@@ -23,6 +23,9 @@
 #include "SampG.h"
 #endif
 
+#ifndef _SAMPDOMG_H
+#include "SampDomG.h"
+#endif
 
 #ifndef _SAMPP_H
 #include "SampP.h"

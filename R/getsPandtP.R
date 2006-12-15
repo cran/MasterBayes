@@ -64,7 +64,7 @@
   }
 
     if(sPGgiven == FALSE){ 
-      sP$G<-lapply(GdP$G, function(x){x[-duplicated(GdP$id)==FALSE]})     
+      sP$G<-lapply(GdP$G, function(x){x[-duplicated(GdP$id)==FALSE]}) 
     }
 
     ped<-matrix(NA, length(sP$id), 3)
@@ -81,13 +81,13 @@
       MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=ped)
     }
   
-    if(length(PdP$USdam)==1 & PdP$USdam==FALSE){
+    if(length(PdP$USdam)==1 & PdP$USdam[1]==FALSE){
       nusd<-0
     }else{
       nusd<-length(unique(PdP$USdam))
     }
 
-    if(length(PdP$USsire)==1 & PdP$USsire==FALSE){
+    if(length(PdP$USsire)==1 & PdP$USsire[1]==FALSE){
       sP$estUSsire<-FALSE
       nuss<-0
     }else{
@@ -126,13 +126,13 @@
 
   if(is.null(GdP$G)==FALSE & CERVUS==FALSE){
     if(sPGgiven==TRUE){
-      if(legalG(sP$G, sP$A, ped)$valid=="FALSE"){
+      if(legalG(sP$G, sP$A, ped, marker.type=GdP$marker.type)$valid=="FALSE"){
         warning("sP$G does not have postive probability given possible starting pedigree")
         stop()
       }
     }else{   
       if(is.null(GdP$G)==FALSE){   
-        sP$G<-legalG(sP$G, sP$A, ped)$G
+        sP$G<-legalG(sP$G, sP$A, ped, marker.type=GdP$marker.type)$G
       }  
     }
   }
@@ -172,13 +172,19 @@
       tP$beta<-t(chol(tP$beta))
     }
 
+    if(sP$estUSdam | sP$estUSsire ){
+       if(sum(diag(MLENus$C)<0)>0){
+         warning("Hessian not positive-definite for MLE.popsize")
+       }
+    }
+
     if(sP$estUSdam){
       if(is.null(tP$USdam)){
         tP$USdam<-rep(10,nusd)
       }else{
         tP$USdam<-tP$USdam*rep(10, nusd)
       } 
-      tP$USdam<-tP$USdam*diag(MLENus$C)[1:nusd]
+      tP$USdam<-abs(tP$USdam*diag(MLENus$C)[1:nusd])
     }
 
      if(sP$estUSsire){
@@ -187,8 +193,10 @@
        }else{
          tP$USsire<-tP$USsire*rep(10, nuss)
        }
-       tP$USsire<-tP$USsire*diag(MLENus$C)[nusd+(1:nuss)]
+       tP$USsire<-abs(tP$USsire*diag(MLENus$C)[nusd+(1:nuss)])
     }
+
+
 
 list(sP=sP, tP=tP)
 }

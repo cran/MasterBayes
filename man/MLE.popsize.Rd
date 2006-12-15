@@ -36,7 +36,7 @@ res1<-expression(varPed("offspring", restrict=0))
 
 PdP<-PdataPed(formula=list(res1), data=WarblerP, USsire=TRUE, USdam=TRUE)
 
-X.list<-getXlist(PdP=PdP, GdP=GdP, E=0.02)
+X.list<-getXlist(PdP=PdP, GdP=GdP, E2=0.02)
 
 nUS<-MLE.popsize(X.list, USsire=TRUE, USdam=TRUE)
 nUS

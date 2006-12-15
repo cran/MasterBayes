@@ -5,13 +5,14 @@
 A function for checking whether a set of genotypes have a positive probability given the pedigree. If not, a legal configuration is found using heuristic methods.  Missing genotypes are also replaced with compatible genotypes.
 }
 \usage{
-legalG(G, A, ped, time_born=NULL,...)
+legalG(G, A, ped, time_born=NULL, marker.type="MS", ...)
 }
 \arguments{
   \item{G}{list of \code{genotype} objects}
   \item{A}{list of allele frequencies}
   \item{ped}{pedigree with id in the first column, dam in the second, and sire in the third. The genotypes must be in the same order as the id column}
   \item{time_born}{an optional vector for ordering a pedigree more efficiently (see \code{\link{order.ped}})} 
+  \item{marker.type}{"MS" or "AFLP" for codominant or dominant markers respectively}
   \item{...}{further arguments to be passed}
 }
 \value{

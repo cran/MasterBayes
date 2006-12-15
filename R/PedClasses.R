@@ -19,7 +19,7 @@ is.PdataPed<-function(x){
 inherits(x, "PdataPed")
  }
 
-GdataPed<-function(G=NULL, id=NULL, categories=NULL, perlocus=FALSE, ...){
+GdataPed<-function(G=NULL, id=NULL, categories=NULL, perlocus=FALSE, marker.type="MS", ...){
 
 if(length(G)!=0){
    if(length(id)==0){
@@ -42,11 +42,11 @@ if(length(G)!=0){
      }
    }
 
-   if(is.genotype(G[[1]])==FALSE){
-     G<-genotype.list(G)
+   if(is.genotype(G[[1]])==FALSE & is.genotypeD(G[[1]])==FALSE){
+     G<-genotype.list(G, marker.type=marker.type)
    }
  }  
- object<-list(G=G, id=id, categories=categories, perlocus=perlocus)
+ object<-list(G=G, id=id, categories=categories, perlocus=perlocus, marker.type=marker.type)
  class(object)<-c("GdataPed", "list")
  object
 
@@ -100,6 +100,7 @@ object<-list(E1=E1, E2=E2, beta=beta, USdam=USdam, USsire=USsire)
 is.priorPed<-function(x){
  inherits(x, "priorPed") 
 }
+
 
 
 

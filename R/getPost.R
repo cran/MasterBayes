@@ -1,4 +1,4 @@
-"getPost"<-function(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id, ...){
+"getPost"<-function(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id, marker.type="MS", ...){
 
 ########### extract posterior samples from C++ ######################################################################
 
@@ -63,12 +63,16 @@
     for(loc in 1:length(sP$A)){
       start<-end+1
       end<-end+(ngen[loc]*nind)
-      post_GP[[loc]]<-matrix(post$G$marginal[start:end], nind, ngen[loc])
-      gnames<-outer(names(sP$A[[loc]]), names(sP$A[[loc]]), paste, sep="/")
-      colnames(post_GP[[loc]])<-c(t(gnames)[lower.tri(gnames, diag=TRUE)])
+      post_GP[[loc]]<-matrix(post$G[start:end], nind, ngen[loc])
+      if(marker.type=="MS"){
+        gnames<-outer(names(sP$A[[loc]]), names(sP$A[[loc]]), paste, sep="/")
+        colnames(post_GP[[loc]])<-c(t(gnames)[lower.tri(gnames, diag=TRUE)])
+      }else{
+        colnames(post_GP[[loc]])<-c("0/0", "0/1", "1/1")
+      }
     }
     post$G<-post_GP
-    names(post$G$mode)<-names(sP$A)
+    names(post$G)<-names(sP$A)
   }
 
 
@@ -108,7 +112,7 @@
   if(length(post$E1)==0 & sP$estE1==TRUE){
     post$E1<-rep(0, ceiling((nitt-burnin)/thin)*length(sP$E1))    # joint posterior distribution of E1 
   }
-  if(length(post$E2)==0 & sP$estE1==TRUE){
+  if(length(post$E2)==0 & sP$estE2==TRUE){
     post$E2<-rep(0, ceiling((nitt-burnin)/thin)*length(sP$E2))    # joint posterior distribution of E1 
   }
   if(length(post$beta)==0 & sP$estbeta==TRUE){
@@ -132,11 +136,11 @@
     post$P<-rep(0, sum(ndam*nsire))
   }
 
-  if(length(post$G$marginal)==0 & write_postG==TRUE & sP$estG==TRUE){
+  if(length(post$G)==0 & write_postG==TRUE & sP$estG==TRUE){
     nind<-length(unique_id)
     nall<-unlist(lapply(sP$A, length))
     ngen<-(nall*(nall+1))/2
-    post$G$marginal<-rep(0, sum(nind*ngen)) 
+    post$G<-rep(0, sum(nind*ngen)) 
   }
 post
 }

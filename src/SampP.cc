@@ -9,7 +9,6 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
         int mvar;
         double n1;
         double n2;
-        double inv_log_beta;
         int cnt=0;
         int newpar;
         int new_dam_pos;
@@ -70,6 +69,9 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
 	Matrix<double> Dpred;
 	Matrix<double> Spred;	
         Matrix<double> DSpred;
+	Matrix<double> Dpred_tmp;
+	Matrix<double> Spred_tmp;	
+        Matrix<double> DSpred_tmp;
 	Matrix<double> Dpreds;
 	Matrix<double> Spreds;	
         Matrix<double> DSpreds;
@@ -79,13 +81,12 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
 /***********************/
 /* reparameterise beta */
 /***********************/
-
            if(nmerge>0){
              for(d = 0; d < nmerge; d++){  
                mvar = mergeV[d];
                n1 = mergeN[d](0,i);
                n2 = mergeN[d](1,i);
-               inv_log_beta = exp(beta[d])/(1.0+exp(beta[d]));
+   //            inv_log_beta = exp(beta[d])/(1.0+exp(beta[d]));
                if(mvar<(npar[0]+npar[1])){
                  if(mergeUS[d]==0){
                    n1 += us[usdamcat[i]];
@@ -94,13 +95,15 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                    n2 += us[usdamcat[i]];
                  }
                  if(mvar<npar[0]){
-                   betaDus[mvar] = inv_log_beta/n1;
-                   betaDus[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-                   betaDus[mvar] = log(betaDus[mvar]/(1.0-betaDus[mvar]));
+                     betaDus[mvar] = betaDus[mvar]+log(n2/n1);
+//                   betaDus[mvar] = inv_log_beta/n1;
+//                   betaDus[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
+//                   betaDus[mvar] = log(betaDus[mvar]/(1.0-betaDus[mvar]));
                  }else{
-                   betaDs[mvar] = inv_log_beta/n1;
-                   betaDs[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-                   betaDs[mvar] = log(betaDs[mvar]/(1.0-betaDs[mvar]));
+                   betaDs[mvar] = betaDs[mvar]+log(n2/n1);
+//                   betaDs[mvar] = inv_log_beta/n1;
+//                   betaDs[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
+//                   betaDs[mvar] = log(betaDs[mvar]/(1.0-betaDs[mvar]));
                  }
                }else{
                  mvar -= npar[0]+npar[1];
@@ -111,13 +114,15 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                    n2 += us[nusd+ussirecat[i]];
                  }
                  if(mvar<npar[2]){
-                   betaSus[mvar] = inv_log_beta/n1;
-                   betaSus[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-                   betaSus[mvar] = log(betaSus[mvar]/(1.0-betaSus[mvar]));
+                     betaSus[mvar] = betaSus[mvar]+log(n2/n1);
+//                   betaSus[mvar] = inv_log_beta/n1;
+//                   betaSus[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
+//                   betaSus[mvar] = log(betaSus[mvar]/(1.0-betaSus[mvar]));
                  }else{
-                   betaSs[mvar] = inv_log_beta/n1;
-                   betaSs[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-                   betaSs[mvar] = log(betaSs[mvar]/(1.0-betaSs[mvar]));
+                     betaSs[mvar] = betaSs[mvar]+log(n2/n1);
+//                   betaSs[mvar] = inv_log_beta/n1;
+//                   betaSs[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
+//                   betaSs[mvar] = log(betaSs[mvar]/(1.0-betaSs[mvar]));
                  }
                }
              }    
@@ -128,43 +133,45 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
 /***********************/
 
             if(npar[0]!=0){   
-              Dpred = exp(X_design_betaDus[i]*betaDus);
-              mean_vec = 0.0;
-              S_vec = 0.0;
-              for(d=0; d<ntdam[i]; d++){
-                mean_vec += Dpred[d];
-                S_vec +=  pow(Dpred[d],2.0); 
-              }
-              mean_vec -= Dpred[ndam[i]-1];           
-              S_vec -= pow(Dpred[ndam[i]-1], 2.0);
-              mean_vec /= (ntdam[i]-1);
-              S_vec  /= (ntdam[i]-1);
-              S_vec -=  mean_vec*mean_vec; 
+              Dpred_tmp = X_design_betaDus[i]*betaDus;
+              Dpred_tmp -= (maxc(Dpred_tmp)[0]-100.0);
+              Dpred = exp(Dpred_tmp);
+              mean_vec = meanc(Dpred)[0];
               n = double(ntdam[i]-1);
-              N = n+us[usdamcat[i]];
+              mean_vec -= Dpred[ndam[i]-1]/(n+1.0);  
+              mean_vec *= (n+1.0)/n;                  // mean linear predictor of sampled dams
+              Dpred[ndam[i]-1] = mean_vec;            // replace linear predictor of unsampled dams with sampled mean
+              S_vec = varc(Dpred)[0];                 // variance of the vector = sample variance of linear -
+              N = n+us[usdamcat[i]];                  // predictor of sampled dams
               S_vec *= N/(n*(N-n));
-              Dpred[ndam[i]-1] = rnorm(mean_vec, sqrt(S_vec)); 
+              Dpred[ndam[i]-1] = rnorm(mean_vec, sqrt(S_vec));
+              if(Dpred[ndam[i]-1]<0.0){               // for those instances where the linear predictor goes negative
+                Dpred[ndam[i]-1]=1e-300;
+              }
+              Dpred_tmp[ndam[i]-1] = log(Dpred[ndam[i]-1]);      
             }
             if(npar[2]!=0){          
-              Spred = exp(X_design_betaSus[i]*betaSus);
-              mean_vec = 0.0;
-              S_vec = 0.0;
-              for(s=0; s<ntsire[i]; s++){
-                mean_vec += Spred[s];
-                S_vec +=  pow(Spred[s],2.0); 
-              }
-              mean_vec -= Spred[nsire[i]-1];        
-              S_vec -= pow(Spred[nsire[i]-1],2.0);
-              mean_vec /= (ntsire[i]-1);
-              S_vec  /= (ntsire[i]-1);
-              S_vec -=  mean_vec*mean_vec; 
+              Spred_tmp = X_design_betaSus[i]*betaSus;
+              Spred_tmp -= (maxc(Spred_tmp)[0]-100.0);
+              Spred = exp(Spred_tmp);
+              mean_vec = meanc(Spred)[0];
               n = double(ntsire[i]-1);
+              mean_vec -= Spred[nsire[i]-1]/(n+1.0);
+              mean_vec *= (n+1.0)/n;
+              Spred[nsire[i]-1] = mean_vec;
+              S_vec = varc(Spred)[0];
               N = n+us[ussirecat[i]+nusd];
               S_vec *= N/(n*(N-n));
               Spred[nsire[i]-1] = rnorm(mean_vec, sqrt(S_vec));
+              if(Spred[nsire[i]-1]<0.0){
+                Spred[nsire[i]-1]=1e-300;
+              }
+              Spred_tmp[nsire[i]-1] = log(Spred[nsire[i]-1]);         
             }
             if(npar[4]!=0){       
-              DSpred = exp(X_design_betaDSus[i]*betaDSus);
+              DSpred_tmp = X_design_betaDSus[i]*betaDSus;
+              DSpred_tmp -= (maxc(DSpred_tmp)[0]-100.0);
+              DSpred = exp(DSpred_tmp);
               tot_mean=0.0;
               if(DSuu[0]==1){ 
                 tot_mean=0.0;
@@ -184,6 +191,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                   N = n+us[usdamcat[i]];
                   S_vec *= N/(n*(N-n));
                   DSpred[((ndam[i]-1)*ntsire[i])+s] = rnorm(mean_vec, sqrt(S_vec));
+                  DSpred_tmp[((ndam[i]-1)*ntsire[i])+s] = log(DSpred[((ndam[i]-1)*ntsire[i])+s]);         
                   tot_mean += DSpred[((ndam[i]-1)*ntsire[i])+s];
                 }
               }
@@ -204,6 +212,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                   N = n+us[ussirecat[i]+nusd];
                   S_vec *= N/(n*(N-n));
                   DSpred[(d*ntsire[i])+(nsire[i]-1)] = rnorm(mean_vec, sqrt(S_vec));
+                  DSpred_tmp[(d*ntsire[i])+(nsire[i]-1)] = log(DSpred[(d*ntsire[i])+(nsire[i]-1)]);         
                   tot_mean += DSpred[(d*ntsire[i])+(nsire[i]-1)];
                 }
               } 
@@ -218,20 +227,19 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
               Dpreds = Matrix<double>(ndam[i],1);
               for(d=0; d<ndam[i]; d++){
                  for(b=0; b<npar[1]; b++){
-                   Dpreds[d] += X_design_betaDs[i](d,b)*betaDs[b]; 
+                   Dpreds[d] = X_design_betaDs[i](d,b)*betaDs[b]; 
                  }
               }      
-              Dpreds = exp(Dpreds);   
               if(npar[0]>0){  
                   for(d=0; d<ndam[i]; d++){
-                    Dpreds[d] *= Dpred[d];
+                    Dpreds[d] += Dpred_tmp[d];
                 }
               }
             }else{       
               if(npar[0]>0){ 
                 Dpreds = Matrix<double>(ndam[i],1);     
                 for(d=0; d<ndam[i]; d++){
-                  Dpreds[d] = Dpred[d];
+                  Dpreds[d] = Dpred_tmp[d];
                 }
               }
             }
@@ -240,20 +248,19 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
               Spreds = Matrix<double>(nsire[i],1);
               for(s=0; s<nsire[i]; s++){
                 for(b=0; b<npar[3]; b++){
-                  Spreds[s] += X_design_betaSs[i](s,b)*betaSs[b]; 
+                  Spreds[s] = X_design_betaSs[i](s,b)*betaSs[b]; 
                 }
               }      
-              Spreds = exp(Spreds);
               if(npar[2]>0){  
                 for(s=0; s<nsire[i]; s++){
-                  Spreds[s] *= Spred[s];
+                  Spreds[s] += Spred_tmp[s];
                 }
               }
             }else{
               if(npar[2]>0){ 
                 Spreds = Matrix<double>(nsire[i],1);
                 for(s=0; s<nsire[i]; s++){
-                  Spreds[s] = Spred[s];
+                  Spreds[s] = Spred_tmp[s];
                 }
               }
             }
@@ -263,15 +270,14 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
               for(d=0; d<ndam[i]; d++){
                 for(s=0; s<nsire[i]; s++){            
                   for(b=0; b<npar[5]; b++){
-                    DSpreds[(d*nsire[i])+s] += X_design_betaDSs[i]((d*ntsire[i])+s, b)*betaDSs[b]; 
+                    DSpreds[(d*nsire[i])+s] = X_design_betaDSs[i]((d*ntsire[i])+s, b)*betaDSs[b]; 
                   }
                 }
               }   
-              DSpreds = exp(DSpreds);
               if(npar[4]>0){  
                 for(d=0; d<ndam[i]; d++){
                   for(s=0; s<nsire[i]; s++){            
-                    DSpreds[(d*nsire[i])+s] *= DSpred[(d*ntsire[i])+s]; 
+                    DSpreds[(d*nsire[i])+s] += DSpred_tmp[(d*ntsire[i])+s]; 
                   }
                 }
               }      
@@ -280,62 +286,62 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                 DSpreds = Matrix<double>(nsire[i]*ndam[i],1);
                 for(d=0; d<ndam[i]; d++){
                   for(s=0; s<nsire[i]; s++){            
-                    DSpreds[(d*nsire[i])+s] = DSpred[(d*ntsire[i])+s]; 
+                    DSpreds[(d*nsire[i])+s] = DSpred_tmp[(d*ntsire[i])+s]; 
                   }
                 }
               }
             }
 
+            cnt = 0;
+
             if(damsireV==false){ 
               if(sireV==false && damV==false){ 
-                DSpreds = X_design_G[i];
+                DSpreds = log(X_design_G[i]);
               }else{
+                DSpreds = Matrix<double>(ndam[i]*nsire[i],1);
                 if(sireV && damV){ 
-                  DSpreds = vecc(Spreds*t(Dpreds));
-                  for(d=0; d<(ndam[i]*nsire[i]); d++){
-                    DSpreds[d] *= X_design_G[i][d];
-                  }
-                }else{
-                  DSpreds = ones<double>(ndam[i]*nsire[i],1);
-                  if(sireV){ 
-                    cnt = 0;
-                    for(d=0; d<ndam[i]; d++){
-                      for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] = Spreds[s]*X_design_G[i][cnt];
-                        cnt++;
-                      }
-                    }
-                  }else{
-                    cnt = 0;
-                    for(d=0; d<ndam[i]; d++){
-                      for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] = Dpreds[d]*X_design_G[i][cnt];
-                        cnt++;
-                      }
-                    }
-                  }
-                }  
-              }
-            }else{
-              if(sireV==false && damV ==false){
-                for(d=0; d<(ndam[i]*nsire[i]); d++){
-                  DSpreds[d] *= DSpreds[d]*X_design_G[i][d];
-                }
-              }else{
-                if(sireV && damV){ 
-                  cnt = 0;
                   for(d=0; d<ndam[i]; d++){
                     for(s=0; s<nsire[i]; s++){
-                      DSpreds[cnt] *= Dpreds[d]*Spreds[s]*X_design_G[i][cnt];
+                      DSpreds[cnt] = Spreds[s]+Dpreds[d]+log(X_design_G[i][cnt]);
                       cnt++;
                     }
                   }
                 }else{
                   if(sireV){ 
-                    cnt = 0;
                     for(d=0; d<ndam[i]; d++){
                       for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] *= Spreds[s]*X_design_G[i][cnt];
+                        DSpreds[cnt] = Spreds[s]+log(X_design_G[i][cnt]);
+                        cnt++;
+                      }
+                    }
+                  }else{
+                    for(d=0; d<ndam[i]; d++){
+                      for(s=0; s<nsire[i]; s++){
+                        DSpreds[cnt] = Dpreds[d]+log(X_design_G[i][cnt]);
+                        cnt++;
+                      }
+                    }
+                  }
+                }
+              }  
+            }else{
+              if(sireV==false && damV ==false){
+                for(d=0; d<(ndam[i]*nsire[i]); d++){
+                  DSpreds[d] += log(X_design_G[i][d]);
+                }
+              }else{
+                if(sireV && damV){ 
+                  for(d=0; d<ndam[i]; d++){
+                    for(s=0; s<nsire[i]; s++){
+                      DSpreds[cnt] += Dpreds[d]+Spreds[s]+log(X_design_G[i][cnt]);
+                      cnt++;
+                    }
+                  }
+                }else{
+                  if(sireV){ 
+                    for(d=0; d<ndam[i]; d++){
+                      for(s=0; s<nsire[i]; s++){
+                        DSpreds[cnt] += Spreds[s]+log(X_design_G[i][cnt]);
                         cnt++;
                       }
                     }
@@ -343,14 +349,16 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                     cnt = 0;
                     for(d=0; d<ndam[i]; d++){
                       for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] *= Dpreds[d]*X_design_G[i][cnt];
-                        cnt++;
+                        DSpreds[cnt] += Dpreds[d]+log(X_design_G[i][cnt]);
                       }
                     }
                   }
                 }
               }
             }
+
+            DSpreds -= (maxc(DSpreds)[0]-650.0);
+            DSpreds = exp(DSpreds);
 
             if(nuss>0){
               for(d=0; d<ndam[i]; d++){
@@ -364,8 +372,9 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                 DSpreds[(nsire[i]*(ndam[i]-1))+s] *= us[usdamcat[i]];
               }
             }
+
             newpar = rmultinom_size1M(DSpreds, nsire[i]*ndam[i]);      // samples a parental combination
- 
+
             new_dam_pos = newpar/nsire[i];
             new_sire_pos = newpar-(new_dam_pos*nsire[i]);
 		

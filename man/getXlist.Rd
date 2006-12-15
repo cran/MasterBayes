@@ -5,13 +5,14 @@
   Forms design matrices for each offspring, and stores other relavent inforamtion. 
 }
 \usage{
-getXlist(PdP, GdP=NULL, A=NULL, E2=0.005, mm.tol=999, ...)
+getXlist(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...)
 }
 \arguments{
     \item{PdP}{\code{\link{PdataPed}} object}
     \item{GdP}{optional \code{\link{GdataPed}} object}
     \item{A}{optional list of allele frequencies.  If not sepcified and \code{GdP} exists, allele frequencies are taken from \code{GdP$G} using \code{extractA}}
-    \item{E2}{genotyping error rate}
+    \item{E1}{the probability of a dominant allele being scored as a recessive allele for dominant markers}
+    \item{E2}{per-allele genotyping error rate. \code{E2}(2-\code{E2}) is the per-genotype rate defined in Kalinowski (2006) for codominant markers, and \code{E2} is the probability of a recessive allele being scored as a dominant allele for dominant markers}
     \item{mm.tol}{maximum number of genotype mismatches tolerated for potential parents}
     \item{...}{further arguments to be passed}
 }
@@ -24,7 +25,11 @@ getXlist(PdP, GdP=NULL, A=NULL, E2=0.005, mm.tol=999, ...)
   \item{beta_map}{index relating the vector of unique parameters to the columns of the design matrices}
   \item{X}{list of design matrices and other information.}
 }
-\references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
+\references{
+Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31
+Kalinowski S.T. \emph{et al} (2006) Molecular Ecology \emph{in press}
+Hadfield J. D. \emph{et al} (2007) \emph{in prep}
+}
 \author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
 \note{
 Each element of \code{X} refers to an offspring (\code{names(X)}) and contains vectors for the set of potential parents (\code{restdam.id} and \code{restsire.id}) of each offspring.  Also included are the set of individuals that may have been parents but have been excluded for certain reasons (\code{dam.id} and \code{sire.id}).  Exclusion may have been based on the number of genotype mismatches, or it may have been on biological grounds (See the \code{keep} argument of \code{\link{varPed}}).  Parental id's are stored as integers which correspond to the actual id's stored in \code{id}.  Parental id's greater than the length of \code{id} refer to unsampled parents.

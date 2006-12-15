@@ -15,8 +15,11 @@ export(
   GdataPed,
   is.GdataPed,
   genotype.list,
+  genotypeD,
+  is.genotypeD,
   getXlist,
   modeP,
+  modeG,
   priorPed,
   is.priorPed,
   reordXlist,
@@ -27,6 +30,7 @@ export(
   tunePed,
   is.tunePed,
   varPed,
+#  GtoC,
 #  getPost,
 #  ErrorCheck,
 #  getsPandtP,
@@ -34,5 +38,9 @@ export(
   order.ped,
   extractA 
 ) 
+S3method(summary, genotypeD)
+S3method(print, genotypeD)
+S3method('[', genotypeD)
+S3method('[<-', genotypeD)
 
 

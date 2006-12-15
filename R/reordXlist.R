@@ -1,4 +1,4 @@
-"reordXlist"<-function(X.list, ...){
+"reordXlist"<-function(X.list, marker.type="MS", ...){
 
     nind<-length(X.list$id)
       
@@ -22,8 +22,19 @@
       Sorder<-rep(1, length(X.list$X[[off]]$sire.id))
       Dorder<-rep(1, length(X.list$X[[off]]$dam.id))
     }else{
-      Sorder<-X.list$X[[off]]$mmS
-      Dorder<-X.list$X[[off]]$mmD
+      if(marker.type!="AFLP"){
+        Sorder<-X.list$X[[off]]$mmS
+        Dorder<-X.list$X[[off]]$mmD
+      }else{
+        if(is.null(X.list$X[[off]]$G)){
+          Sorder<-rep(1, length(X.list$X[[off]]$sire.id))
+          Dorder<-rep(1, length(X.list$X[[off]]$dam.id))
+        }else{
+          Sorder<-matrix(-X.list$X[[off]]$G, length(X.list$X[[off]]$sire.id), length(X.list$X[[off]]$dam.id))
+          Dorder<-colSums(Sorder)
+          Sorder<-rowSums(Sorder)
+        }
+      }
     }
 
     if(USdam==TRUE){
