@@ -49,7 +49,7 @@
   tmp<-array(output[[8]], c(1+(marker.type=="MS"), length(ped[,1]), length(A)))+as.numeric(marker.type=="MS")
 
   Gnew<-as.data.frame(matrix(NA, length(ped[,1]), 2*length(A)))
-
+  
   if(marker.type=="MS"){
     for(i in 1:length(A)){
       Gnew[,c(((i*2)-1):(i*2))]<-t(tmp[,,i])

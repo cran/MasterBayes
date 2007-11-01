@@ -56,8 +56,6 @@ l  += (2*nloci);
 	map<int, int> Sires [noff];    // map[i][dam_id] = n           dam_id is the n^th mother of the i^th individual
         Matrix<int> Dams_vec [noff];   // Matrix[i][n] = dam_id        the n^th mother of the i^th individul is dam.id 
 	Matrix<int> Sires_vec [noff];
-      
-	int records = 0;	// itterates through genotypes
 	
         read_G(st_GP, nind, nloci, G, 1);
 

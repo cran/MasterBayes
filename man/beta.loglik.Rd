@@ -25,7 +25,7 @@ beta.loglik(X, dam_pos=NULL, sire_pos=NULL, par_pos=NULL, beta=NULL,
 Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31
 Smouse P.E. \emph{et al} (1999) Journal of Evolutionary Biology 12 1069-1077
               }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \note{Intended to be used within \code{\link{MLE.beta}}}
 \seealso{\code{\link{MLE.beta}}, \code{\link{MCMCped}}, \code{\link{varPed}}, \code{\link{getXlist}}}
 \examples{

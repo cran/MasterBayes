@@ -9,7 +9,6 @@ double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories
         int aa1;
         int aa2;
         int eterm;
-        int poss_id;
         int cat;
         int ind;
         double LLB = 0.0;
@@ -88,7 +87,6 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
         int sv;
         double dvar;
         int mvar;
-        double inv_log_beta;
         int cnt = 0;
 	int d;
 	int s;
@@ -141,7 +139,6 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
 
            if(nmerge>0){
              for(dv = 0; dv < nmerge; dv++){  
-//               inv_log_beta = exp(beta[dv])/(1.0+exp(beta[dv]));
                mvar = mergeV[dv];
                n1 = mergeN[dv](0,i);
                n2 = mergeN[dv](1,i);
@@ -153,9 +150,6 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                    n2 += us[usdamcat[i]];
                  }
                  betaD[mvar] = betaD[mvar]+log(n2/n1);
-//                 betaD[mvar] = inv_log_beta/n1;
-//                 betaD[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-//                 betaD[mvar] = log(betaD[mvar]/(1.0-betaD[mvar]));
                }else{
                  mvar -= npar[0]+npar[1];
                  if(mergeUS[dv]==0){
@@ -165,9 +159,6 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                    n2 += us[nusd+ussirecat[i]];
                  }
                  betaS[mvar] = betaS[mvar]+log(n2/n1);
-//                 betaS[mvar] = inv_log_beta/n1;
-//                 betaS[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-//                 betaS[mvar] = log(betaS[mvar]/(1.0-betaS[mvar]));
                }
              }    
            }

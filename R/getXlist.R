@@ -278,7 +278,7 @@ for(off in 1:sum(PdP$offspring==1)){
             dam.dam=TRUE
             sire.sire=TRUE
           }else{
-            stop("interactions between a genderless variable and a sexspecif variable not possible")
+            stop("interactions between a genderless variable and a sex-specific variable not possible")
           }
         }     
 

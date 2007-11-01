@@ -11,6 +11,17 @@
    }
 
   A<-lapply(G, function(x){summary(x)$allele.freq[,"Proportion"][1:nallele(x)]})
-
+  if(marker.type=="AFLP" | is.genotypeD(G[[1]])){
+  A<-lapply(A, function(x){
+       if(any(x==1)){
+         warning("some loci are monomorphic: setting allele frequencies to 0.9999 and 0.0001")
+         x[which(x==1)]<-0.9999
+         x[which(x==0)]<-0.0001
+       }else{
+         x<-x
+       }
+       x
+     })
+  }
   A
 }

@@ -9,13 +9,9 @@ void sampDomG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, dou
         int n = 0;                // number of samples within indiviual
         int ns;                   // sample within indiviual
         int obs_G[50];           // observed genotypes of an individual
-        int off[100];             // genotypes of individual's offspring
-        int sp[100];              // genotypes of individual's spouses
         int da;                   // genotypes of individual's dam
         int sa;                   // genotypes of individual's sire
         int off_1;
-        int off_pos[100];
-        int sire_pos[100];
         int sp_1;
         int cat_tmp[50];      // categories to which those genotypes belong
         double Ppart[3];  // Probability vector for true genotypes

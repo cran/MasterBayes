@@ -1,4 +1,4 @@
-"popsize.loglik"<-function(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, ...){
+"popsize.loglik"<-function(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE, ...){
 
 # Nielsen's likelihood function for N: only exact when the genetic likelihoods are calculated in the absence 
 # of genotyping error.  fillX_G(E=0). Alsdo works when females are unsampled.
@@ -31,9 +31,9 @@
   nbetaS<-length(betaScat)
 
   if(length(nUS)==0){
-      nUS<-matrix(1E-5, nbetaD+nbetaS,1)
+      nUS<-matrix(1E-5, nbetaD+nbetaS*(USsiredam==FALSE),1)
   }else{
-    if(length(nUS)!=(nbetaD+nbetaS)){
+    if(length(nUS)!=(nbetaD+nbetaS*(USsiredam==FALSE))){
       stop("beta is wrong size in ped.loglik")
     }else{
       nUS<-as.matrix(nUS)
@@ -47,7 +47,7 @@
         d_cat<-match(USdam[i], betaDcat)
         s_cat<-match(USsire[i], betaScat)
         if(is.null(ped)){
-          pop<-c(1, if(length(d_cat)>0){nUS[d_cat]}else{0}, if(length(s_cat)>0){nUS[s_cat+nbetaD]}else{0}, if(length(c(s_cat, d_cat))>1){nUS[s_cat+nbetaD]*nUS[d_cat]}else{0})
+          pop<-c(1, if(length(d_cat)>0){nUS[d_cat]}else{0}, if(length(s_cat)>0){nUS[s_cat+nbetaD*(USsiredam==FALSE)]}else{0}, if(length(c(s_cat, d_cat))>1){nUS[s_cat+nbetaD*(USsiredam==FALSE)]*nUS[d_cat]}else{0})
           prob<-(X[[i]]$G*pop)/sum(X[[i]]$N*pop)
           llik<-llik+log(sum(prob))
         }else{
@@ -58,9 +58,9 @@
             }
           }
           if(length(s_cat)>0){
-            llik<-llik-log(X[[i]]$N[2]+nUS[s_cat+nbetaD])
+            llik<-llik-log(X[[i]]$N[2]+nUS[s_cat+nbetaD*(USsiredam==FALSE)])
             if(is.na(ped[,3][i])){
-             llik<-llik+log(nUS[s_cat+nbetaD])
+             llik<-llik+log(nUS[s_cat+nbetaD*(USsiredam==FALSE)])
             }
           }
         }

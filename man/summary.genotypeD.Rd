@@ -1,9 +1,10 @@
 \name{summary.genotypeD}
 \alias{summary.genotypeD}
+\alias{summary}
 \title{genotypeD Object}
 \description{creates and object containing allele and genotype frequency for genotypeD objects}
 \usage{
-summary.genotypeD(object, ...)
+\method{summary}{genotypeD}(object, \dots)
 }
 \arguments{
   \item{object}{genotypeD object}
@@ -16,7 +17,7 @@ summary.genotypeD(object, ...)
   \item{genotype.freq}{frequencies of observed genotypes (phenotypes)}
 }
 \references{Lynch M. \& Milligan B.G. (1994) Molecular Ecology 3 91-99}
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{genotype}, \code{summary.genotypeD}}
 \examples{
 l1<-rbinom(100,1,0.5)

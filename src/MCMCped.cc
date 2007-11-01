@@ -109,6 +109,7 @@ bool    estP = bool(estimatingP[0]),
         estbeta = bool(estimatingP[5]),      
         estUS = bool(estimatingP[6]), 
         perlocus = bool(estimatingP[7]),
+        USdamsire = bool(estimatingP[9]),
         est_pE1 = FALSE,           
         est_pE2 = FALSE,
         est_pbeta = FALSE,           
@@ -469,8 +470,6 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
         }
          
 	int itt;
-	int samp = 0;
-        int level = 0;
 	int write_postE = 0;
         int write_postA = 0; 
         int write_postB = 0; 
@@ -704,6 +703,12 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
             
              us_0 = fabs(rmvnormM(us_1, int_us, nus));
 
+             if(USdamsire==TRUE){
+                for(i = 0; i < nusd; i++){
+                   us_0[nusd+i]= us_0[i];
+                }
+             }
+
              llUS_0 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_0, ratio_1);
              
              if(est_pus){
@@ -852,7 +857,7 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
 	 write_postG = 0;
             for(l = 0; l < tall ; l++){
                for(i = 0; i < nind ; i++){	
-	         post_GP[write_postG] = post_G[i][l+a1 ];
+	         post_GP[write_postG] = post_G[i][l];
                  write_postG++;
 	       }
 	   }

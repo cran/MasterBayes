@@ -9,7 +9,7 @@ simgenotypes(A, E1 = 0, E2 = 0, pedigree, no_dup = 1, prop.missing=0, marker.typ
 }
 \arguments{
   \item{A}{list of allele frequencies at each locus}
-  \item{E1}{Allelic Dropout Rate for codominat markers. Probability of mis-scoring a dominat allele as recessive for dominant markers}
+  \item{E1}{Allelic Dropout Rate for codominat markers. Probability of mis-scoring a dominant allele as recessive for dominant markers}
   \item{E2}{Stochastic Error Rate for codominat markers. Probability of mis-scoring a recessive allele as dominant for dominant markers}
   \item{pedigree}{pedigree in 3 columns: id, dam, sire. Base individuals have NA as parents. All parents must be in id, and each indivdiual must either have both parents in id, or both parents as base.}
   \item{no_dup}{integer: number of times genotypes are to be observed}
@@ -27,7 +27,7 @@ simgenotypes(A, E1 = 0, E2 = 0, pedigree, no_dup = 1, prop.missing=0, marker.typ
 Wang J.L. 2004 Genetics 166 4 1963-1979
 Hadfield J.D. 2007 \emph{in prep}
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{genotype}}
 \examples{
 pedigree<-cbind(1:10, rep(NA,10), rep(NA, 10))

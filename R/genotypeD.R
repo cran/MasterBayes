@@ -2,9 +2,9 @@ genotypeD  <- function(a1, locus=NULL)
 {     
     alleles <- factor(c("0","1"))
  
-    object  <- factor(as.character(a1))
+    object  <- factor(as.character(a1), levels=alleles)
 
-    ll  <- levels(object)  <-  na.omit(levels(object))
+    ll  <- alleles
     
     class(object)  <-  c("genotypeD","factor")
     attr(object,"allele.names")  <- alleles
@@ -80,10 +80,8 @@ summary.genotypeD  <-  function(object,...)
 
     
     if(any(is.na(object))){
-        retval$allele.freq    <- rbind(retval$allele.freq,
-                                       "NA"=c(sum(is.na(allele(object))),NA))
-        retval$genotype.freq  <- rbind(retval$genotype.freq,
-                                       "NA"=c(sum(is.na(object)),NA))
+        retval$allele.freq    <- rbind(retval$allele.freq,"NA"=c(sum(c(is.na(object),NA))))
+        retval$genotype.freq  <- rbind(retval$genotype.freq,"NA"=c(sum(c(is.na(object),NA))))
     }
 
     return(retval)
@@ -95,7 +93,6 @@ summary.genotypeD  <-  function(object,...)
 
     # force "NA" not to be a factor level
     ll  <- levels(retval)  <-  na.omit(levels(retval))
-    
     class(retval)  <-  c("genotypeD","factor")
 
     if(drop)
@@ -128,7 +125,7 @@ summary.genotypeD  <-  function(object,...)
        warning(paste("Adding new allele name(s):", av[m] ))
        
     la <- unique(c(lx,lv))
-    aa <- unique(c(ax,av))
+    aa <- unique(c(as.character(ax),as.character(av)))
 
     cx <- class(x)
     nas <- is.na(x)
@@ -143,3 +140,4 @@ summary.genotypeD  <-  function(object,...)
     class(x) <- cx
     x
   }
+

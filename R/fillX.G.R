@@ -13,7 +13,6 @@ fillX.G<-function(X.list, A, G, E1=0.005, E2=0.005, marker.type="MS", ...){
        maxall<-max(nall)
        nloci<-length(nall)
        nind<-length(X.list$id)
-       nbeta<-rep(0,5)
 
        if(is.null(E2)){
          E2<-0.005
@@ -31,7 +30,6 @@ output<-.C("fillXG",
         as.integer(nloci),	# number of loci
         as.integer(nall),       # number of alleles per locus
         as.integer(maxall),     # number of alleles at most polymorhic locus
-        as.integer(nbeta),
         as.integer(offid),      # offspring id
         as.integer(damid),      # candidate dam id's for each offspring
         as.integer(sireid),	# candidate sire id's for each offspring	
@@ -49,7 +47,7 @@ startD<-1
 startS<-1
 
 for(i in 1:noff){
-X.list$X[[i]]$G<-as.matrix(output[[12]][(startG-1)+1:(ndam[i]*nsire[i])])
+X.list$X[[i]]$G<-as.matrix(output[[11]][(startG-1)+1:(ndam[i]*nsire[i])])
 startG<-startG+ndam[i]*nsire[i]
 }
 X.list

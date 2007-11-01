@@ -22,7 +22,7 @@ MLE.beta(X.list, ped, beta=NULL, nUSdam=NULL, nUSsire=NULL,...)
 Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31
 Smouse P.E. \emph{et al} (1999) Journal of Evolutionary Biology 12 1069-1077
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}, \code{\link{beta.loglik}}}
 \examples{
 data(WarblerP)

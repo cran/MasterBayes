@@ -81,13 +81,13 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
 /***********************/
 /* reparameterise beta */
 /***********************/
+
            if(nmerge>0){
              for(d = 0; d < nmerge; d++){  
                mvar = mergeV[d];
                n1 = mergeN[d](0,i);
                n2 = mergeN[d](1,i);
-   //            inv_log_beta = exp(beta[d])/(1.0+exp(beta[d]));
-               if(mvar<(npar[0]+npar[1])){
+                if(mvar<(npar[0]+npar[1])){
                  if(mergeUS[d]==0){
                    n1 += us[usdamcat[i]];
                  }
@@ -95,15 +95,9 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                    n2 += us[usdamcat[i]];
                  }
                  if(mvar<npar[0]){
-                     betaDus[mvar] = betaDus[mvar]+log(n2/n1);
-//                   betaDus[mvar] = inv_log_beta/n1;
-//                   betaDus[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-//                   betaDus[mvar] = log(betaDus[mvar]/(1.0-betaDus[mvar]));
+                   betaDus[mvar] = betaDus[mvar]+log(n2/n1);
                  }else{
                    betaDs[mvar] = betaDs[mvar]+log(n2/n1);
-//                   betaDs[mvar] = inv_log_beta/n1;
-//                   betaDs[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-//                   betaDs[mvar] = log(betaDs[mvar]/(1.0-betaDs[mvar]));
                  }
                }else{
                  mvar -= npar[0]+npar[1];
@@ -114,15 +108,9 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                    n2 += us[nusd+ussirecat[i]];
                  }
                  if(mvar<npar[2]){
-                     betaSus[mvar] = betaSus[mvar]+log(n2/n1);
-//                   betaSus[mvar] = inv_log_beta/n1;
-//                   betaSus[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-//                   betaSus[mvar] = log(betaSus[mvar]/(1.0-betaSus[mvar]));
+                   betaSus[mvar] = betaSus[mvar]+log(n2/n1);
                  }else{
-                     betaSs[mvar] = betaSs[mvar]+log(n2/n1);
-//                   betaSs[mvar] = inv_log_beta/n1;
-//                   betaSs[mvar] /= ((inv_log_beta/n1)+((1.0-inv_log_beta)/n2));
-//                   betaSs[mvar] = log(betaSs[mvar]/(1.0-betaSs[mvar]));
+                   betaSs[mvar] = betaSs[mvar]+log(n2/n1);
                  }
                }
              }    
@@ -191,7 +179,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                   N = n+us[usdamcat[i]];
                   S_vec *= N/(n*(N-n));
                   DSpred[((ndam[i]-1)*ntsire[i])+s] = rnorm(mean_vec, sqrt(S_vec));
-                  DSpred_tmp[((ndam[i]-1)*ntsire[i])+s] = log(DSpred[((ndam[i]-1)*ntsire[i])+s]);         
+                  DSpred_tmp[((ndam[i]-1)*ntsire[i])+s] = log(DSpred[((ndam[i]-1)*ntsire[i])+s]);     
                   tot_mean += DSpred[((ndam[i]-1)*ntsire[i])+s];
                 }
               }

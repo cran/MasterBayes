@@ -142,7 +142,7 @@ fail to pass under the low probability ridge that connects the two high probabil
 \subsection{Prior Specifications and \texttt{priorPed} Objects}
 \label{prior-sec}
 
-The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it woud be compromised.  For many models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for models in which parameters are confounded a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
+The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it woud be compromised.  For many models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for models in which parameters are confounded a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they are older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
 
 \begin{figure}[!h]
 \begin{center}
@@ -193,11 +193,11 @@ Equations \ref{no_pedigree-eq} and \ref{pedigree-eq} are equivalent. In the latt
 \begin{Schunk}
 \begin{Sinput}
 > res1 <- expression(varPed(x = "terr", gender = "Female", 
-+     relational = "OFFSPRING", restrict = TRUE))
++     relational = "OFFSPRING", restrict = "=="))
 \end{Sinput}
 \end{Schunk}
 
-\texttt{x} is the variable we are interested in, in this case territories.  \texttt{gender} specifies whether the variable relates to maternity (\texttt{gender="Female"}), paternity (\texttt{gender="Male"}) or both (\texttt{gender=NULL}). The argument \texttt{relational} is a little more complex, and sepcifies whether the variable is to be treated as it is (\texttt{relational=FALSE}), or is to be transformed into a distance.  \texttt{relational="OFFSPRING"} creates a variable that is the distance between \texttt{x} measured in the offspring and the parent, and \texttt{relational="MATE"} is the distance between \texttt{x} measured in a potential mother and a potential father.  When \texttt{x} is numeric, the transformed variable is a Euclidean distance. When \texttt{x} is a factor, the transformed variable is a logical vector with \texttt{TRUE} indicating that \texttt{x} for the two indivdiuals are the same, and \texttt{FALSE} indicating that they are different.  In this example we are dealing with a logical variable that is \texttt{TRUE} when offspring and females are present on the same territory, and \texttt{FALSE} if not. We could estimate a parameter associated with this variable which would be interpreted as the probability of within territory maternity.  However, in this case we are assuming that extra territory maternity does not occur and we can use the argument \texttt{restrict=TRUE} to retain mothers that have \texttt{TRUE} (same territory as the offspring) for the transformed variable. Females that are on a different territory to the offspring have \texttt{FALSE} for the transformed variable \texttt{x}, and are excluded as mothers.  This is essentially a strong prior on the parameter associated with within territory/extra territory maternity, but is computationaly faster because excluded mothers can be discarded for particular offspring.\\
+\texttt{x} is the variable we are interested in, in this case territories.  \texttt{gender} specifies whether the variable relates to maternity (\texttt{gender="Female"}), paternity (\texttt{gender="Male"}) or both (\texttt{gender=NULL}). The argument \texttt{relational} is a little more complex, and sepcifies whether the variable is to be treated as it is (\texttt{relational=FALSE}), or is to be transformed into a distance.  \texttt{relational="OFFSPRING"} creates a variable that is the distance between \texttt{x} measured in the offspring and the parent, and \texttt{relational="MATE"} is the distance between \texttt{x} measured in a potential mother and a potential father.  When \texttt{x} is numeric, the transformed variable is a Euclidean distance. When \texttt{x} is a factor, the transformed variable is a logical vector with \texttt{TRUE} indicating that \texttt{x} for the two indivdiuals are the same, and \texttt{FALSE} indicating that they are different.  In this example we are dealing with a logical variable that is \texttt{TRUE} when offspring and females are present on the same territory, and \texttt{FALSE} if not. We could estimate a parameter associated with this variable which would be interpreted as the probability of within territory maternity.  However, in this case we are assuming that extra territory maternity does not occur and we can use the argument \texttt{restrict="=="} to retain mothers that have the same territory as the offspring for the transformed variable. Females that are on a different territory to the offspring are excluded as mothers.  This is essentially a strong prior on the parameter associated with within territory/extra territory maternity, but is computationaly faster because excluded mothers can be discarded for particular offspring.\\
 
 We also need to exclude indidvuals that are born in 1999 as potential parents
  
@@ -247,12 +247,12 @@ We also need to create a \texttt{GdataPed} object for storing the genotype data 
 \end{Sinput}
 \end{Schunk}
 
-\texttt{GdataPed} objects store genotype data (\texttt{G}) as a list of \texttt{genotype} objects (See the package genetics).  A list of \texttt{genotype} objects can be directly passed to the argument \texttt{G}, or a data frame can be passed that is coerced to a list of genotype objects using the function \texttt{genotype.list}. The variable \texttt{id} is required, and links genotypes with individuals.  Indivdiuals can have multiple genotypes if they have been genotyped more than once.  If \texttt{G} is a data.frame with a column named \texttt{id}, \texttt{id} does not have to be explicitly passed to \texttt{GdataPed}.  If \texttt{categories} is not specified then genotyping error rates are assumed not to vary across genotypes, otherwise \texttt{categories} must be a vector of factors the same length as \texttt{id}.\\
+\texttt{GdataPed} objects store genotype data (\texttt{G}) as a list of \texttt{genotype} objects for dominant markers (See the package genetics), or \texttt{genotypeD} objects for dominant markers.  A list of \texttt{genotype} or \texttt{genotypeD} objects can be directly passed to the argument \texttt{G}, or a data frame can be passed that is coerced to a list of genotype objects using the function \texttt{genotype.list}. The variable \texttt{id} is required, and links genotypes with individuals.  Indivdiuals can have multiple genotypes if they have been genotyped more than once.  If \texttt{G} is a data.frame with a column named \texttt{id}, \texttt{id} does not have to be explicitly passed to \texttt{GdataPed}.  If \texttt{categories} is not specified then genotyping error rates are assumed not to vary across genotypes, otherwise \texttt{categories} must be a vector of factors the same length as \texttt{id}.\\
 
 \subsection{Approximate Methods and \texttt{startPed} Objects}
 \label{approx-sec}
 
-The optional \texttt{startPed} object specifies the starting parameterisation for the model, and logical arguments specifying which parts of the model are to be fixed at the starting parameterisation and not to be estimated. Maximum likelihood or heuristic starting parameterisations are used by default, and all estimable parameters are estimated, unless ortherwise specified. These parameters may include the pedigree (\texttt{P}), genotypes (\texttt{G}), base population allele frequencies (\texttt{A}), allelic dropout rates \texttt(E1), stochastic genotping error rates (\texttt {E2}), unsampled male (\texttt{USsire}) and female(\texttt{USdam}) population sizes, and most importantly the parameters of the multinomial log-linear model (\texttt{beta}). Estimating all unknown parameters can be computationaly intensive, and preliminary analyses can usually be caried out using approximate methods.  A commonly used approximation for dealing with genotyping error is to integrate out any uncertainty prior to the parentage anlaysis (See Section \ref{Error-sec}).  We can use the approximation by specifying \texttt{estG=FALSE}; if we were to use the exact solution we would be required to estimate the actual genotypes of all individuals.  When \texttt{estG=FALSE}, error rates and allele frequencies are also unestimable and need to be specified.  If the approximation is used, the corrected model of genotyping error used by CERVUS is implemented \citep{Kalinowski.2006}, and \texttt{E2} is the per-allele probability of an error.  In CERVUS this is specified as a per-genotype probaility, and the default value of 0.005 is close to the CERVUS default ($0.01 \approx 2(1-0.005)0.005+0.005^{2}$).  Allele frequencies are taken directly from the genotype data using the function \texttt{extractA}, if not specified.  
+The optional \texttt{startPed} object specifies the starting parameterisation for the model, and logical arguments specifying which parts of the model are to be fixed at the starting parameterisation and not to be estimated. Maximum likelihood or heuristic starting parameterisations are used by default, and all estimable parameters are estimated, unless ortherwise specified. These parameters may include the pedigree (\texttt{P}), genotypes (\texttt{G}), base population allele frequencies (\texttt{A}), allelic dropout rates \texttt(E1), stochastic genotping error rates (\texttt {E2}), unsampled male (\texttt{USsire}) and female(\texttt{USdam}) population sizes, and most importantly the parameters of the multinomial log-linear model (\texttt{beta}). Estimating all unknown parameters can be computationaly intensive, and preliminary analyses can usually be caried out using approximate methods.  A commonly used approximation for dealing with genotyping error is to integrate out any uncertainty prior to the parentage anlaysis (See Section \ref{Error-sec}).  We can use the approximation by specifying \texttt{estG=FALSE}; if we were to use the exact solution we would be required to estimate the actual genotypes of all individuals.  When \texttt{estG=FALSE}, error rates and allele frequencies are also unestimable and need to be specified.  If the approximation is used, the corrected model of genotyping error used by CERVUS is implemented \citep{Kalinowski.2006}, and \texttt{E2} is the per-allele probability of an error.  In CERVUS this is specified as a per-genotype probaility, and the default value of 0.005 is close to the CERVUS default ($0.01 \approx 2(1-0.005)0.005+0.005^{2}$). For dominant markers the error rates \texttt{E1} and \texttt{E2} refer to the probability  Allele frequencies are taken directly from the genotype data using the function \texttt{extractA}, if not specified.  
 
 
 \subsection{Categorical Estimation}
@@ -1274,7 +1274,7 @@ Consider a study site with 50 territories, each of which contains a pair of adul
 +     offspring = offspring, terr = terr))
 >
 > res1 <- expression(varPed(x = "terr", gender = "Female", 
-+      relational = "OFFSPRING", restrict = TRUE))
++      relational = "OFFSPRING", restrict = "=="))
 > var1 <- expression(varPed(x = "terr", gender = "Male", 
 +      relational = "OFFSPRING"))
 > res2 <- expression(varPed(x = "offspring", restrict = 0))
@@ -1535,7 +1535,7 @@ MasterBayes is able to work with longitudinal data, allowing the possibility of 
 >
 > res1 <- expression(varPed(x = "offspring", restrict = 0))
 > res2 <- expression(varPed(x = "year", relational = "OFFSPRING", 
-+     restrict = TRUE))
++     restrict = "=="))
 >
 > # parents must be recorded in the year the offspring was born
 > # but must not be born in that year
@@ -1705,10 +1705,22 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(\textrm{\texttt{x}}_{i}+\textrm{\te
 p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i}-\textrm{\texttt{x}}_{o}|)...)
 \end{equation}
 
+\texttt{varPed(x, gender="Female", relational="OFFSPRINGV")}
+
+\begin{equation}
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(\textrm{\texttt{x}}_{i}-\textrm{\texttt{x}}_{o})...)
+\end{equation}
+
 \texttt{varPed(x, gender="Female", relational="MATE")}
 
 \begin{equation}
 p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i}-\textrm{\texttt{x}}_{j}|)...)
+\end{equation}
+
+\texttt{varPed(x, gender="Female", relational="MATEV")}
+
+\begin{equation}
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(\textrm{\texttt{x}}_{i}-\textrm{\texttt{x}}_{j})...)
 \end{equation}
 
 \texttt{varPed(x, gender="Female", lag=c(-1,-1))}

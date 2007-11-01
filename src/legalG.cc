@@ -123,12 +123,12 @@ index  += maxall;
 
     for(i=0; i<nind; ++i){
       for(l=0; l<nloci; ++l){
-        if(damP[i]!=nind || sireP[i]!=nind){
+        if(damP[i]<nind || sireP[i]<nind){
 
           o1 = G[i][l*2];
           o2 = G[i][(l*2)+1];     
 
-          if(damP[i]!=nind && sireP[i]!=nind){
+          if(damP[i]<nind && sireP[i]<nind){
 
             d1 = G[damP[i]][l*2];
             d2 = G[damP[i]][(l*2)+1];     
@@ -215,7 +215,7 @@ index  += maxall;
               }
             }
           }else{            
-            if(damP[i]!=nind){
+            if(damP[i]<nind){
               d1 = G[damP[i]][l*2];
               d2 = G[damP[i]][(l*2)+1];     
               if(o1!=d1 &&  o1!=d2 && o2!=d1 && o2!=d2){
@@ -243,12 +243,12 @@ index  += maxall;
             }           
           }
         }else{  
-          if(no_off[i]==0){      // if founders have missing genotypes and no offspring
+          if(no_off[i]==0){      // if founders have no offspring and missing genotypes
             if(G[i][l*2]==-999){
               G[i][l*2] = rmultinom_size1(A[l], nall[l]);
               G[i][(l*2)+1] = rmultinom_size1(A[l], nall[l]);
             }
-          }else{                // if founders have missing genotypes and offspring
+          }else{                // if founders have offspring and missing genotypes
             if(G[i][l*2]==-999){
               for(itt_set=0; itt_set < nall[l]; itt_set++){ 
                 Pall[itt_set] = 0.001;
@@ -307,11 +307,11 @@ index  += maxall;
         qhom = pow(A[l][1], 2.0);
         pqhet = 2.0*A[l][0]*A[l][1];
  
-        if(damP[i]!=nind || sireP[i]!=nind){
+        if(damP[i]<nind || sireP[i]<nind){
  
           o1 = G[i][l];
  
-          if(damP[i]!=nind && sireP[i]!=nind){
+          if(damP[i]<nind && sireP[i]<nind){
 
             d1 = G[damP[i]][l];
 
@@ -370,7 +370,7 @@ index  += maxall;
               }
             }
           }else{  // only one parent
-            if(damP[i]!=nind){
+            if(damP[i]<nind){
               d1=G[damP[i]][l];
             }else{
               d1=G[sireP[i]][l];
@@ -403,7 +403,6 @@ index  += maxall;
           }
         }else{   // neither parent
           if(G[i][l]==-999){
-            TacP==false;
             G[i][l] = (int)rbinom(1.0, pow(qhom,0.5));     
             G[i][l] += (int)rbinom(1.0, pow(qhom,0.5));     
           } 

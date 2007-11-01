@@ -13,11 +13,11 @@ genotypeD(a1, locus=NULL)
 }
 \details{
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{genotype}, \code{summary.genotypeD}}
 \examples{
 l1<-rbinom(100,1,0.5)
 l1<-genotypeD(l1)
 }
 \keyword{classes}
-}
+

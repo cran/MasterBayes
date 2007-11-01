@@ -21,7 +21,7 @@ simpedigree(PdP, beta=NULL, nUS=NULL, ...)
    \item{USdam.formula}{variable of the form \code{expression(\link{varPed}(...))} that can be included in the \code{formula} argument of \code{\link{PdataPed}} so that unobserved male records are effectively hidden}
 }
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{MCMCped}
 \examples{
 

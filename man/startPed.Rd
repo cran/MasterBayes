@@ -15,9 +15,9 @@ startPed(id=NULL, G=NULL, estG=TRUE, A=NULL, estA=TRUE, E1=NULL,
   \item{estG}{logical; should genotypes be estimated?}
   \item{A}{list of allele frequencies}
   \item{estA}{logical; should base-population allele frequencies be estimated? }
-  \item{E1}{vector of allelic dropout rates (default=0.005)}
+  \item{E1}{vector of allelic dropout rates for codominat markers or probability of mis-scoring a dominant allele as recessive for dominant markers (default=0.005)}
   \item{estE1}{logical; should allelic dropout rates be estimated?}
-  \item{E2}{vector of stochastic genotyping error rates (default=0.005)}
+  \item{E2}{vector of stochastic genotyping error rates for codominat markers or probability of mis-scoring a recessive allele as dominant for dominant markers (default=0.005)}
   \item{estE2}{logical; should stochastic error rates be estimated?}
   \item{dam}{vector of dam's.  If the dam is unknown use \code{NA}. All dam's must be in \code{id}}
   \item{sire}{vector of sire's.  If the sire is unknown use \code{NA}. All sire's must be in \code{id}}
@@ -27,14 +27,14 @@ startPed(id=NULL, G=NULL, estG=TRUE, A=NULL, estA=TRUE, E1=NULL,
   \item{USdam}{vector of unsampled female population sizes}
   \item{estUSdam}{logical; should the female population sizes be estimated?}
   \item{USsire}{vector of unsampled male population sizes}
-  \item{estUSsire}{logical; should the male population sizes be estimated?}
+  \item{estUSsire}{logical or character; if \code{TRUE} the male population size is estimated separately from the female population size, if \code{"USdam"} male and female population sizes are constrained to be the same.}
   \item{...}{}
 }
 \details{
-If \code{estG=FALSE} an approximation is used for genotyping error.  In this case error rates and allele frequencies are not estimated but fixed at the starting parameterisation.  If indivdiuals have been typed more than once, then the approxiamtion only uses the genotype that first appears in the \code{GdP$G} object passed to \code{\link{MCMCped}}.  If \code{A} is not specified estimates are taken directly from \code{GdP$G} using \code{\link{extractA}}.  If \code{E1} and \code{E2} are not specified they are set to 0.005.  Note that if the approximation for genotyping error is used Wang's (2005) model is not used, and the CEVUS model (Marshall 1998) is adopted.  In this case \code{E2} is the per-allele error rate and \code{E2}(2-\code{E2}) is the per-genotype error rate used by CERVUS.  If \code{dam} and \code{sire} are not specified the most likely set of parents given the genetic data are used (see \code{\link{MLE.ped}}).  The starting value of \code{beta}, if not given, is the MLE of beta given the starting pedigree (see \code{\link{MLE.beta}}).   The starting values of \code{USdam} and \code{USsire}, if not given, are the MLE based on the genotype data (see \code{\link{MLE.popsize}}).     
+If \code{estG=FALSE} an approximation is used for genotyping error.  In this case error rates and allele frequencies are not estimated but fixed at the starting parameterisation.  If indivdiuals have been typed more than once, then the approxiamtion only uses the genotype that first appears in the \code{GdP$G} object passed to \code{\link{MCMCped}}.  If \code{A} is not specified estimates are taken directly from \code{GdP$G} using \code{\link{extractA}}.  If \code{E1} and \code{E2} are not specified they are set to 0.005.  Note that if the approximation for genotyping error is used with codominant markers, Wang's (2005) model is not used, and the CEVUS model (Marshall 1998) is adopted.  In this case \code{E2} is the per-allele error rate and \code{E2}(2-\code{E2}) is the per-genotype error rate used by CERVUS.  If \code{dam} and \code{sire} are not specified the most likely set of parents given the genetic data are used (see \code{\link{MLE.ped}}).  The starting value of \code{beta}, if not given, is the MLE of beta given the starting pedigree (see \code{\link{MLE.beta}}).   The starting values of \code{USdam} and \code{USsire}, if not given, are the MLE based on the genotype data (see \code{\link{MLE.popsize}}).     
 }
 \value{list containing the arguments passed}
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 # In this example we simulate a pedigree and then fix the

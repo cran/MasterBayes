@@ -29,7 +29,7 @@ Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31
 Marshall J.D. \emph{et al} (1998) Molecular Ecology 7 639-655
 Kalinowski S.T. \emph{et al}, Molecular Ecology \emph{in press}
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 data(WarblerP)

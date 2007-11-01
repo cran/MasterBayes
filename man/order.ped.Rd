@@ -11,9 +11,9 @@ order.ped(ped, time_born=NULL, ...)
   \item{...}{further arguments to be passed}
 }
 \value{
-  an ordered pedigree pedigree with id, dam and sire in each column}
+  an ordered pedigree pedigree with id, dam and sire in each column
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 pedigree<-matrix(NA, 8,3)

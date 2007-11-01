@@ -9,7 +9,7 @@
   \item{...}{further arguments to be passed}
 }
 \value{list of allele frequnecies at each loci}
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{genotype.list}}, \code{genotype}}
 \examples{
   data(WarblerG)

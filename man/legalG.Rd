@@ -19,7 +19,7 @@ legalG(G, A, ped, time_born=NULL, marker.type="MS", ...)
   \item{G}{a list of \code{genotype} objects with positive likelihood given the pedigree}
   \item{legal}{logical; TRUE if the the genotype configuration passed to \code{legalG} had a positive likelihood}
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 data(WarblerG)

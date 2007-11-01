@@ -44,7 +44,7 @@ function(PdP=PdataPed(),
     nsamp<-length(GdP$id)
     maxrep<-max(0,table(as.numeric(GdP$id)))
     ncat<-max(1,length(unique(GdP$categories)))
-    
+
 ############################### build design matrices ############################################################
 
     X.list<-getXlist(PdP, GdP, A=sP$A, E1=sP$E1, E2=sP$E2, mm.tol=mm.tol) 
@@ -76,6 +76,7 @@ function(PdP=PdataPed(),
 ################################ make sure evrything is OK ####################################################
 
   sP<-ErrorCheck(sP, tP, pP, PdP=PdP, GdP=GdP, unique_id=unique_id, nbeta=nbeta, nlinked=nlinked)
+  if(sP$estG==FALSE & write_postG==TRUE){write_postG<-FALSE}
 
 ################################ get starting/tuning/prior parameterisation if not given ############################
 
@@ -176,7 +177,7 @@ function(PdP=PdataPed(),
    sP$sire[which(is.na(sP$sire)==T)]<-nind+1+nusd
    tPus<-NULL
 
-   if(((nusd+nuss)*(sP$estUSdam+sP$estUSsire))>0){
+   if(((nusd+nuss)*(sP$estUSdam+(sP$estUSsire==TRUE | sP$estUSsire=="USdam")))>0){
      tPus<-sqrt(diag(nusd+nuss)*c(tP$USdam, tP$USsire))
    }
 
@@ -203,7 +204,7 @@ function(PdP=PdataPed(),
 
   mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%GdP$marker.type*c(1:3))
 
-estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric)
+estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"))
 store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
 
 Merge4C<-function(X.list){
@@ -265,27 +266,27 @@ output<-.C("MCMCped",
 	as.double(X_design_betaDs),          # design matrices for dam variables
         as.double(X_design_betaSs),          # design matrices for sire variables 
         as.double(X_design_betaDSs),         # design matrices for dam:sire interactions/
-	as.double(unlist(sP$A)),	     # sPing allele frequencies
-	as.double(sP$E1),	             # sPing values of E1 and E2
-	as.double(sP$E2),	             # sPing values of E1 and E2
-	as.double(c(sP$beta)),	             # sPing vector of beta
-	as.double(c(sP$USdam, sP$USsire)),   # sPing vector of beta
-        as.integer(sP$G),                  # sPing true genotypes  
-	as.integer(as.numeric(sP$dam)-1),	        # sPing vector of dams
-	as.integer(as.numeric(sP$sire)-1),	        # sPing vector of sires
-	as.double(post$A),	# posterior distribution of allele frequencies
-	as.double(post$E1),	# posterior distribution of E1
-	as.double(post$E2),	# posterior distribution of E2
-	as.double(post$beta),	# posterior distribution of beta
+	as.double(unlist(sP$A)),	     # starting allele frequencies
+	as.double(sP$E1),	             # starting values of E1 and E2
+	as.double(sP$E2),	             # starting values of E1 and E2
+	as.double(c(sP$beta)),	             # starting vector of beta
+	as.double(c(sP$USdam, sP$USsire)),   # starting vector of beta
+        as.integer(sP$G),                    # starting true genotypes  
+	as.integer(as.numeric(sP$dam)-1),    # starting vector of dams
+	as.integer(as.numeric(sP$sire)-1),   # starting vector of sires
+	as.double(post$A),	                # posterior distribution of allele frequencies
+	as.double(post$E1),	                # posterior distribution of E1
+	as.double(post$E2),	                # posterior distribution of E2
+	as.double(post$beta),	                # posterior distribution of beta
 	as.double(c(post$USdam, post$USsire)),	# posterior distribution of beta
-        as.integer(unlist(post$G)),    # posterior distribution of true genotypes
-	as.integer(post$P),	# posterior distribution of Pedigree
-	as.double(c(pP$E1)),            # pP distribution for E1 across categories; beta(a,b)
-	as.double(c(pP$E2)),            # pP distribution for E2 across categories; beta(a,b)
-	as.double(c(pP$beta$mu)),       # pP distribution for MVN(mu, sigma)
+        as.integer(unlist(post$G)),     # posterior distribution of true genotypes
+	as.integer(post$P),	        # posterior distribution of Pedigree
+	as.double(c(pP$E1)),            # prior distribution for E1 across categories; beta(a,b)
+	as.double(c(pP$E2)),            # prior distribution for E2 across categories; beta(a,b)
+	as.double(c(pP$beta$mu)),       # prior distribution for MVN(mu, sigma)
 	as.double(c(solve(pP$beta$sigma))),
         as.double(c(sum(log(eigen(pP$beta$sigma)$values)))),
-	as.double(pPUSmu),       # pP distribution for MVN(mu, sigma)
+	as.double(pPUSmu),              # prior distribution for MVN(mu, sigma)
 	as.double(pPUSsigma),
         as.double(c(tP$E1)),                  # standard deviation of normal candidate generating function for E1
         as.double(c(tP$E2)),                  # standard deviation of normal candidate generating function for E1
@@ -303,7 +304,7 @@ output<-.C("MCMCped",
   post$E2<-output[[45]]
   post$beta<-output[[46]]
 
-  if(sP$estUSdam==TRUE | sP$estUSsire==TRUE ){
+  if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
     UStmp<-t(matrix(output[[47]], nuss+nusd, ceiling((nitt-burnin)/thin)))
     if(sP$estUSdam==TRUE){
       post$USdam<-mcmc(as.matrix(UStmp[,1:nusd]))
@@ -313,7 +314,7 @@ output<-.C("MCMCped",
         colnames(post$USdam)<-"USdam"
       }
     }
-    if(sP$estUSsire==TRUE){
+    if(sP$estUSsire==TRUE | sP$estUSsire=="USdam"){
       post$USsire<-mcmc(as.matrix(UStmp[,(1:nuss)+nusd]))
       if(nuss>1){
         colnames(post$USsire)<-paste("USsire.", unique(PdP$USsire), sep="")

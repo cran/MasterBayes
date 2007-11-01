@@ -2,7 +2,6 @@
 
 ########### extract posterior samples from C++ ######################################################################
 
- 
   if(length(post$E1)!=0 & sP$estE1==TRUE){
     post$E1<-mcmc(t(matrix(post$E1, length(sP$E1), ceiling((nitt-burnin)/thin))))
     if(length(sP$E1)==1){
@@ -54,6 +53,7 @@
     names(post$A)<-names(sP$A)
   }
 
+
   if(length(post$G)!=0 & sP$estG==TRUE & write_postG==TRUE){
     end<-0
     nall<-unlist(lapply(sP$A, length))
@@ -70,6 +70,7 @@
       }else{
         colnames(post_GP[[loc]])<-c("0/0", "0/1", "1/1")
       }
+      rownames(post_GP[[loc]])<-unique_id
     }
     post$G<-post_GP
     names(post$G)<-names(sP$A)
@@ -122,10 +123,10 @@
     post$A<-rep(0, ceiling((nitt-burnin)/thin)*length(unlist(sP$A)))
   }
   if(length(post$USdam)==0 & sP$estUSdam==TRUE){
-    post$USdam<-rep(0, ceiling((nitt-burnin)/thin)*length(sP$USdam))
+    post$USdam<-rep(0, ceiling((nitt-burnin)/thin)*length(unique(sP$USdam)))
   }
-  if(length(post$USsire)==0 & sP$estUSsire==TRUE){
-    post$USsire<-rep(0, ceiling((nitt-burnin)/thin)*length(sP$USsire))
+  if(length(post$USsire)==0 & (sP$estUSsire==TRUE | sP$estUSsire=="USdam")){
+    post$USsire<-rep(0, ceiling((nitt-burnin)/thin)*length(unique(sP$USsire)))
   }
   if(length(post$P)==0 & write_postP=="JOINT" & sP$estP==TRUE){
     post$P<-rep(0, ceiling((nitt-burnin)/thin)*length(X.list$X)*2)

@@ -78,7 +78,11 @@
 
 
     if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
-      MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=ped)
+      if(sP$estUSsire=="USdam"){
+        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire="USdam", ped=ped)
+      }else{
+        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=ped)
+      }
     }
   
     if(length(PdP$USdam)==1 & PdP$USdam[1]==FALSE){
@@ -98,7 +102,7 @@
     sP$USdam<-MLENus$nUS[1:nusd]
   }
 
-  if(sP$estUSsire==TRUE & is.null(sP$USsire)){
+  if((sP$estUSsire==TRUE | sP$estUSsire=="USdam") & is.null(sP$USsire)){
     sP$USsire<-MLENus$nUS[(nusd+1):(nusd+nuss)]
   }
 
@@ -172,7 +176,7 @@
       tP$beta<-t(chol(tP$beta))
     }
 
-    if(sP$estUSdam | sP$estUSsire ){
+    if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
        if(sum(diag(MLENus$C)<0)>0){
          warning("Hessian not positive-definite for MLE.popsize")
        }
@@ -187,7 +191,7 @@
       tP$USdam<-abs(tP$USdam*diag(MLENus$C)[1:nusd])
     }
 
-     if(sP$estUSsire){
+     if(sP$estUSsire==TRUE | sP$estUSsire=="USdam"){
        if(is.null(tP$USsire)){
          tP$USsire<-rep(10, nuss)
        }else{

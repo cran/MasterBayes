@@ -9,9 +9,16 @@
     }
   }else{
     nbetaD<-length(unique(USdam))
-    if(length(USdam)!=length(length(X.list$X))){
+    if(length(USdam)!=length(X.list$X)){
       USdam<-USdam[match(X.list$id[as.numeric(names(X.list$X))], X.list$id)]
     }   
+  }
+
+  if(USsire=="USdam"){
+    USsiredam<-TRUE
+    USsire<-USdam
+  }else{  
+    USsiredam<-FALSE
   }
 
   if(length(USsire)==1){
@@ -23,15 +30,15 @@
     }
   }else{
     nbetaS<-length(unique(USsire))
-    if(length(USsire)!=length(length(X.list$X))){
+    if(length(USsire)!=length(X.list$X)){
       USsire<-USsire[match(X.list$id[as.numeric(names(X.list$X))], X.list$id)]
     }   
   }
 
   if(length(nUS)==0){
-    nUS<-matrix(1E-5, (nbetaD+nbetaS),1)
+    nUS<-matrix(1E-5, (nbetaD+nbetaS*(USsiredam==FALSE)),1)
   }else{
-    if(length(nUS)!=(nbetaD+nbetaS)){
+    if(length(nUS)!=(nbetaD+nbetaS*(USsiredam==FALSE))){
       warning("beta is wrong size in ped.loglik")
       stop()
     }else{
@@ -39,8 +46,8 @@
     }
   }
 
-    lower<-rep(1E-5,nbetaD+nbetaS)
-    upper<-rep(1E+32,nbetaD+nbetaS)
+    lower<-rep(1E-5,nbetaD+nbetaS*(USsiredam==FALSE))
+    upper<-rep(1E+32,nbetaD+nbetaS*(USsiredam==FALSE))
 
     nsire<-unlist(lapply(X.list$X, function(x){length(x$sire.id)}))
     ndam<-unlist(lapply(X.list$X, function(x){length(x$dam.id)}))
@@ -90,10 +97,19 @@
           }         
         }
 
-    optim.out <- optim(nUS, popsize.loglik, method = "L-BFGS-B",lower=lower, upper=upper, control = list(fnscale = -1), hessian = TRUE, X=X, USdam=USdam, USsire=USsire, ped=ped)
+    optim.out <- optim(nUS, popsize.loglik, method = "L-BFGS-B",lower=lower, upper=upper, control = list(fnscale = -1), hessian = TRUE, X=X, USdam=USdam, USsire=USsire, ped=ped, USsiredam=USsiredam)
 
-     C <- solve(-1 * optim.out$hessian)
-     B.start <- optim.out$par
-
+    if(USsiredam){
+      C<-diag(nbetaD+nbetaS) 
+      if(nbetaD==1){
+        C[1]<-solve(-1 * optim.out$hessian)
+      }else{
+        C[,1:nbetaD][1:nbetaD,]<-solve(-1 * optim.out$hessian)
+      }
+      B.start <- rep(optim.out$par,2)
+    }else{
+      C <- solve(-1 * optim.out$hessian)
+      B.start <- optim.out$par
+    }
     list(nUS=B.start, C=C)
 } 

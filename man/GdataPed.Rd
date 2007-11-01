@@ -14,11 +14,11 @@ GdataPed(G, id = NULL, categories = NULL, perlocus=FALSE, marker.type="MS", ...)
  \item{marker.type}{"MS" or "AFLP" for codominant or dominant markers respectively}
  \item{...}{further arguments to be passed}
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 data(WarblerG)
 GdP<-GdataPed(WarblerG)
 }
 \keyword{classes}
-}
+

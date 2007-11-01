@@ -34,15 +34,14 @@ MCMCped(PdP=PdataPed(), GdP=GdataPed(), sP=startPed(), tP=tunePed(),
   \item{beta}{an \code{mcmc} object containing samples from the posterior distribution of the population level parameters}
   \item{USdam}{an \code{mcmc} object containing samples from the posterior distribution of the number of unsampled females}
   \item{USsire}{an \code{mcmc} object containing samples from the posterior distribution of the number of unsampled males}
-  \item{E1}{an \code{mcmc} object containing samples from the posterior distribution of allelic dropout rates}
-  \item{E2}{an \code{mcmc} object containing samples from the posterior distribution of stochasting genotyping error rates}
+  \item{E1}{an \code{mcmc} object containing samples from the posterior distribution of allelic dropout rates for codominant markers or the probability of mis-scoring a dominant allele as recessive for dominant markers}
+  \item{E2}{an \code{mcmc} object containing samples from the posterior distribution of stochasting genotyping error rates for codominant markers or the probability of mis-scoring a recessive allele as dominant for dominant markers}
   \item{G}{list of marginal distributions of true genotypes at each locus}
   \item{A}{list of \code{mcmc} objects containing samples from the posterior distribution of the base population allele frequencies at each locus}
   \item{P}{either samples from the posterior distribution of the pedigree, or the marginal distribution of parents}
-
 }
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{getXlist}}}
 \examples{
 

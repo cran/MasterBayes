@@ -23,7 +23,7 @@ fillX.G(X.list, A, G, E1=0.005, E2=0.005, marker.type="MS", ...)
 Kalinowski S.T. \emph{et al} (2006) Molecular Ecology \emph{in press}
 Hadfield J. D. \emph{et al} (2007) \emph{in prep}
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \note{If a  \code{\link{GdataPed}} object is passed to \code{\link{getXlist}} then the genetic likelihoods will be calculated by default.
 }
 \seealso{\code{\link{getXlist}}}

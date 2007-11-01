@@ -12,7 +12,6 @@ void fillXG(
         int *nlociP,		 // number of loci
         int *nallP,              // number of alleles per locus
         int *maxallP,            // number of alleles at most polymorhic locus
-        int *nparP,             // 
         int *offidP,             // offspring id
         int *damidP,             // candidate dam id's for each offspring
         int *sireidP,		 // candidate sire id's for each offspring	
@@ -31,7 +30,6 @@ int 	nind = nindP[0],
 	nloci = nlociP[0],      
         maxall = maxallP[0],
         *nall = nallP,
-        *npar = nparP,
         i,
         index=0,
         mtype = mtypeP[0],

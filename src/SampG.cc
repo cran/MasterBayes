@@ -9,16 +9,12 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         int n = 0;                // number of samples within indiviual
         int ns;                   // sample within indiviual
         int obs_G[maxrep][2];     // observed genotypes of an individual
-        int off_G[50][2];         // genotypes of individual's offspring
-        int sp_G[50][2];          // genotypes of individual's spouses
         int da[2];                // genotypes of individual's dam
         int sa[2];                // genotypes of individual's sire
         int S_1;
         int S_2;
         int off_1;
         int off_2;
-        int off_pos[50];
-        int sire_pos[50];
         int sp_1;
         int sp_2;
         double tac;
@@ -41,7 +37,6 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         int nl;                   // number of alleles at locus l
         int cnt;                  // temporary counter
         int q = 1;                // a bit of fuckwittery
-        double b;                 // is this sample from the base population
         int misstype = 0;         // are there dupliacate genotypes that differ
         int all_set[maxall];      // temporary vector for counting sampled alleles
         int unique_set[maxall];   // set of sampled alleles

@@ -11,7 +11,7 @@ MLE.popsize(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL,
 \arguments{
   \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}}
  \item{USdam}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled females exists. If \code{USdam} is a character vector it must have the same length as \code{id} with factor levels representing sub-populations (in time or space) over which the number of unsampled females vary.}  
-  \item{USsire}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled males exists. if    \code{USsire} is a character vector it must have the same length as \code{id} with factor levels representing sub-populations (in time or space) over which the number of unsampled males vary.}  
+  \item{USsire}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled males exists. if    \code{USsire} is a character vector it must either have the same length as \code{id} with factor levels representing sub-populations (in time or space) over which the number of unsampled males vary, or alternatively \code{"USdam"}, in which case the unsampled male and female populations are constrained to be equal.}  
   \item{nUS}{optional starting vector for the size of the unsampled population.  Parmeters for the unsampled female population come before the male population.}
   \item{ped}{optional pedigree with id, dam and sire in ech column}
   \item{...}{further arguments to be passed}
@@ -21,7 +21,7 @@ MLE.popsize(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL,
  \item{C}{large sample variance-covariance matrix of \code{nUS} MLE's}
 }
 \references{Nielsen. R. \emph{et.al} Genetics (2001) 157 4 1673-1682}
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \note{
 Nielsen's original model does not account for genotyping error, and estimation of the unsampled population size is VERY sensitive to the level of genotyping error.  This function implements a commonly used approxiamtion for genotyping error that ignores pedigree information. For many problems this approximation seems valid, but appears to break down when estimating the size of the unsampled population size.  Bayesian estimation of the unsampled population size (see \code{\link{MCMCped}}) that uses an exact solution for genotyping error is more robust.
 }
