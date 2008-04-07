@@ -1,4 +1,4 @@
-"getsPandtP"<-function(sP, tP, PdP, GdP, X.list, nbeta, unique_id, ...){
+"getsPandtP"<-function(sP, tP, PdP, GdP, X.list, nbeta, unique_id, checkP, ...){
 
   if(sP$estP==TRUE & sP$estG==FALSE & length(sP$G)==0){CERVUS<-TRUE}else{CERVUS<-FALSE} 
   # use the cervus approximation for genotyping error
@@ -31,7 +31,7 @@
       }
     }
   }else{
-    if(sP$estG==TRUE){
+    if(sP$estG==TRUE | any(sP$E1==0)){
       sP$E1[which(sP$E1==0)]<-1e-5
     }
   }
@@ -48,7 +48,7 @@
       }
     }
   }else{
-    if(sP$estG==TRUE){
+    if(sP$estG==TRUE | any(sP$E2==0)){
       sP$E2[which(sP$E2==0)]<-1e-5
     }
   }
@@ -75,7 +75,6 @@
     if(is.null(sP$sire)==FALSE){
       ped[,3]<-match(sP$sire, unique_id)
     }
-
 
     if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
       if(sP$estUSsire=="USdam"){
@@ -107,7 +106,7 @@
   }
 
   if(sP$estP==TRUE){  
-   ped<-MLE.ped(X.list, ped=ped, USdam=PdP$USdam, nUSdam=sP$USdam, USsire=PdP$USsire, nUSsire=sP$USsire)
+   ped<-MLE.ped(X.list, ped=ped, USdam=PdP$USdam, nUSdam=sP$USdam, USsire=PdP$USsire, nUSsire=sP$USsire, checkP=checkP)
   }
 
   sP$dam<-ped[,2]
@@ -173,7 +172,7 @@
         }
       }
       tP$beta<-sqrt(tP$beta%*%t(tP$beta))*MLEestimates$C
-      tP$beta<-t(chol(tP$beta))
+      tP$beta<-chol(tP$beta)
     }
 
     if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){

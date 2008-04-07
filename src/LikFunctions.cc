@@ -149,16 +149,15 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                  if(mergeUS[dv]==1){
                    n2 += us[usdamcat[i]];
                  }
-                 betaD[mvar] = betaD[mvar]+log(n2/n1);
+                 betaD[mvar] = beta[mvar]+log(n2/n1);
                }else{
-                 mvar -= npar[0]+npar[1];
                  if(mergeUS[dv]==0){
                    n1 += us[nusd+ussirecat[i]];
                  }
                  if(mergeUS[dv]==1){
                    n2 += us[nusd+ussirecat[i]];
                  }
-                 betaS[mvar] = betaS[mvar]+log(n2/n1);
+                 betaS[mvar-(npar[0]+npar[1])] = beta[mvar]+log(n2/n1);
                }
              }    
            }
@@ -205,7 +204,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
            d = Dams[i][d]; 
            s = Sires[i][s];
 
-           if(damsireV){    
+            if(damsireV){    
              if(sireV==true || damV==true){
                cnt = 0;
                if(damV && sireV){              // D S and DS exist
@@ -283,7 +282,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                   }
                 }
               }
-            }        
+            }  
           }else{
             if(sireV){                // S exists
                Spred = Spred - (maxc(Spred)[0] - 500.0);
@@ -306,7 +305,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                   }
                 }
               }
-               if(damV){  
+              if(damV){  
                  Dpred = Dpred - (maxc(Dpred)[0] - 500.0);
                  Dpred = exp(Dpred);
 	         l_par = log(Dpred[d]);            // log(Pr(P|beta, X)) for the parent not normalised          
@@ -329,6 +328,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                }
              }
  	   }	
+
 return ll_P_b;
 }
 
@@ -378,7 +378,6 @@ double llik = 0.0;
         }
       }
    }
-
 return llik;
 }                
 

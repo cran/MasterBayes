@@ -36,7 +36,8 @@ export(
 #  getsPandtP,
   legalG,
   order.ped,
-  extractA 
+  extractA,
+  post.pairs 
 ) 
 S3method(summary, genotypeD)
 S3method(print, genotypeD)

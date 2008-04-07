@@ -14,7 +14,6 @@
 #include "ErrorMat.h"
 #endif
 
-
 #ifndef _SPECRAND_H
 #include "SpecRand.h"
 #endif
@@ -31,6 +30,15 @@
 #include "SampP.h"
 #endif
 
+#ifndef _SAMPD_H
+#include "SampD.h"
+#endif
+
+#ifndef _SAMPS_H
+#include "SampS.h"
+#endif
+
 #ifndef _CALCX_G_H
 #include "calcX_G.h"
 #endif
+

@@ -14,6 +14,20 @@
 * See Wang J.L. 2004 Genetics 166 4 1963-1979    
 */
 
+/* 
+* array of Pr(Gobs|G, E1, E2 , n(allele)) for the six possible combinations with AFLP data:
+*
+*    Gobs    G
+*    0       0/0
+*    0       1/0
+*    0       1/1
+*    1       0/0
+*    1       1/0
+*    1       1/1
+*
+* Defined for each locus and each category of samples over which error rates vary.
+* See Hadfield    
+*/
 
 #define _ERRORMAT_H
 #ifndef _GENERAL_H

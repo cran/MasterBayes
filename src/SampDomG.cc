@@ -156,17 +156,21 @@ if(id[i+end]!=ind){                 // the last record for that individual
 
           sp_1 = -999;
 
-          if(sire[o]!=ind){
-            if(sire[o]<nind){
-              sp_1 = G[sire[o]][l];
-            }
+          if(sire[o]==dam[o]){
+            sp_1=-998;
           }else{
-            if(dam[o]<nind){
-              sp_1 = G[dam[o]][l];
-            }
-          } 
+            if(sire[o]!=ind){
+              if(sire[o]<nind){
+                sp_1 = G[sire[o]][l];
+              }
+            }else{
+              if(dam[o]<nind){
+                sp_1 = G[dam[o]][l];
+              }
+            } 
+          }
 
-          if(sp_1!=-999){
+          if(sp_1>-998){
             if(off_1==1){
               if(sp_1==0){
                 Ppart[0] *= 0.0;
@@ -190,19 +194,34 @@ if(id[i+end]!=ind){                 // the last record for that individual
               }
             }
           }else{
-            if(off_1==1){
-              Ppart[0] *= q;
-              Ppart[1] *= (p+q)/2.0;
-              Ppart[2] *= p;
+            if(sp_1==-999){
+              if(off_1==1){
+                Ppart[0] *= q;
+                Ppart[1] *= (p+q)/2.0;
+                Ppart[2] *= p;
+              }else{
+                if(off_1==0){
+                  Ppart[0] *= p;
+                  Ppart[1] *= p/2.0;
+                  Ppart[2] *= 0.0;
+                }else{
+                  Ppart[0] *= 0.0;
+                  Ppart[1] *= q/2.0;
+                  Ppart[2] *= q;
+                }
+              }
             }else{
               if(off_1==0){
-                Ppart[0] *= p;
-                Ppart[1] *= p/2.0;
-                Ppart[2] *= 0.0;
-              }else{
-                Ppart[0] *= 0.0;
-                Ppart[1] *= q/2.0;
-                Ppart[2] *= q;
+                Ppart[1] *= 0.25;
+                Ppart[2] = 0.0;
+              }
+              if(off_1==1){
+                Ppart[0] = 0.0;
+                Ppart[2] = 0.0;
+              }
+              if(off_1==2){
+                Ppart[0] = 0.0;
+                Ppart[1] *= 0.25;
               }
             }
           }

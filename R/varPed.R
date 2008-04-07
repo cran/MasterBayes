@@ -110,7 +110,7 @@ if(length(restrict)!=0){
         }
         if("Female"%in%gender){
           PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
-        }
+         }
       }else{
         PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
         PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
@@ -124,17 +124,28 @@ if(length(restrict)!=0){
 
   if(hermaphrodite==TRUE){
     if(us==TRUE){
-      PedDesMatrix$Dam$id<-PedDesMatrix$Dam$id[-match(max(id), PedDesMatrix$Dam$id)]
-      PedDesMatrix$Dam_restrict$id<-PedDesMatrix$Dam_restrict$id[-match(max(id), PedDesMatrix$Dam_restrict$id)]
+      remove.extra<-match(max(id), PedDesMatrix$Dam$id)
+      if(length(remove.extra)>0){
+        PedDesMatrix$Dam$id<-PedDesMatrix$Dam$id[-match(max(id), PedDesMatrix$Dam$id)]
+        PedDesMatrix$Dam_restrict$id<-PedDesMatrix$Dam_restrict$id[-match(max(id), PedDesMatrix$Dam_restrict$id)]
+      }
     }
     if(ud==TRUE){
       if(us==FALSE){
-        PedDesMatrix$Sire$id<-PedDesMatrix$Sire$id[-match(max(id), PedDesMatrix$Sire$id)]
+        remove.extra<-match(max(id), PedDesMatrix$Sire$id)
+        if(length(remove.extra)>0){
+          PedDesMatrix$Sire$id<-PedDesMatrix$Sire$id[-match(max(id), PedDesMatrix$Sire$id)]
+          PedDesMatrix$Sire_restrict$id<-PedDesMatrix$Sire_restrict$id[-match(max(id), PedDesMatrix$Sire_restrict$id)]
+        }
       }else{
-        PedDesMatrix$Sire_restrict$id<-PedDesMatrix$Sire_restrict$id[-match(id[which(id==c(max(id)-1))], PedDesMatrix$Sire_restrict$id)]
-         }
-       }
-     }
+        remove.extra<-match(id[which(id==c(max(id)-1))], PedDesMatrix$Sire$id)
+        if(length(remove.extra)>0){
+          PedDesMatrix$Sire$id<-PedDesMatrix$Sire$id[-match(id[which(id==c(max(id)-1))], PedDesMatrix$Sire$id)]
+          PedDesMatrix$Sire_restrict$id<-PedDesMatrix$Sire_restrict$id[-match(id[which(id==c(max(id)-1))], PedDesMatrix$Sire_restrict$id)]
+        }
+      }
+    }
+  }
 }
 #####################################################################################################################
 ##########################################  true variables ##########################################################
@@ -283,6 +294,8 @@ if(length(restrict)==0){
         }
       }
     }
+
+
 ############### Covariates of distance from mate ###############################
 
     if(relational=="MATE" | relational=="MATEV"){

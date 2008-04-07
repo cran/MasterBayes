@@ -113,6 +113,7 @@ void read_stP(int noff, int *ndam, int *damid, int *nsire, int *sireid, map<int,
 	  d_cum_end = d_cum_st + ndam[i];
 	  s_cum_end = s_cum_st + nsire[i];
 	  e_i = 0;
+
 		Dams_vec[i] = ones<int>(ndam[i],1);
 		Sires_vec[i] = ones<int>(nsire[i],1);
 		for(s=s_cum_st; s<s_cum_end; s++){
@@ -131,6 +132,7 @@ void read_stP(int noff, int *ndam, int *damid, int *nsire, int *sireid, map<int,
 	s_cum_st = s_cum_end;
 
 	}
+
 }
 
 

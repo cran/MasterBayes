@@ -34,7 +34,7 @@ id<-1:150
 
 res1<-expression(varPed(x="offspring", restrict=0)) 
 res2<-expression(varPed(x="terr", gender="Female", relational="OFFSPRING", 
-  restrict=TRUE))  
+  restrict="=="))  
  
 test.data<-data.frame(id, sex, offspring, terr)
 

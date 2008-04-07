@@ -2,24 +2,25 @@
 
 int rmultinom_size1(double *prob, int mult_size){
 
-double p_tot = 0.0;
-double pp;
-int k;
-int nk = 0;
+  double p_tot = 0.0;
+  double pp;
+  int k;
+  int nk = 0;
 
-for(k= 0; k < mult_size; k++){
-p_tot += prob[k];}
+  for(k= 0; k < mult_size; k++){
+    p_tot += prob[k];
+  }
 
-	for(k= 0; k < mult_size; k++){	
-	  pp = prob[k]/p_tot;
-			if(pp>=1.0){pp = 1.0;}
-		  	  nk = (int)rbinom(1.0, pp);
-				if(nk==1){
-			  	  return k;	
-			  	  break;
-				}
-		  	  p_tot -= prob[k];
-	}	
+  for(k= 0; k < mult_size; k++){	
+    pp = prob[k]/p_tot;
+    if(pp>=1.0){pp = 1.0;}
+    nk = (int)rbinom(1.0, pp);
+    if(nk==1){
+      break;
+    }
+    p_tot -= prob[k];
+  }	
+  return k;	
 }
 
 
@@ -38,11 +39,11 @@ p_tot += prob[k];}
 			if(pp>=1.0){pp = 1.0;}
 		  	  nk = (int)rbinom(1.0, pp);
 				if(nk==1){
-			  	  return k;	
 			  	  break;
 				}
 		  	  p_tot -= prob[k];
 	}	
+        return k;	
 }
 
 

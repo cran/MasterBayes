@@ -47,7 +47,7 @@
   }
 
     lower<-rep(1E-5,nbetaD+nbetaS*(USsiredam==FALSE))
-    upper<-rep(1E+32,nbetaD+nbetaS*(USsiredam==FALSE))
+    upper<-rep(1E+7,nbetaD+nbetaS*(USsiredam==FALSE))
 
     nsire<-unlist(lapply(X.list$X, function(x){length(x$sire.id)}))
     ndam<-unlist(lapply(X.list$X, function(x){length(x$dam.id)}))

@@ -110,6 +110,8 @@ bool    estP = bool(estimatingP[0]),
         estUS = bool(estimatingP[6]), 
         perlocus = bool(estimatingP[7]),
         USdamsire = bool(estimatingP[9]),
+        checkP = bool(estimatingP[10]),
+        jointP = bool(estimatingP[11]),
         est_pE1 = FALSE,           
         est_pE2 = FALSE,
         est_pbeta = FALSE,           
@@ -137,7 +139,7 @@ double  *pA,
         **E_mat,
         *pLE_mat,
         **LE_mat;
- 
+
   pG = new(nothrow) int [(1+int(mtype==1))*nind*nloci];
   if(pG==NULL){
     Rprintf("NO MEMORY for G\n");
@@ -291,7 +293,7 @@ double  *pA,
                  DSuu[1] =0;
                }
 
-           int ncatnloci = ncat*nloci*int(perlocus) + ncat*(1-int(perlocus));
+               int ncatnloci = ncat*nloci*int(perlocus) + ncat*(1-int(perlocus));
 
 Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic dropout rate (new)
                E1_1 (ncatnloci,1,st_E1P),	        // starting vector of allelic dropout rate (old)
@@ -302,7 +304,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                beta_0 (nbeta,1,st_betaP), 	// starting vector of beta (new)
                beta_1 (nbeta,1,st_betaP), 	// starting vector of beta (old)
                beta_mapped (tot_par, 1),
-               ratio_0  [2],
+               ratio_0 [2],
                ratio_1 [2],
                int_E1,	        
                int_E2,	        
@@ -315,6 +317,8 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                prior_us_mu,
                prior_us_sigma,
                X_design_G [noff],
+               X_design_GD [noff],
+               X_design_GS [noff],
                X_design_betaDus [noff],
                X_design_betaSus [noff],
                X_design_betaDSus [noff],
@@ -408,20 +412,22 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
         if(nloci!=0){  
           read_G(st_GP, nind, nloci, G, mtype);
           read_A(st_AP, nloci, A, nall);
-                 }
+        }
 
         if(nsamp!=0 & estG==TRUE){
           read_G(GobsP, nsamp, nloci, Gobs, mtype);
         }   
-                
+ 
         read_stP(noff, ndamP, damidP, nsireP, sireidP,Dams,Sires,Dams_vec,Sires_vec);
         		        
-
         if(nbeta>0){
            read_X_beta(noff,ntdamP,ntsireP,npar,X_design_betaDusP, X_design_betaSusP,X_design_betaDSusP, X_design_betaDsP, X_design_betaSsP,X_design_betaDSsP, X_design_betaDus,X_design_betaSus,X_design_betaDSus, X_design_betaDs, X_design_betaSs,X_design_betaDSs);
+
            for(i = 0; i < tot_par; i++){
              beta_mapped[i] = beta_0[beta_mapP[i]];
            }
+
+           
            llB_0 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP, nsireP, Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN);
            if(est_pbeta){
@@ -435,7 +441,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
         if(estUS==TRUE){
           llUS_0 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_0, ratio_1);
           if(est_pus){
-            for(i = 0; i < nus; i++){
+            for(i = 0; i < (nusd+nuss*(1-int(USdamsire))); i++){
               llUS_0 += dlnorm(us_0[i], prior_us_mu[i], prior_us_sigma[i],1);
             }
           }
@@ -444,15 +450,24 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 
         if(estG==TRUE){      
           Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus, mtype);
-          calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, mtype);
+          if(jointP){
+            calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, mtype);
+          }else{
+            calcX_GD(X_design_GD, offidP, noff , ndamP, nind, Dams_vec, sire, G, nloci, A, mtype);
+            calcX_GS(X_design_GS, offidP, noff , nsireP, nind, Sires_vec, dam, G, nloci, A, mtype);
+          }
         }else{
           if(estP==TRUE){
            double E_cervus = E2_0[0]*(2-E2_0[0]); 
            Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus, mtype);
            calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_cervus, E_mat, mtype);         
-          }
-        }
- 
+           if(jointP==FALSE){
+               calcX_GcervusS(X_design_GS, X_design_G, offidP, noff, ndamP, nsireP, Dams, dam);
+               calcX_GcervusD(X_design_GD, X_design_G, offidP, noff, ndamP, nsireP, Sires, sire);
+           }
+         }
+       }
+
         if(estE1==TRUE || estE2==TRUE){    
             Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus,mtype); 
             llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
@@ -512,7 +527,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
           }
         }
 
- //***************************************************************************************************************
+//***************************************************************************************************************
 //************************************ MCMC MCMC MCMC MCMC MCMC MCMC MCMC ***************************************
 //***************************************************************************************************************
 
@@ -521,12 +536,30 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 /**************
 * sample P    *
 ***************/
-            
 	    if(estP==TRUE){ 
+
               for(i = 0; i < tot_par; i++){
                 beta_mapped[i] = beta_1[beta_mapP[i]];
               }
-              sampP(offidP,noff,X_design_G,npar, DSuu, X_design_betaDus, X_design_betaSus,X_design_betaDSus, X_design_betaDs, X_design_betaSs,X_design_betaDSs, dam,sire,beta_mapped,us_1, usdamcat,ussirecat, nusd, nuss, ndamP,nsireP,ntdamP,ntsireP, Dams_vec,Sires_vec, nind, nmerge, mergeV, mergeUS, mergeN);
+
+              if(jointP){
+                sampP(offidP,noff,X_design_G,npar, DSuu, X_design_betaDus, X_design_betaSus,X_design_betaDSus, X_design_betaDs, X_design_betaSs,X_design_betaDSs, dam,sire,beta_mapped,us_1, usdamcat,ussirecat, nusd, nuss, ndamP,nsireP,ntdamP,ntsireP, Dams_vec,Sires_vec, nind, nmerge, mergeV, mergeUS, mergeN, checkP);
+              }else{
+                sampS(offidP,noff,X_design_GS,npar, DSuu, X_design_betaSus, X_design_betaDSus, X_design_betaSs, X_design_betaDSs, dam,sire,beta_mapped,us_1, ussirecat, nusd, nuss, ndamP,nsireP,ntdamP,ntsireP, Sires_vec, nind, nmerge, mergeV, mergeUS, mergeN, Dams, Sires, checkP);
+
+                if(estG){
+                   calcX_GD(X_design_GD, offidP, noff , ndamP, nind, Dams_vec, sire, G, nloci, A, mtype);
+                }else{
+                   calcX_GcervusD(X_design_GD, X_design_G, offidP, noff, ndamP, nsireP, Sires, sire);
+                }
+
+                sampD(offidP,noff,X_design_GD,npar, DSuu, X_design_betaDus, X_design_betaDSus, X_design_betaDs, X_design_betaDSs, dam,sire,beta_mapped,us_1, usdamcat, nusd, ndamP,nsireP,ntdamP,ntsireP, Dams_vec, nind, nmerge, mergeV, mergeUS, mergeN, Dams, Sires, checkP);
+
+                if(estG==FALSE){
+                  calcX_GcervusS(X_design_GS, X_design_G, offidP, noff, ndamP, nsireP, Dams, dam);                
+                }
+              }
+
               if(estbeta==TRUE){
                 llB_1 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_1, ratio_1, nmerge, mergeV, mergeUS, mergeN);
@@ -537,13 +570,13 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
               if(estUS==TRUE){
                 llUS_1 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_1, ratio_1);
                 if(est_pus){
-                  for(i = 0; i < nus; i++){
+                  for(i = 0; i < (nusd+nuss*(1-int(USdamsire))); i++){
                     llUS_1 += dlnorm(us_1[i], prior_us_mu[i], prior_us_sigma[i],1);
                   }
                 }
               }
             }
-
+ 
 /**************
 * sample G & A*
 ***************/
@@ -559,8 +592,14 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                  case 3:
                  break;
               }
+
               if(estP==TRUE){
-                calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci,A, mtype);
+                if(jointP){
+                  calcX_G(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci,A, mtype);
+                }else{
+                  calcX_GD(X_design_GD, offidP, noff , ndamP, nind, Dams_vec, sire, G, nloci, A, mtype);
+                  calcX_GS(X_design_GS, offidP, noff , nsireP, nind, Sires_vec, dam, G, nloci, A, mtype);
+                }
               }
               if(estE1==TRUE || estE2==TRUE){
                 llE_1 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
@@ -652,7 +691,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                 E2_1 = E2_0;
               }
 
-              
+ 
 
 /**************
 * sample beta *
@@ -686,10 +725,10 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
               ratio_1[0] = ratio_0[0];
               ratio_1[1] = ratio_0[1];
               if(estUS==TRUE){
-        llUS_1 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_1, ratio_1);
+                llUS_1 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_1, ratio_1);
                 if(est_pus){
-                  for(i = 0; i < nus; i++){
-                    llUS_1 += dlnorm(us_1[i], prior_us_mu[i], prior_us_sigma[i],1);
+                  for(i = 0; i < (nusd+nuss*(1-int(USdamsire))); i++){
+                     llUS_1 += dlnorm(us_1[i], prior_us_mu[i], prior_us_sigma[i],1);
                   }
                 }
               }
@@ -712,9 +751,9 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
              llUS_0 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_0, ratio_1);
              
              if(est_pus){
-               for(i = 0; i < nus; i++){
+               for(i = 0; i < (nusd+nuss*(1-int(USdamsire))); i++){
                   llUS_0 += dlnorm(us_0[i], prior_us_mu[i], prior_us_sigma[i],1);
-               }
+                }
              }
 
 	     m_ll = std::min(1.0, llUS_0-llUS_1); 

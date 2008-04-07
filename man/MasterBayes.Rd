@@ -27,12 +27,11 @@ Assuming that the set of possible pedigrees have equal prior probability, and th
 
 where \eqn{\bf{X}^{i}_{j}}{X i,j} denotes the \eqn{j^{th}}{jth} row of offspring \eqn{i}{i}'s design matrix formed from the phenotypic data \eqn{\bf{y}}{y}. Each row of the design matrix corresponds to a parental combination. \eqn{n_{o}}{no} and \eqn{n_{p}}{np} denote the number of offspring and the number of potential parental combinations, respectively. \eqn{p_{i}}{p_i} denotes the actual parents of indivdiual \eqn{i}{i} (Smouse, 1999).
 
-The likelihood is taken after averaging over the probability distribution of the pedigree, {\bf P}:
+This likelihood is evaluated over the probability distribution of the pedigree, {\bf P}:
 
 \deqn{p(\bf{P} | \bf{G}, \bf{y}, \bf{\beta}).}{p(P|G,y,beta).}
 
 Most other techniques approximate this distribution as \eqn{p(\bf{P} | \bf{G})}{p(P|G)}, and even then tend to use the mode rather than the complete distribution, leading to inferential problems (See the information boxes in Hadfield et al. 2006).
-
 
 
 Unfortunately, genotype data are rarely observed with out error and the parents of some offspring may not be sampled.  I model allelic dropout and stochastic genotyping errors according to a model proposed by Wang (2001) when the genetic markers are codominant. When the markers are dominant I model the probabilities of a dominant allele being miscored as a recessive and \emph{vice versa}. Denoting the parameters associated with these two forms of genotyping error as \eqn{\varepsilon_{1}}{E1} and \eqn{\varepsilon_{2}}{E2}, and the vector of parental allele frequencies as \eqn{\omega}{w}, two solutions are implemented.  
@@ -56,9 +55,9 @@ I deal with the fact that unsampled individuals have missing phenotype data by a
 
 Taking \eqn{n}{n} and \eqn{N}{N} as the number of sampled individuals, and the total number of indivdiuals in the population respectively:
 
-\deqn{p(\sum^{N-n}\bf{\hat{p}}^{(miss)} | \bf{\hat{p}}^{(obs)}) \approx N(\frac{N-n}{n}\sum^{n}\bf{\hat{p}}^{(obs)}, n(N-n)S_{obs}^{2})}{p(sum(p_miss) | p_obs) = N(N-n mean(p_obs), (N S^2)/n(N-n))}
+\deqn{p(\sum^{N-n}\bf{\hat{p}}^{(miss)} | \bf{\hat{p}}^{(obs)}) \approx N(\frac{N-n}{n}\sum^{n}\bf{\hat{p}}^{(obs)}, \frac{N(N-n)}{n}S_{obs}^{2})}{p(sum(p_miss) | p_obs) = N(N-n mean(p_obs), (N*(N-n)*S^2)/n)}
 
-where \eqn{\bf{\hat{p}}} are vectors of linear predictors for the unsampled \eqn{^{(miss)}}{_miss} and sampled  \eqn{^{(obs)}}{_obs} individuals, respectively (Gelman \emph{et al.}, 2004). \eqn{S_{obs}^{2}}{S^2} is the sample variance of the observed linear predictors.
+where \eqn{\bf{\hat{p}}}{p} are vectors of linear predictors for the unsampled \eqn{^{(miss)}}{_miss} and sampled  \eqn{^{(obs)}}{_obs} individuals, respectively (Gelman \emph{et al.}, 2004). \eqn{S_{obs}^{2}}{S^2} is the sample variance of the observed linear predictors.
 
 }
 \references{

@@ -21,8 +21,8 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         double vec[2][maxall];
         int which_vec = 0;
         int offhom_sizeS;
-        int cat_tmp[50];      // categories to which those genotypes belong
-        double Ppart[100];  // Probability vector for true genotypes
+        int cat_tmp[50];          // categories to which those genotypes belong
+        double Ppart[100];        // Probability vector for true genotypes
         int a1;                   // observed allele 1
         int a2;                   // observed allele 2
         int sample_cat;           // category for observed genotype
@@ -31,9 +31,6 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         double u;                 // allele frequnecy of allele 1
         double v;                 // allele frequnecy of allele 2
         double z;                 // allele frequnecy of allele 1+2
-        double du;
-        double dv;
-        double dz;
         int nl;                   // number of alleles at locus l
         int cnt;                  // temporary counter
         int q = 1;                // a bit of fuckwittery
@@ -52,7 +49,17 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         int no_base;
         int par[nind][50];
         int no_off[nind];
-
+        int no_all_in_S;
+        int IBL [2];             // variable for recording the number of alleles in offspring produced by selfing 
+                                 // if there is only a single allele in the selfed offspring IBL[0] is the allele
+                                 // and IBL[1] is the number of IBL[0] alleles in the selfed offspring.  If there 
+                                 // are 2 alleles then IBL[1] is the second allele and the genotype of the indiviual is known.
+/*
+        int oldG1;         // some variables that are used for bug checking
+        int oldG2;
+        bool problem;
+        int j;
+*/
         for(o=0; o < nind; o++){
            no_off[o] = 0;
         }
@@ -70,6 +77,8 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
            }
         }
 
+        IBL[0] = -999;
+        IBL[1] = -999;
 
         for(l= 0; l < nloci; l++){                  // iterates through loci
 
@@ -98,6 +107,9 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
 /* last record for that individual so start sampling */
 
 if(id[i+q]!=ind){                 // the last record for that individual
+
+//               oldG1 = G[ind][l*2];          / some variables that are used for bug checking
+//               oldG2 = G[ind][(l*2)+1];
 
 // get dam genotype //                
                 if(dam[ind]<nind){                 
@@ -147,11 +159,11 @@ if(id[i+q]!=ind){                 // the last record for that individual
                 }
                 if(rel_status==1 && gen_status!=0){rel_status=4;}
 
-// rel status: 0: no rel 1: one par 2: both par  3: offspring + both par 4: everything else 
+// rel status: 0: no rel 1: one par but no observed genotype!! 2: both par  3: offspring + both par 4: everything else 
 
 switch(rel_status){
     
- case 0: // no contextual information provided by realtives //
+ case 0: // no contextual information provided by relatives //
 
       switch(gen_status){
 
@@ -386,18 +398,20 @@ switch(rel_status){
                   u = PA[a1];
                   PA[a1] = 0.0;
                     for(na1= 0; na1 < nl; na1++){
-                     Ppart[cnt] = u*A[l][na1];
-                     if(a1!=na1){Ppart[cnt] *=2.0;}             // if heterozygous multiply by 2
-                     cnt++;                          
+                      Ppart[cnt] = u*A[l][na1];
+                      if(a1!=na1){Ppart[cnt] *=2.0;}             // if heterozygous multiply by 2
+                      cnt++;                          
                     }
                   z += u;                            // cumulative allele frequencies
                  }
-                   for(itt_set= 0; itt_set < set_size; itt_set++){
-                    a1 = unique_set[itt_set];
-                      for(na1= 0; na1 < set_size; na1++){
-                        if(itt_set!=na1){Ppart[(na1*nl)+a1] *=0.5;}
-                      }        // since heterozygotes from the unique set appear twice 
-                   }
+                 for(itt_set= 0; itt_set < set_size; itt_set++){
+                   a1 = unique_set[itt_set];
+                   for(na1= 0; na1 < set_size; na1++){
+                     if(itt_set!=na1){
+                       Ppart[(na1*nl)+a1] *=0.5;
+                     }
+                   }        // since heterozygotes from the unique set appear twice 
+                 }
 
                  Ppart[set_size*nl] = (1-z)*(1-z);  // genotypes not containing sampled alleles
 
@@ -475,123 +489,14 @@ case 1: // contextual information provided by a single parent//
           da[1]=sa[1];
          }
 
-      switch(gen_status){
-
-      case 0:            //no observed genotype//
-
          G[ind][l*2] = da[(int)rbinom(1.0, 0.5)];
          samp_A = rmultinom_size1(PA, nl); 
          G[ind][(l*2)+1] = samp_A;       
          newA[samp_A] ++;
 
-      break;
+//      gen_status is always zero.  May need to extend to gen_status>0 for rel_status=1 to make algorithm more efficient.
+//      see older versions (<2.1) at this place for some old unfinished code.
 
-      case 2:            //consistent genotype (HOM)//
-
-        a1 = obs_G[0][0];
-
-        u = PA[a1];
-
-        if(da[0]==da[1]){  // parent is homozygous //
-       
-          Ppart[0] = u;
-          Ppart[1] = 1-u;
-          hom1=int(a1!=da[0]);
-
-          for(ns=0; ns < n; ns++){               // itterate through samples 
-            sample_cat = cat_tmp[ns];
-            Ppart[0] *= E_mat[l][sample_cat+hom1]; 
-            Ppart[1] *= E_mat[l][1+sample_cat+hom1];
-          }
- 
-          G[ind][l*2] = da[0];
- 
-          switch(rmultinom_size1(Ppart, 2)){
-
-            case 0:
-              G[ind][(l*2)+1] = a1;
-              newA[a1] ++;
-            break;
-
-            case 1:
-              PA[a1]=0.0;  
-              samp_A = rmultinom_size1(PA, nl); 
-              G[ind][(l*2)+1] = samp_A;
-              newA[samp_A] ++;
-              PA[a1]=u;
-            break; 
-          }
-        }else{          // parent is heterozygous //
- 
-          hom1=int(a1==da[1]);    // hom for da[1] or neither (0) or da[0](1) allele   
-          du = PA[da[0]];
-          dv = PA[da[1]];
-          dz = du+dv;
-          Ppart[0] = du;
-          Ppart[1] = dv;
-          Ppart[2] = dz;
-          Ppart[3] = 1-dz;
-          if(a1!=da[0] && a1!=da[1]){Ppart[3] -= u;}
-            Ppart[4] = u;
- 
-          for(ns=0; ns < n; ns++){               // itterate through samples 
-            sample_cat = cat_tmp[ns];
-            if(da[0]==a1 || da[1]==a1){
-              Ppart[0] *= E_mat[l][sample_cat+hom1];
-              Ppart[1] *= E_mat[l][sample_cat+1-hom1];
-              Ppart[2] *= E_mat[l][1+sample_cat];
-              Ppart[3] *= E_mat[l][2+sample_cat];
-              Ppart[4]  = 0.0;
-            }else{
-              Ppart[0] *= E_mat[l][2+sample_cat];
-              Ppart[1] *= E_mat[l][2+sample_cat];
-              Ppart[2] *= E_mat[l][2+sample_cat];
-              Ppart[3] *= E_mat[l][2+sample_cat];
-              Ppart[4] *= E_mat[l][1+sample_cat];
-            }
-          }
-
-        switch(rmultinom_size1(Ppart, 5)){
-
-        case 0: 
-         G[ind][(l*2)] = da[0];
-         G[ind][(l*2)+1] = da[0];
-         newA[da[0]]++;
-        break;
-
-        case 1:
-         G[ind][(l*2)] = da[1];
-         G[ind][(l*2)+1] = da[1];
-         newA[da[1]]++;
-        break;
-
-        case 2:
-         G[ind][(l*2)] = da[0];
-         G[ind][(l*2)+1] = da[1];
-         newA[da[(int)rbinom(1.0, 0.5)]] ++;
-        break;
-
-        case 3:
-         G[ind][(l*2)] = da[(int)rbinom(1.0, 0.5)];
-         if(da[0]==a1 || da[1]==a1){PA[a1]=0.0;}
-         PA[da[0]] = 0.0;
-         PA[da[1]] = 0.0;
-         samp_A = rmultinom_size1(PA, nl); 
-         G[ind][(l*2)+1] = samp_A; 
-         newA[samp_A]++;
-         PA[da[0]] = du;
-         PA[da[1]] = dv;
-         PA[a1] = u;   
-        break;
-
-        case 4:
-         G[ind][(l*2)] = a1;
-         newA[a1]++;
-         G[ind][(l*2)+1] = da[(int)rbinom(1.0, 0.5)];
-        }
-      }
-      break;
-    }    
 break;
 
 case 2: // contextual information provided by both parents only /
@@ -667,15 +572,20 @@ case 3:
                sp_1 = -999;
                sp_2 = -999;
 
-               if(sire[o]!=ind){
-                 if(sire[o]<nind){
-                   sp_1 = G[sire[o]][l*2];
-                   sp_2 = G[sire[o]][(l*2)+1];
-                 }
+               if(sire[o]==dam[o]){      // new inbreeding code - 28/3/08 //
+                 sp_1 = -998;
+                 sp_2 = -998;
                }else{
-                 if(dam[o]<nind){
-                   sp_1 = G[dam[o]][l*2];
-                   sp_2 = G[dam[o]][(l*2)+1];
+                 if(sire[o]!=ind){
+                   if(sire[o]<nind){
+                     sp_1 = G[sire[o]][l*2];
+                     sp_2 = G[sire[o]][(l*2)+1];
+                   }
+                 }else{
+                   if(dam[o]<nind){
+                     sp_1 = G[dam[o]][l*2];
+                     sp_2 = G[dam[o]][(l*2)+1];
+                   }
                  }
                }
 
@@ -684,7 +594,7 @@ case 3:
                cnt=0;
                for(S_1=0; S_1<2; S_1++){
                  for(S_2=0; S_2<2; S_2++){  
-                   if(sp_1!=-999){
+                   if(sp_1>(-998)){
                      tac = 0.0;
                      if((da[S_1]==off_1 && off_2==sp_1) || (da[S_1]==off_2 && off_1==sp_1)){tac+=0.25;}
                      if((da[S_1]==off_1 && off_2==sp_2) || (da[S_1]==off_2 && off_1==sp_2)){tac+=0.25;}
@@ -692,26 +602,70 @@ case 3:
                      if((sa[S_2]==off_1 && off_2==sp_2) || (sa[S_2]==off_2 && off_1==sp_2)){tac+=0.25;}
                      Ppart[cnt] *= tac;
                    }else{
-                     if(off_1==off_2){
-                       Ppart[cnt] *= (int(da[S_1]==off_1)+int(sa[S_2]==off_1))*u;
-                     }else{
-                       z=0.0;
-                       if(da[S_1]!=off_1 || sa[S_2]!=off_1){
-                         z+=u;
-                         if(da[S_1]==off_2 || sa[S_2]==off_2){
+                     if(sp_1==-999){
+                       if(off_1==off_2){
+                         Ppart[cnt] *= (int(da[S_1]==off_1)+int(sa[S_2]==off_1))*u;
+                       }else{
+                         z=0.0;
+                         if(da[S_1]==off_1 || sa[S_2]==off_1){
                            z+=v;
-                           z/=2.0;
+                         }
+                         if(da[S_1]==off_2 || sa[S_2]==off_2){
+                           z+=u;
+                           if(da[S_1]==off_1 || sa[S_2]==off_1){
+                             z/=2.0;
+                           }
+                         }                                    
+                         Ppart[cnt] *= z; 
+                       }
+                     }else{
+                       if(off_1!=IBL[0]){
+                         if(IBL[0]==-999){
+                           IBL[0]=off_1;
+                           IBL[1]=-1;
+                         }else{
+                           IBL[1]=off_1;
                          }
                        }else{
-                         z+=v;
-                       }                  
-                     Ppart[cnt] *= (int(da[S_1]==off_1)+int(sa[S_2]==off_1))*z; 
+                         if(IBL[1]<0){
+                           IBL[1]--;
+                         }
+                       }
                      }
                    }
                    cnt++;
                  }
                }
              }          
+
+             if(IBL[0]!=-999){
+               if(IBL[1]<0){
+                 Ppart[0] *= pow(double((da[0]==IBL[0])+(sa[0]==IBL[0])), -2.0*IBL[1]);
+                 Ppart[1] *= pow(double((da[1]==IBL[0])+(sa[0]==IBL[0])), -2.0*IBL[1]);
+                 Ppart[2] *= pow(double((da[0]==IBL[0])+(sa[1]==IBL[0])), -2.0*IBL[1]);
+                 Ppart[3] *= pow(double((da[1]==IBL[0])+(sa[1]==IBL[0])), -2.0*IBL[1]);
+               }else{
+                 if(da[0]!=IBL[0] & da[0]!=IBL[1]){
+                   Ppart[0] = 0.0;
+                   Ppart[2] = 0.0;
+                 }
+                 if(da[1]!=IBL[0] & da[1]!=IBL[1]){
+                   Ppart[1] = 0.0;
+                   Ppart[3] = 0.0;
+                 }
+                 if(sa[0]!=IBL[0] & sa[0]!=IBL[1]){
+                   Ppart[0] = 0.0;
+                   Ppart[1] = 0.0;
+                 }
+                 if(sa[1]!=IBL[0] & sa[1]!=IBL[1]){
+                   Ppart[2] = 0.0;
+                   Ppart[3] = 0.0;
+                 }
+               }
+             }
+
+             IBL[0]=-999;
+             IBL[1]=-999;
 
               cnt = 0;
 
@@ -760,21 +714,19 @@ break;
  
 case 4: // has offspring but no parents, or one parent //
 
-    no_base = -999;
       if(da[0]!=-999 || sa[0]!=-999){
+        no_base = 0;
         if(da[0]==-999){
          da[0]=sa[0];
          da[1]=sa[1];
         }
-        no_base = 0;
         S_1 = da[0];
-        if(da[0]==da[1]){           // if dam is homozygous must be da[0]/something with prior = A
+        if(da[0]==da[1]){           // if parent is homozygous must be da[0]/something with prior = A
           S_2 = -999;               // n(S)=1
           for(o=0; o<nl; o++){               
             vec[0][o] = PA[o];
           }
-        }else{                 // if dam is heterozygous must be da[0]/something or da[1]/something with priors = A/2
-          no_base = 0;
+        }else{                     // if parent is heterozygous must be da[0]/something or da[1]/something with priors = A/2
           S_2 = da[1];             // n(S)=2
           for(o=0; o<nl; o++){               
             vec[0][o] = PA[o];
@@ -784,6 +736,7 @@ case 4: // has offspring but no parents, or one parent //
            vec[1][S_1] = PA[S_1]+PA[S_2];
          }
        }else{       // neither parent known
+          no_base = -999;
           o = par[ind][0];
           S_1 = G[o][l*2]; 
           S_2 = G[o][(l*2)+1]; 
@@ -804,7 +757,7 @@ case 4: // has offspring but no parents, or one parent //
             vec[0][S_1] *= 0.5;   // divide homozygous genotype frequency by 2 (= multiplying all HET by 2)
             vec[1][S_2] *= 0.5;   
           }                        // don't need to worry about the fact vec[0][S_2] = vec[1][S_1]
-     }
+       }
 
         which_vec=0;
 
@@ -822,20 +775,37 @@ case 4: // has offspring but no parents, or one parent //
          sp_1 = -999;
          sp_2 = -999;
 
-         if(sire[o]!=ind){
-           if(sire[o]<nind){
-             sp_1 = G[sire[o]][l*2];
-             sp_2 = G[sire[o]][(l*2)+1];
-           }
+         if(sire[o]==dam[o]){      // new inbreeding code - 28/3/08 //
+           sp_1 = -998;
+           sp_2 = -998;
          }else{
-           if(dam[o]<nind){
-             sp_1 = G[dam[o]][l*2];
-             sp_2 = G[dam[o]][(l*2)+1];
+           if(sire[o]!=ind){
+             if(sire[o]<nind){
+               sp_1 = G[sire[o]][l*2];
+               sp_2 = G[sire[o]][(l*2)+1];
+             }
+           }else{
+             if(dam[o]<nind){
+               sp_1 = G[dam[o]][l*2];
+               sp_2 = G[dam[o]][(l*2)+1];
+             }
            }
          }
 
          offhom_sizeS = (2*(off_1!=off_2))+int(S_2!=-999); // 0: off=HOM and n(s)=1, 1: off=HOM and n(s)=2
-                                                         // 2: off=HET and n(s)=1, 3: off=HET and n(s)=2
+                                                           // 2: off=HET and n(s)=1, 3: off=HET and n(s)=2
+
+         if(sp_1==-998 && (offhom_sizeS==2 || offhom_sizeS==3)){   // selfers that produces HET offspring must also be HET.
+            G[ind][(l*2)] = off_1;
+            G[ind][(l*2)+1] = off_2;
+            if(no_base==-999){         
+              newA[off_1]++;
+              newA[off_2]++; 
+            }
+            S_1=-999;
+            break;
+         }
+
          switch(offhom_sizeS){
 
 // off HOM and n(s)=1//
@@ -859,10 +829,10 @@ case 4: // has offspring but no parents, or one parent //
              G[ind][(l*2)] = S_1;
              G[ind][(l*2)+1] = off_1;
              S_1 = -999;
-           }else{               // if off[0] in S then multiply homozygote pairing by 2 because:
-             vec[which_vec][off_1] *=2.0;  // if sp is hom off_1/off_2 then HOM Tac=1 and HET Tac=0.5
-           }                               // if sp is het off_1/sp_2 then HOM Tac=0.5 and HET Tac=0.25
-         break;                            
+           }else{                                             // if off[0] in S then multiply homozygote pairing by 2 because:
+             vec[which_vec][off_1] *=2.0*(1.0+(sp_1==-998));  // if sp is hom off_1/off_2 then HOM Tac=1 and HET Tac=0.5
+           }                                                  // if sp is het off_1/sp_2 then HOM Tac=0.5 and HET Tac=0.25
+           break;                                             // for hermaphroditic systems multiply homozygotes by 4 
 
 // off HOM and n(s)=2 we can reduce the set size //
 
@@ -876,7 +846,7 @@ case 4: // has offspring but no parents, or one parent //
              S_1=S_2;
              S_2=-999;
             } 
-            vec[which_vec][S_1] *=2.0;   // see above 
+            vec[which_vec][S_1] *=2.0*(1.0+(sp_1==-998));   // see above 
           }else{
             which_vec=0;
             u = vec[0][off_1];
@@ -893,61 +863,63 @@ case 4: // has offspring but no parents, or one parent //
 
 
 // off HET and n(s)=1//  
-         case 2:   
+
+         case 2:  
+
           if(off_1 == S_1 || off_2 ==S_1){  // if either off alleles in S //
             if(sp_1!=-999){                 // if spouse is sampled //
-              if((sp_1== off_1 && sp_2== off_2) || (sp_1== off_2 && sp_2== off_1)){   
-                 vec[which_vec][off_1] *=2.0; 
-                 vec[which_vec][off_2] *=2.0;
-              }else{   // if sp differes from off then we know an ind allele for sure // 
-               if(off_1!=sp_1 && off_1!=sp_2){ // if off_1
-                 if(off_1!=S_1){               // and off_1 is not in S 
-                   G[ind][(l*2)] = S_1;
-                   G[ind][(l*2)+1] = off_1;
-                   if(no_base==-999){         
-                    newA[S_1]++;
-                    newA[off_1]++; 
-                   }else{
-                     if(da[0]==off_1 || da[1]==off_1){
-                       if(da[0]==S_1 || da[1]==S_1){
-                         newA[off_1]+=0.5;
-                         newA[S_1]+=0.5;
-                       }else{
-                         newA[S_1]++;
-                       }
-                     }else{
-                       newA[off_1]++;
-                     }
-                   }
-                   S_1 = -999;
-                 }else{                        // if off_1 is in S then sp is HET off_2/something
-                   vec[which_vec][S_1] *=2.0;   // Tac(S_1/something | S_1/S_1, something/something_else) =0.5
-                 }                             // Tac(S_1/something | S_1/something, something/something_else) =0.25
-               }else{                     // Tac(S_1/something | S_1/something_else, something/something_else) =0.25
-                  if(off_2!=S_1){              
-                   G[ind][(l*2)] = S_1;
-                   G[ind][(l*2)+1] = off_2;
-                   if(no_base==-999){         
-                     newA[S_1]++;
-                     newA[off_2]++; 
-                   }else{
-                     if(da[0]==off_2 || da[1]==off_2){
-                       if(da[0]==S_1 || da[1]==S_1){
-                         newA[off_2]+=0.5;
-                         newA[S_1]+=0.5;
-                       }else{
-                         newA[S_1]++;
-                       }
-                     }else{
-                       newA[off_2]++;
-                     }
-                   }
-                   S_1 = -999;
-                  }else{
-                   vec[which_vec][S_1] *=2.0;
+                if((sp_1== off_1 && sp_2== off_2) || (sp_1== off_2 && sp_2== off_1)){   
+                   vec[which_vec][off_1] *=2.0; 
+                   vec[which_vec][off_2] *=2.0;
+                }else{   // if sp differes from off then we know an ind allele for sure // 
+                  if(off_1!=sp_1 && off_1!=sp_2){ // if off_1
+                    if(off_1!=S_1){               // and off_1 is not in S 
+                      G[ind][(l*2)] = S_1;
+                      G[ind][(l*2)+1] = off_1;
+                      if(no_base==-999){         
+                        newA[S_1]++;
+                        newA[off_1]++; 
+                      }else{
+                        if(da[0]==off_1 || da[1]==off_1){
+                          if(da[0]==S_1 || da[1]==S_1){
+                            newA[off_1]+=0.5;
+                            newA[S_1]+=0.5;
+                          }else{
+                            newA[S_1]++;
+                          }
+                        }else{
+                          newA[off_1]++;
+                        }
+                      }
+                      S_1 = -999;
+                    }else{                        // if off_1 is in S then sp is HET off_2/something
+                      vec[which_vec][S_1] *=2.0;   // Tac(S_1/something | S_1/S_1, something/something_else) =0.5
+                    }                             // Tac(S_1/something | S_1/something, something/something_else) =0.25
+                  }else{                     // Tac(S_1/something | S_1/something_else, something/something_else) =0.25
+                    if(off_2!=S_1){              
+                      G[ind][(l*2)] = S_1;
+                      G[ind][(l*2)+1] = off_2;
+                      if(no_base==-999){         
+                        newA[S_1]++;
+                        newA[off_2]++; 
+                      }else{
+                        if(da[0]==off_2 || da[1]==off_2){
+                          if(da[0]==S_1 || da[1]==S_1){
+                            newA[off_2]+=0.5;
+                            newA[S_1]+=0.5;
+                          }else{
+                            newA[S_1]++;
+                          }
+                        }else{
+                          newA[off_2]++;
+                        }
+                      }
+                      S_1 = -999;
+                    }else{
+                      vec[which_vec][S_1] *=2.0;
+                    }
                   }
                 }
-              }
             }else{                       // spouse is not sampled //
               u = PA[off_1];
               v = PA[off_2];
@@ -1022,8 +994,9 @@ case 4: // has offspring but no parents, or one parent //
 
           // off HET and n(s)=2//  
           case 3:   
-           // IF spouse IS sampled //
-            int no_all_in_S;
+
+            // IF spouse IS sampled //
+
             no_all_in_S = int(S_1==off_1)+int(S_1==off_2)+int(S_2==off_1)+int(S_2==off_2);
 
             switch(no_all_in_S){
@@ -1217,7 +1190,7 @@ case 4: // has offspring but no parents, or one parent //
             break;
 
             case 2:
-          if(sp_1!=-999){  // spouse is sampled //
+            if(sp_1!=-999){  // spouse is sampled //
               if((sp_1== off_1 && sp_2== off_2) || (sp_1== off_2 && sp_2== off_1)){   // if spouse = offspring  //  
                  vec[0][S_1] *=2.0;                                 // Tac(S_1/S_2|S_1/S_2|S_1/S_2) =0.5
                  vec[0][S_2] *=2.0;                                 // Tac(S_1/S_2|S_1/S_1|S_1/S_2) =0.5
@@ -1263,172 +1236,282 @@ case 4: // has offspring but no parents, or one parent //
           } // end switch off HET/HOM n(S)1/2 
         } // end spouse/offspring loop
 
-       // arbitrary priors set now add info from genotype data //
+        // arbitrary priors set now add info from genotype data //
 
         if(S_1!=-999){     // if S_1 is -999 genotype already known
-         if(S_2==-999){       // n(S)=1
-          for(o=0; o<nl; o++){
-               Ppart[o] = vec[which_vec][o];
-             }
-             for(ns=0; ns < n; ns++){               
-               sample_cat = cat_tmp[ns];  
-               a1 =  obs_G[ns][0];
-               a2 =  obs_G[ns][1];  
-               if(a1==a2){
-                 if(a1==S_1){   
+          if(S_2==-999){       // n(S)=1
+            for(o=0; o<nl; o++){
+              Ppart[o] = vec[which_vec][o];
+            }
+            for(ns=0; ns < n; ns++){               
+              sample_cat = cat_tmp[ns];  
+              a1 =  obs_G[ns][0];
+              a2 =  obs_G[ns][1];  
+              if(a1==a2){
+                if(a1==S_1){   
                   Ppart[S_1] *= E_mat[l][sample_cat]/E_mat[l][sample_cat+1];
-                 }else{
+                }else{
                   Ppart[a1] *= E_mat[l][sample_cat+1]/E_mat[l][sample_cat+2];      
-                 }
-               }else{                   
-                 if(a1==S_1 || a2==S_1){  
-                   if(a1==S_1){
-                     Ppart[a1] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];  
-                     Ppart[a2] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];                        
-                   }else{                              
-                     Ppart[a2] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];  
-                     Ppart[a1] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];  
-                   }
-                 }else{
-                   Ppart[a1] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];      
-                   Ppart[a2] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];  
-                 }
-               }
-             }
+                }
+              }else{                   
+                if(a1==S_1 || a2==S_1){  
+                  if(a1==S_1){
+                    Ppart[a1] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];  
+                    Ppart[a2] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];                        
+                  }else{                              
+                    Ppart[a2] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];  
+                    Ppart[a1] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];  
+                  }
+                }else{
+                  Ppart[a1] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];      
+                  Ppart[a2] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];  
+                }
+              }
+            }
 
-           G[ind][(l*2)] = S_1;
-           samp_A = rmultinom_size1(Ppart, nl);
-           G[ind][(l*2)+1] = samp_A;
-             if(no_base==-999){         
+            G[ind][(l*2)] = S_1;
+            samp_A = rmultinom_size1(Ppart, nl);
+            G[ind][(l*2)+1] = samp_A;
+            if(no_base==-999){         
               newA[S_1]++;
               newA[samp_A]++; 
-             }else{
-               if(da[0]==samp_A || da[1]==samp_A){
-                 if(da[0]==S_1 || da[1]==S_1){
-                   newA[samp_A]+=0.5;
-                   newA[S_1]+=0.5;
-                 }else{
-                   newA[S_1]++;
-                 }
-               }else{
-                 newA[samp_A]++;
-               }
-             }
+            }else{
+              if(da[0]==samp_A || da[1]==samp_A){
+                if(da[0]==S_1 || da[1]==S_1){
+                  newA[samp_A]+=0.5;
+                  newA[S_1]+=0.5;
+                }else{
+                  newA[S_1]++;
+                }
+              }else{
+                newA[samp_A]++;
+              }
+            }
           }else{         // n(S)=2
             vec[1][S_1]=0.0;  
             for(o=0; o<nl; o++){
                Ppart[o] = vec[0][o];
                Ppart[nl+o] = vec[1][o];
              }                                              
-            for(ns=0; ns < n; ns++){             
-              sample_cat = cat_tmp[ns];
-              a1 =  obs_G[ns][0];
-              a2 =  obs_G[ns][1];                         
-              if(a1==a2){
-                if(a1==S_1 || a1==S_2){                  
-                  if(a1==S_1){                          
-                    for(o=0; o<nl; o++){               
-                     Ppart[o] *= E_mat[l][sample_cat+1];
-                     Ppart[o+nl] *= E_mat[l][sample_cat+2];
-                    }
-                    Ppart[S_1] *= E_mat[l][sample_cat]/E_mat[l][sample_cat+1];
-                  }else{                           
-                    for(o=0; o<nl; o++){               
-                     Ppart[o] *= E_mat[l][sample_cat+2];
-                     Ppart[o+nl] *= E_mat[l][sample_cat+1];
-                    }
-                    Ppart[S_2] *= E_mat[l][sample_cat+1]/E_mat[l][sample_cat+2];
-                    Ppart[S_2+nl] *= E_mat[l][sample_cat]/E_mat[l][sample_cat+1];
-                  }
-                }else{
-                  Ppart[a1] *= E_mat[l][sample_cat+1]/E_mat[l][sample_cat+2];
-                  Ppart[a1+nl] *= E_mat[l][sample_cat+1]/E_mat[l][sample_cat+2];
-                }              
-              }else{                                      
-                if((a1==S_1 && a2==S_2) || (a1==S_2 && a2==S_1)){      
-                    Ppart[S_1] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
-                    Ppart[S_2] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
-                    Ppart[S_2+nl] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
-                }else{
-                  if(a1==S_1 || a1==S_2 || a2==S_1 || a2==S_2){                                 
-                    if(a1==S_1 || a2==S_1){
-                      for(o=0; o<nl; o++){               
-                       Ppart[o] *= E_mat[l][sample_cat+5];
-                       Ppart[o+nl] *= E_mat[l][sample_cat+6];
-                      }
-                      Ppart[S_1] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
-                      Ppart[a2+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                      Ppart[a1+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                      if(a1==S_1){
-                       Ppart[a2] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
-                      }else{
-                       Ppart[a1] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
-                      }
-                    }else{
-                      for(o=0; o<nl; o++){               
-                       Ppart[o] *= E_mat[l][sample_cat+6];
-                       Ppart[o+nl] *= E_mat[l][sample_cat+5];
-                      }
-                      Ppart[a1] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                      Ppart[a2] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                      Ppart[S_2+nl] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
-                      if(a1==S_2){
-                       Ppart[a2+nl] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
-                      }else{
-                       Ppart[a1+nl] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
-                      }
-                    }
-                  }else{
-                    Ppart[a2] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                    Ppart[a2+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                    Ppart[a1] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                    Ppart[a1+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
-                  }
-                } 
-              }
-            }
-            cnt = rmultinom_size1(Ppart, nl*2);
-            if(cnt/nl==0){
-             G[ind][(l*2)] = S_1;
-             G[ind][(l*2)+1] = cnt;
-             if(no_base==-999){         
-              newA[S_1]++;
-              newA[cnt]++; 
-             }else{
-               if(da[0]==cnt || da[1]==cnt){
-                 if(da[0]==S_1 || da[1]==S_1){
-                   newA[cnt]+=0.5;
-                   newA[S_1]+=0.5;
+             for(ns=0; ns < n; ns++){             
+               sample_cat = cat_tmp[ns];
+               a1 =  obs_G[ns][0];
+               a2 =  obs_G[ns][1];                         
+               if(a1==a2){
+                 if(a1==S_1 || a1==S_2){                  
+                   if(a1==S_1){                          
+                     for(o=0; o<nl; o++){               
+                       Ppart[o] *= E_mat[l][sample_cat+1];
+                       Ppart[o+nl] *= E_mat[l][sample_cat+2];
+                     }
+                     Ppart[S_1] *= E_mat[l][sample_cat]/E_mat[l][sample_cat+1];
+                   }else{                           
+                     for(o=0; o<nl; o++){               
+                       Ppart[o] *= E_mat[l][sample_cat+2];
+                       Ppart[o+nl] *= E_mat[l][sample_cat+1];
+                     }
+                     Ppart[S_2] *= E_mat[l][sample_cat+1]/E_mat[l][sample_cat+2];
+                     Ppart[S_2+nl] *= E_mat[l][sample_cat]/E_mat[l][sample_cat+1];
+                   }
                  }else{
-                   newA[S_1]++;
-                 }
-               }else{
-                 newA[cnt]++;
+                   Ppart[a1] *= E_mat[l][sample_cat+1]/E_mat[l][sample_cat+2];
+                   Ppart[a1+nl] *= E_mat[l][sample_cat+1]/E_mat[l][sample_cat+2];
+                 }              
+               }else{                                      
+                 if((a1==S_1 && a2==S_2) || (a1==S_2 && a2==S_1)){      
+                   Ppart[S_1] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
+                   Ppart[S_2] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
+                   Ppart[S_2+nl] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
+                 }else{
+                   if(a1==S_1 || a1==S_2 || a2==S_1 || a2==S_2){                                 
+                     if(a1==S_1 || a2==S_1){
+                       for(o=0; o<nl; o++){               
+                         Ppart[o] *= E_mat[l][sample_cat+5];
+                         Ppart[o+nl] *= E_mat[l][sample_cat+6];
+                       }
+                       Ppart[S_1] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
+                       Ppart[a2+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                       Ppart[a1+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                       if(a1==S_1){
+                         Ppart[a2] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
+                       }else{
+                         Ppart[a1] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
+                       }
+                     }else{
+                       for(o=0; o<nl; o++){               
+                         Ppart[o] *= E_mat[l][sample_cat+6];
+                         Ppart[o+nl] *= E_mat[l][sample_cat+5];
+                       }
+                       Ppart[a1] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                       Ppart[a2] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                       Ppart[S_2+nl] *= E_mat[l][sample_cat+4]/E_mat[l][sample_cat+5];
+                       if(a1==S_2){
+                         Ppart[a2+nl] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
+                       }else{
+                         Ppart[a1+nl] *= E_mat[l][sample_cat+3]/E_mat[l][sample_cat+5];
+                       }
+                     }
+                   }else{
+                     Ppart[a2] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                     Ppart[a2+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                     Ppart[a1] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                     Ppart[a1+nl] *= E_mat[l][sample_cat+5]/E_mat[l][sample_cat+6];
+                   }
+                 } 
                }
              }
+             cnt = rmultinom_size1(Ppart, nl*2);
+             if(cnt/nl==0){
+               G[ind][(l*2)] = S_1;
+               G[ind][(l*2)+1] = cnt;
+               if(no_base==-999){         
+                newA[S_1]++;
+                newA[cnt]++; 
+               }else{
+                 if(da[0]==cnt || da[1]==cnt){
+                   if(da[0]==S_1 || da[1]==S_1){
+                     newA[cnt]+=0.5;
+                     newA[S_1]+=0.5;
+                   }else{
+                     newA[S_1]++;
+                   }
+                 }else{
+                   newA[cnt]++;
+                 }
+               }
+             }else{
+               G[ind][(l*2)] = S_2;
+               G[ind][(l*2)+1] = cnt-nl;
+               if(no_base==-999){         
+                newA[S_2]++;
+                newA[cnt-nl]++; 
+               }else{
+                 if(da[0]==S_2 || da[1]==S_2){
+                   if(da[0]==(cnt-nl) || da[1]==(cnt-nl)){
+                     newA[S_2]+=0.5;
+                     newA[cnt-nl]+=0.5;
+                   }else{
+                     newA[cnt-nl]++;
+                   }
+                 }else{
+                   newA[S_2]++;
+                 }
+               }
+             }
+           }
+         }  
+         break;
+       }
+
+/****************************************************************/
+/*  Some bug-checking code for detecting problems with sampG    */
+/*  remember to uncomment the declared variables at the start   */
+/* and also the old geneotypes before sampling on lines 109-110 */
+/****************************************************************/
+
+/*
+       problem= FALSE;
+
+       if(no_off[ind]>0){
+         for(j=0; j < no_off[ind]; j++){
+           o = par[ind][j];
+           off_1 = G[o][l*2];       // offspring and spouse genotypes //
+           off_2 = G[o][(l*2)+1];
+           if(G[ind][(l*2)]!=off_1 & G[ind][(l*2)]!=off_2 & G[ind][(l*2)+1]!=off_1 & G[ind][(l*2)+1]!=off_2){
+             problem = TRUE;
+           }
+         }
+       }
+       if(G[ind][(l*2)]>=nl | G[ind][(l*2)+1]>=nl){
+         problem = TRUE;
+       }
+       if(da[0]!=-999){
+         if(G[ind][(l*2)]!=da[0] & G[ind][(l*2)]!=da[1] & G[ind][(l*2)+1]!=da[0] & G[ind][(l*2)+1]!=da[1]){
+           problem = TRUE;
+         }
+       }
+       if(problem==TRUE){
+         cout << "something is wrong at" << endl;
+         cout << "locus" << endl;
+         cout << l << endl;
+         cout << "for individual" << endl;
+         cout << ind << endl;
+         cout << "The old genotype was:" << endl;
+         cout << oldG1 << endl;
+         cout << oldG2 << endl;
+         cout << "The new genotype is:" << endl;
+         cout << G[ind][(l*2)] << endl;
+         cout << G[ind][(l*2)+1] << endl;
+         cout << "The observed genotypes are:" << endl;
+         for(ns=0; ns < n; ns++){               
+           cout <<  obs_G[ns][0] << endl;
+           cout <<  obs_G[ns][1] << endl;
+         }
+        cout << "gen_status is:" << endl;
+         cout << gen_status<< endl;
+         cout << "rel status is:" << endl;
+         cout << rel_status << endl;
+
+
+         cout << "S_1 is recorded as:" << endl;
+         cout << S_1 << endl;
+         cout << "S_2 is recorded as:" << endl;
+         cout << S_2 << endl;
+         if(da[0]!=-999){
+           cout << "A parent exists" << endl;
+           if(G[ind][(l*2)]!=da[0] & G[ind][(l*2)]!=da[1] & G[ind][(l*2)+1]!=da[0] & G[ind][(l*2)+1]!=da[1]){
+             cout << "but the sampled genotype is not comaptible with the parent sampled" << endl;
+             cout << "The parental genotype are" << endl;
+             cout << da[0] << endl;
+             cout << da[1] << endl;
+             cout << sa[0] << endl;
+             cout << sa[1] << endl;
            }else{
-             G[ind][(l*2)] = S_2;
-             G[ind][(l*2)+1] = cnt-nl;
-             if(no_base==-999){         
-              newA[S_2]++;
-              newA[cnt-nl]++; 
-             }else{
-               if(da[0]==S_2 || da[1]==S_2){
-                 if(da[0]==(cnt-nl) || da[1]==(cnt-nl)){
-                   newA[S_2]+=0.5;
-                   newA[cnt-nl]+=0.5;
-                 }else{
-                   newA[cnt-nl]++;
+             cout << "and the parental genotype is compatible"  << endl;
+             cout << "The parental genotypes are" << endl;
+             cout << da[0] << endl;
+             cout << da[1] << endl;
+             cout << sa[0] << endl;
+             cout << sa[1] << endl;
+           }
+         }else{
+           cout << "no parent exists"  << endl;
+         }
+         if(no_off[ind]>0){
+           cout << "Offspring exist with genotype" << endl;
+           bool problem = FALSE;
+           for(j=0; j < no_off[ind]; j++){
+             cout << "with genotype" << endl; 
+             o = par[ind][j];
+             off_1 = G[o][l*2];       // offspring and spouse genotypes //
+             off_2 = G[o][(l*2)+1];
+             cout << off_1 << endl;
+             cout << off_2 << endl;
+             sp_1 = -999;
+             sp_2 = -999;
+             cout << "and spouse" << endl; 
+               if(sire[o]!=ind){
+                 if(sire[o]<nind){
+                   sp_1 = G[sire[o]][l*2];
+                   sp_2 = G[sire[o]][(l*2)+1];
                  }
                }else{
-                 newA[S_2]++;
+                 if(dam[o]<nind){
+                   sp_1 = G[dam[o]][l*2];
+                   sp_2 = G[dam[o]][(l*2)+1];
+                 }
                }
+             cout << sp_1 << endl;
+             cout << sp_2 << endl;
+             if(G[ind][(l*2)]!=off_1 & G[ind][(l*2)]!=off_2 & G[ind][(l*2)+1]!=off_1 & G[ind][(l*2)+1]!=off_2){
+               problem = TRUE;
              }
-            }
-          }   
-        }
-break;
-}
+           }
+         }else{
+           cout << "No Offspring exist" << endl;
+         }
+       }
+*/
           ind++;         
           n = 0; 
           misstype = 0;

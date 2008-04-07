@@ -59,6 +59,17 @@ getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...){
   interactions<-which(unlist(lapply(PdP$formula, length))==2)
   interactions<-interactions[interactions%in%restrictions==FALSE]
 
+  tmain_effects<-length(main_effects)
+
+  if(length(interactions)>0){
+    for(i in 1:length(interactions)){
+      form.comb<-match(PdP$formula[[interactions[i]]], PdP$formula[main_effects[1:tmain_effects]])
+      if(any(is.na(form.comb))){
+        main_effects<-c(main_effects, length(PdP$formula)+1:sum(is.na(form.comb)))
+        PdP$formula[length(PdP$formula)+1:sum(is.na(form.comb))]<-PdP$formula[[interactions[i]]][which(is.na(form.comb))]
+      }
+    }
+  }
 
 for(off in 1:sum(PdP$offspring==1)){
 
@@ -73,10 +84,10 @@ for(off in 1:sum(PdP$offspring==1)){
 
   if(length(predictors)!=0){  
     for(i in 1:length(predictors)){
-      PdP$keepDam<-PdP$keepDam[which(PdP$keepDam%in%predictors[[i]]$Dam$id==T)]
-      PdP$keepSire<-PdP$keepSire[which(PdP$keepSire%in%predictors[[i]]$Sire$id==T)]
-      PdP$restDam<-PdP$restDam[which(PdP$restDam%in%predictors[[i]]$Dam_restrict$id==T)]
-      PdP$restSire<-PdP$restSire[which(PdP$restSire%in%predictors[[i]]$Sire_restrict$id==T)]
+      PdP$keepDam<-PdP$keepDam[which(PdP$keepDam%in%predictors[[i]]$Dam$id==TRUE)]
+      PdP$keepSire<-PdP$keepSire[which(PdP$keepSire%in%predictors[[i]]$Sire$id==TRUE)]
+      PdP$restDam<-PdP$restDam[which(PdP$restDam%in%predictors[[i]]$Dam_restrict$id==TRUE)]
+      PdP$restSire<-PdP$restSire[which(PdP$restSire%in%predictors[[i]]$Sire_restrict$id==TRUE)]
     }
   }else{
     if(length(PdP$sex)>0){
@@ -97,7 +108,7 @@ for(off in 1:sum(PdP$offspring==1)){
   nvar<-rep(0, 6)         # no parameters
 
   if(length(predictors)!=0){  
-    for(i in 1:length(main_effects)){ # itterate through variables
+    for(i in 1:tmain_effects){ # itterate through variables
       if(length(predictors[[i]]$Dam$X)!=0){
         nvar[1]<-nvar[1]+sum(is.na(colSums(predictors[[i]]$Dam$X)))         # starting column no. for each dam factor
         nvar[2]<-nvar[2]+sum(is.na(colSums(predictors[[i]]$Dam$X))==FALSE)  # starting column no. for each dam factor
@@ -159,12 +170,11 @@ for(off in 1:sum(PdP$offspring==1)){
   ###################################### main effects ######################################################
   ##########################################################################################################
 
-  if(length(predictors)!=0){  
+  if(tmain_effects!=0){  
 
     nvar_tmp<-rep(0,6) 
  
-    for(i in 1:length(predictors)){ # itterates through the variables
-
+    for(i in 1:tmain_effects){ # itterates through the variables
       # Dam variables 
       if(length(predictors[[i]]$Dam$X)!=0){ 
         if(is.na(sum(predictors[[i]]$Dam$X))==TRUE){
@@ -173,6 +183,7 @@ for(off in 1:sum(PdP$offspring==1)){
             X.list$X[[off]]$vtDus[nvar_tmp[1]]<-predictors[[i]]$Dam$var_type
             X.list$X[[off]]$XDus[,nvar_tmp[1]]<-predictors[[i]]$Dam$X[,c] 
             colnames(X.list$X[[off]]$XDus)[nvar_tmp[1]]<-predictors[[i]]$Dam$var_name[c]
+            if(any(is.na(X.list$X[[off]]$XDus[,nvar_tmp[1]][-ndam]))){stop("Missing covariate data")}
             if(predictors[[i]]$Dam$merge==TRUE){
               if(off==1){
                 X.list$merge<-c(X.list$merge, nvar_tmp[1])
@@ -187,6 +198,7 @@ for(off in 1:sum(PdP$offspring==1)){
             X.list$X[[off]]$vtDs[nvar_tmp[2]]<-predictors[[i]]$Dam$var_type
             X.list$X[[off]]$XDs[,nvar_tmp[2]]<-predictors[[i]]$Dam$X[,c] 
             colnames(X.list$X[[off]]$XDs)[nvar_tmp[2]]<-predictors[[i]]$Dam$var_name[c]
+            if(any(is.na(X.list$X[[off]]$XDs[,nvar_tmp[2]]))){stop("Missing covariate data")}
             if(predictors[[i]]$Dam$merge==TRUE){
               if(off==1){
                 X.list$merge<-c(X.list$merge, nvar[1]+nvar_tmp[2])
@@ -207,6 +219,7 @@ for(off in 1:sum(PdP$offspring==1)){
             X.list$X[[off]]$vtSus[nvar_tmp[3]]<-predictors[[i]]$Sire$var_type
             X.list$X[[off]]$XSus[,nvar_tmp[3]]<-predictors[[i]]$Sire$X[,c] 
             colnames(X.list$X[[off]]$XSus)[nvar_tmp[3]]<-predictors[[i]]$Sire$var_name[c]
+            if(any(is.na(X.list$X[[off]]$XSus[,nvar_tmp[3]][-nsire]))){stop("Missing covariate data")}
             if(predictors[[i]]$Sire$merge==TRUE){
               if(off==1){
                 X.list$merge<-c(X.list$merge, sum(nvar[1:2])+nvar_tmp[3])
@@ -221,6 +234,7 @@ for(off in 1:sum(PdP$offspring==1)){
             X.list$X[[off]]$vtSs[nvar_tmp[4]]<-predictors[[i]]$Sire$var_type
             X.list$X[[off]]$XSs[,nvar_tmp[4]]<-predictors[[i]]$Sire$X[,c] 
             colnames(X.list$X[[off]]$XSs)[nvar_tmp[4]]<-predictors[[i]]$Sire$var_name[c]
+            if(any(is.na(X.list$X[[off]]$XSs[,nvar_tmp[4]]))){stop("Missing covariate data")}
             if(predictors[[i]]$Sire$merge==TRUE){
               if(off==1){
                 X.list$merge<-c(X.list$merge, sum(nvar[1:3])+nvar_tmp[4])
@@ -240,14 +254,19 @@ for(off in 1:sum(PdP$offspring==1)){
             X.list$X[[off]]$vtDSus[nvar_tmp[5]]<-predictors[[i]]$DamSire$var_type
             X.list$X[[off]]$XDSus[,nvar_tmp[5]]<-predictors[[i]]$DamSire$X[,c]
             colnames(X.list$X[[off]]$XDSus)[nvar_tmp[5]]<-predictors[[i]]$DamSire$var_name[c]
+            if(us==TRUE){rem.var<-seq(nsire,ndam*nsire, nsire)}
+            if(ud==TRUE){rem.var<-((((ndam-1)*nsire)+1):(ndam*nsire))}
+            if(us==TRUE & ud==TRUE){rem.var<-c(seq(nsire,ndam*nsire, nsire), (((ndam-1)*nsire)+1):c((ndam*nsire)-1))}
+            if(any(is.na(X.list$X[[off]]$XDSus[,nvar_tmp[5]][-rem.var]))){stop("Missing covariate data")}
           }
         }else{
           for(c in 1:ncol(predictors[[i]]$DamSire$X)){
             nvar_tmp[6]<-nvar_tmp[6]+1
             X.list$X[[off]]$vtDSs[nvar_tmp[6]]<-predictors[[i]]$DamSire$var_type
             X.list$X[[off]]$XDSs[,nvar_tmp[6]]<-predictors[[i]]$DamSire$X[,c]
-            colnames(X.list$X[[off]]$XDSs)[nvar_tmp[6]]<-predictors[[i]]$DamSire$var_name[c]              
-          }
+            colnames(X.list$X[[off]]$XDSs)[nvar_tmp[6]]<-predictors[[i]]$DamSire$var_name[c]     
+            if(any(is.na(X.list$X[[off]]$XDSs[,nvar_tmp[6]]))){stop("Missing covariate data")}        
+           }
         }
       }
     }
@@ -260,10 +279,11 @@ for(off in 1:sum(PdP$offspring==1)){
   par_type=c()
 
   if(length(interactions)>0){
-
+    
     for(i in 1:length(interactions)){ 
- 
+
       form.comb<-match(PdP$formula[[interactions[i]]], PdP$formula[main_effects])
+
       t1<-predictors[[form.comb[1]]]
       t2<-predictors[[form.comb[2]]]
 
@@ -637,7 +657,7 @@ for(off in 1:sum(PdP$offspring==1)){
       if(is.null(A)==TRUE){
         A<-extractA(GdP$G)
       }
-      if(is.null(E2)==TRUE){
+      if(is.null(E1)==TRUE){
         E1<-0.005
       }
       if(is.null(E2)==TRUE){
@@ -646,6 +666,13 @@ for(off in 1:sum(PdP$offspring==1)){
       X.list<-fillX.G(X.list, A=A, G=G, E1=E1, E2=E2, marker.type=GdP$marker.type)
       X.list<-reordXlist(X.list, marker.type=GdP$marker.type)
     }
+
+    npdam<-unlist(lapply(X.list$X, function(x){length(x$restdam.id)}))
+    npsire<-unlist(lapply(X.list$X, function(x){length(x$restsire.id)}))
+
+    if(any(npdam==0)){ stop(paste("Indiviudals", paste(names(X.list$X)[which(npdam==0)], collapse=" "), "have no possible dams"))}
+    if(any(npsire==0)){stop(paste("Individuals", paste(names(X.list$X)[which(npsire==0)], collapse=" "), "have no possible sires"))}
+
   }
 X.list
 }

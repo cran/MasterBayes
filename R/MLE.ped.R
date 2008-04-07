@@ -1,8 +1,11 @@
-MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSsire=NULL, threshold=0, ...){
+MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSsire=NULL, threshold=0, checkP=FALSE, ...){
 
          if(is.null(ped)){
            ped<-matrix(NA, length(X.list$id), 3)
-           ped[,1]<-as.character(X.list$id)
+           ped[,1]<-1:length(X.list$id)
+         }else{
+           ped<-match(ped, X.list$id)
+           ped<-matrix(ped, length(X.list$id), 3)                    
          }
 
          if(FALSE%in%is.na(ped[,2])){
@@ -44,8 +47,11 @@ MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSs
         nbetaS<-length(betaScat)
 
 
-         ndam<-unlist(lapply(X.list$X, function(x){length(x$restdam.id)}))
-         nsire<-unlist(lapply(X.list$X, function(x){length(x$restsire.id)}))
+         ndam<-unlist(lapply(X.list$X, function(x){length(x$dam.id)}))
+         nsire<-unlist(lapply(X.list$X, function(x){length(x$sire.id)}))
+
+         nrestdam<-unlist(lapply(X.list$X, function(x){length(x$restdam.id)}))
+         nrestsire<-unlist(lapply(X.list$X, function(x){length(x$restsire.id)}))
 
          if(length(X.list$X[[1]]$G)==0){
            warning("X.list$X is missing genetic likelihoods")
@@ -62,27 +68,32 @@ MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSs
  
            if(gets==TRUE | getd==TRUE){
 
-             X<-X.list$X[[i]]$G[1:(ndam[i]*nsire[i])]
-  
-             nsampD<-ndam[i]-(nbetaD>0)
-             nsampS<-nsire[i]-(nbetaS>0)
+             X<-t(matrix(X.list$X[[i]]$G, nsire[i], ndam[i]))
 
-             sampD<-1:(nsampD*nsire[i])
-             sampS<-1:(ndam[i]*nsire[i])
-             if(length(USsire)>0){
-               sampS<-sampS[-c(1:ndam[i])*nsire[i]]
+             if(nbetaS>0){
+                X[,nrestsire[i]]<-X[,nrestsire[i]]*nUSsire[s_cat]
              }
- 
-             DandS<-intersect(sampS, sampD)
-             DnotS<-setdiff(sampD, sampS)
-             SnotD<-setdiff(sampS, sampD)
-             notDS<-if(nbetaD>0 & nbetaS>0){ndam[i]*nsire[i]} 
- 
-             X[DnotS]<-X[DnotS]*if(nbetaS>0){nUSsire[s_cat]}else{0}
-             X[SnotD]<-X[SnotD]*if(nbetaD>0){nUSdam[d_cat]}else{0}
-             X[notDS]<-X[notDS]*if(nbetaD>0 & nbetaS>0){nUSdam[d_cat]*nUSsire[s_cat]}else{0}
- 
-             X<-t(matrix(X, nsire[i], ndam[i]))
+             if(nbetaD>0){
+                X[nrestdam[i],]<-X[nrestdam[i],]*nUSdam[d_cat]
+             }
+           }
+
+           if(checkP){
+             offid<-pos_in_id
+             while(length(offid)>0){
+               gp<-which(X.list$X[[i]]$dam.id%in%offid)
+               if(length(gp)>0){
+                 X[gp,]<-0
+               }
+               gp<-which(X.list$X[[i]]$sire.id%in%offid)
+               if(length(gp)>0){
+                 X[,gp]<-0
+               }
+               offid<-c(ped[,1][ped[,2]%in%offid], ped[,1][ped[,3]%in%offid])
+               if(length(offid)>0){
+                 offid<-unique(offid)
+               }
+             }           
            }
      
            if(getd==TRUE & gets==TRUE){      # if neither parents have starting parameteristion
@@ -95,35 +106,38 @@ MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSs
              }
            }else{
              if(gets==FALSE){
-               MLsire<-match(ped[,3][pos_in_id], X.list$id[X.list$X[[i]]$restsire.id])
+               MLsire<-match(ped[,3][pos_in_id], X.list$id[X.list$X[[i]]$sire.id])
                if(is.na(MLsire)==TRUE & nbetaS>0){MLsire<-nsire[i]}  
                if(getd==TRUE){   
                  MLdam<-which.max(X[,MLsire])
-                 if(MLdam==length(X.list$X[[i]]$restdam.id) & nbetaD>0){MLdam<-NA}  
+                 if(MLdam==length(X.list$X[[i]]$dam.id) & nbetaD>0){MLdam<-NA}  
                  if((X[,MLsire][MLdam]/sum(X[,MLsire]))<threshold){MLdam<-NA}  
                }  
              }
              if(getd==FALSE){
-               MLdam<-match(ped[,2][pos_in_id], X.list$id[X.list$X[[i]]$restdam.id])
+               MLdam<-match(ped[,2][pos_in_id], X.list$id[X.list$X[[i]]$dam.id])
                if(is.na(MLdam)==TRUE & nbetaD>0){MLdam<-ndam[i]}
                if(gets==TRUE){        
                  MLsire<-which.max(X[,MLdam])
-                 if(MLsire==length(X.list$X[[i]]$restsire.id) & nbetaS>0){MLsire<-NA}
+                 if(MLsire==length(X.list$X[[i]]$sire.id) & nbetaS>0){MLsire<-NA}
                  if((X[,MLdam][MLsire]/sum(X[,MLdam]))<threshold){MLsire<-NA}  
 
                }
              }
            }
-           if((MLdam==ndam[i] & nbetaD>0) | is.na(MLdam)==TRUE){
+           if((MLdam==nrestdam[i] & nbetaD>0) | is.na(MLdam)==TRUE){
              ped[,2][pos_in_id]<-NA
            }else{
-             ped[,2][pos_in_id]<-as.character(X.list$id[X.list$X[[i]]$restdam.id[MLdam]])
+             ped[,2][pos_in_id]<-X.list$X[[i]]$dam.id[MLdam]
            }
-           if((MLsire==nsire[i] & nbetaS>0) | is.na(MLsire)==TRUE){
+           if((MLsire==nrestsire[i] & nbetaS>0) | is.na(MLsire)==TRUE){
              ped[,3][pos_in_id]<-NA
            }else{ 
-             ped[,3][pos_in_id]<-as.character(X.list$id[X.list$X[[i]]$restsire.id[MLsire]])
+             ped[,3][pos_in_id]<-X.list$X[[i]]$sire.id[MLsire]
            }
-         }  
+         }
+         ped<-as.character(X.list$id[ped])
+         ped<-matrix(ped, length(X.list$id), 3)
+
 ped
 }   

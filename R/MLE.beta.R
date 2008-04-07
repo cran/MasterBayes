@@ -4,50 +4,56 @@
   dam<-match(ped[,2][off_records], X.list$id)
   sire<-match(ped[,3][off_records], X.list$id)
 
-  nUS<-c(0,0)
-
-  if(length(nUSdam)>0){nUS[1]<-nUSdam[1]}
-  if(length(nUSsire)>0){nUS[2]<-nUSsire[1]}
-
-  nbeta<-c(ncol(X.list$X[[1]]$XDus), ncol(X.list$X[[1]]$XDs), ncol(X.list$X[[1]]$XSus), ncol(X.list$X[[1]]$XSs), ncol(X.list$X[[1]]$XDSus), ncol(X.list$X[[1]]$XDSs))
-
-  if(length(beta)==0){
-    beta<-matrix(0, length(unique(X.list$beta_map)),1)
+  if(sum(is.na(dam)==FALSE)==0 & sum(is.na(sire)==FALSE)==0){
+     warning("no pedigree structure - cannot estimate beta")
+     C <- diag(rep(1,length(unique(X.list$beta_map))))
+     B.start <- rep(0,length(unique(X.list$beta_map)))
   }else{
-    beta<-as.matrix(beta)
-  }
 
-  nind<-length(X.list$id)
-  ndam<-unlist(lapply(X.list$X, function(x){length(x$dam.id)}))
-  nsire<-unlist(lapply(X.list$X, function(x){length(x$sire.id)}))
-  dam_pos<-1:length(X.list$X)
-  sire_pos<-1:length(X.list$X)
-  par_pos<-1:length(X.list$X)
+    nUS<-c(0,0)
 
-  X<-lapply(X.list$X, function(x){list(DS=NULL, S=NULL, D=NULL)})
-  mergeN<-lapply(X.list$X, function(x){x$mergeN})
+    if(length(nUSdam)>0){nUS[1]<-nUSdam[1]}
+    if(length(nUSsire)>0){nUS[2]<-nUSsire[1]}
 
-  for(i in 1:length(X.list$X)){
+    nbeta<-c(ncol(X.list$X[[1]]$XDus), ncol(X.list$X[[1]]$XDs), ncol(X.list$X[[1]]$XSus), ncol(X.list$X[[1]]$XSs), ncol(X.list$X[[1]]$XDSus), ncol(X.list$X[[1]]$XDSs))
 
-       if(is.null(X.list$merge)==FALSE){
-         for(m in 1:length(X.list$merge)){
-           if(X.list$merge[m]<=sum(nbeta[1:2])){
-             if(X.list$mergeUS[m]==1){
-               mergeN[[i]][,m][1]<-mergeN[[i]][,m][1]+nUS[1]
-             }
-             if(X.list$mergeUS[m]==2){
-               mergeN[[i]][,m][2]<-mergeN[[i]][,m][1]+nUS[1]
-             }
-           }else{ 
-             if(X.list$mergeUS[m]==1){
-               mergeN[[i]][,m][1]<-mergeN[[i]][,m][1]+nUS[2]
-             }
-             if(X.list$mergeUS[m]==2){
-               mergeN[[i]][,m][2]<-mergeN[[i]][,m][1]+nUS[2]
-             }
-           }
-         }
-       }
+    if(length(beta)==0){
+      beta<-matrix(0, length(unique(X.list$beta_map)),1)
+    }else{
+      beta<-as.matrix(beta)
+    }
+
+    nind<-length(X.list$id)
+    ndam<-unlist(lapply(X.list$X, function(x){length(x$dam.id)}))
+    nsire<-unlist(lapply(X.list$X, function(x){length(x$sire.id)}))
+    dam_pos<-1:length(X.list$X)
+    sire_pos<-1:length(X.list$X)
+    par_pos<-1:length(X.list$X)
+
+    X<-lapply(X.list$X, function(x){list(DS=NULL, S=NULL, D=NULL)})
+    mergeN<-lapply(X.list$X, function(x){x$mergeN})
+
+    for(i in 1:length(X.list$X)){
+
+      if(is.null(X.list$merge)==FALSE){
+        for(m in 1:length(X.list$merge)){
+          if(X.list$merge[m]<=sum(nbeta[1:2])){
+            if(X.list$mergeUS[m]==1){
+              mergeN[[i]][,m][1]<-mergeN[[i]][,m][1]+nUS[1]
+            }
+            if(X.list$mergeUS[m]==2){
+              mergeN[[i]][,m][2]<-mergeN[[i]][,m][2]+nUS[1]
+            }
+          }else{ 
+            if(X.list$mergeUS[m]==1){
+              mergeN[[i]][,m][1]<-mergeN[[i]][,m][1]+nUS[2]
+            }
+            if(X.list$mergeUS[m]==2){
+              mergeN[[i]][,m][2]<-mergeN[[i]][,m][2]+nUS[2]
+            }
+          }
+        }
+      }
 
       if(is.na(dam[i])){
         if(X.list$X[[i]]$restdam.id[length(X.list$X[[i]]$restdam.id)]>nind){
@@ -58,6 +64,7 @@
       }else{
         dam_pos[i]<-match(dam[i], X.list$X[[i]]$dam.id)
       }
+
       if(is.na(sire[i])){
        if(X.list$X[[i]]$restsire.id[length(X.list$X[[i]]$restsire.id)]>nind){
           sire_pos[i]<-length(X.list$X[[i]]$restsire.id)
@@ -67,7 +74,9 @@
       }else{
         sire_pos[i]<-match(sire[i], X.list$X[[i]]$sire.id)
       }
+
       par_pos[i]<-(nsire[i]*(dam_pos[i]-1))+sire_pos[i]
+
       if(sum(nbeta[1:2])>0){
         X[[i]]$D<-matrix(NA, ndam[i], sum(nbeta[1:2]))
       }
@@ -107,11 +116,11 @@
       }
     }
 
-optim.out <- optim(beta, beta.loglik, method = "BFGS",control = list(fnscale = -1), hessian = TRUE, X=X, dam_pos=dam_pos, sire_pos=sire_pos, par_pos=par_pos, beta_map=X.list$beta_map, merge=X.list$merge, mergeN=mergeN, nUs=nUS)
+    optim.out <- optim(beta, beta.loglik, method = "BFGS",control = list(fnscale = -1), hessian = TRUE, X=X, dam_pos=dam_pos, sire_pos=sire_pos, par_pos=par_pos, beta_map=X.list$beta_map, merge=X.list$merge, mergeN=mergeN, nUs=nUS)
  
- C <- solve(-1 * optim.out$hessian)
- B.start <- optim.out$par
-
+    C <- solve(-1 * optim.out$hessian)
+    B.start <- optim.out$par
+  }
 list(beta=B.start, C=C)
 } 
 

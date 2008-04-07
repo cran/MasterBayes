@@ -266,7 +266,7 @@
 
  if(sP$estUSsire==TRUE & sP$estUSdam==TRUE){
    if((pP$USsire$mu[1]!=999 & pP$USdam$mu[1]==999) | (pP$USsire$mu[1]==999 & pP$USdam$mu[1]!=999)){
-     stop("unsampled mothers and fathers are updated as a block and prior speicifictaions mus exist for both, or neither")
+     stop("unsampled mothers and fathers are updated as a block and prior speicifictaions must exist for both, or neither")
    }
  }
  if(pP$beta$mu[1]!=999 | pP$beta$sigma[1]!=999){

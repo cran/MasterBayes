@@ -38,7 +38,7 @@ res1<-expression(varPed("offspring", relational=FALSE, restrict=0))
 var1<-expression(varPed(c("lat", "long"), gender="Male", 
   relational="OFFSPRING"))
 res2<-expression(varPed("terr", gender="Female", relational="OFFSPRING", 
-  restrict=TRUE))
+  restrict="=="))
 
 PdP<-PdataPed(formula=list(var1,res1,res2), data=WarblerP)
 

@@ -57,10 +57,10 @@ simpedigree<-function(PdP, beta=NULL, nUS=NULL, ...){
         X[[i]][,1:nd]<-apply(X.list$X[[i]]$XDs, 2, rep, each=length(X.list$X[[i]]$sire.id))
     }
     if(ns>0){
-        X[[i]][,(nd+1):(nd+ns)]<-apply(X.list$X[[i]]$XSs, 2, rep, length(X.list$X[[i]]$dam.id))
+        X[[i]][,nd+1:ns]<-apply(X.list$X[[i]]$XSs, 2, rep, length(X.list$X[[i]]$dam.id))
     }
     if(nds>0){
-        X[[i]][,(nd+ns+1):(nd+ns+nds)]<-X.list$X[[i]]$XDSs
+        X[[i]][,(nd+ns)+1:nds]<-X.list$X[[i]]$XDSs
     }
   }
 
@@ -86,10 +86,11 @@ simpedigree<-function(PdP, beta=NULL, nUS=NULL, ...){
       }       
     }
  
-  patmat<-lapply(alpha, function(x){as.numeric(sample(1:length(x),1,prob=x))})
-
   dam<-1:length(X.list$X)
   sire<-1:length(X.list$X)
+
+  patmat<-lapply(alpha, function(x){as.numeric(sample(1:length(x),1,prob=x))})
+
 
   for(i in 1:length(X.list$X)){ 
     dam[i]<-ceiling(patmat[[i]]/length(X.list$X[[i]]$sire.id))

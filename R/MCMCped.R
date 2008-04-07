@@ -11,6 +11,8 @@ function(PdP=PdataPed(),
          write_postG=FALSE,
          write_postA=FALSE,  
          write_postP="MARGINAL",
+         checkP = FALSE,
+         jointP = TRUE,
          verbose=TRUE,
          ...
 ){
@@ -80,8 +82,8 @@ function(PdP=PdataPed(),
 
 ################################ get starting/tuning/prior parameterisation if not given ############################
 
-  sPtP<-getsPandtP(sP, tP, PdP=PdP, GdP=GdP, X.list=X.list, nbeta=nbeta, unique_id=unique_id)
-  
+  sPtP<-getsPandtP(sP, tP, PdP=PdP, GdP=GdP, X.list=X.list, nbeta=nbeta, unique_id=unique_id, checkP=checkP)
+
   sP<-sPtP$sP
   tP<-sPtP$tP
 
@@ -139,12 +141,12 @@ function(PdP=PdataPed(),
      PdP$USsire<--999
    }
 
-   X_design_betaDus<-c(unlist(lapply(X.list$X,function(x){t(x$XDus)})))	
-   X_design_betaSus<-c(unlist(lapply(X.list$X,function(x){t(x$XSus)})))
-   X_design_betaDSus<-c(unlist(lapply(X.list$X,function(x){t(x$XDSus)})))
-   X_design_betaDs<-c(unlist(lapply(X.list$X,function(x){t(x$XDs)})))
-   X_design_betaSs<-c(unlist(lapply(X.list$X,function(x){t(x$XSs)})))
-   X_design_betaDSs<-c(unlist(lapply(X.list$X,function(x){t(x$XDSs)})))
+   X_design_betaDus<-c(unlist(lapply(X.list$X,function(x){(x$XDus)})))	
+   X_design_betaSus<-c(unlist(lapply(X.list$X,function(x){(x$XSus)})))
+   X_design_betaDSus<-c(unlist(lapply(X.list$X,function(x){(x$XDSus)})))
+   X_design_betaDs<-c(unlist(lapply(X.list$X,function(x){(x$XDs)})))
+   X_design_betaSs<-c(unlist(lapply(X.list$X,function(x){(x$XSs)})))
+   X_design_betaDSs<-c(unlist(lapply(X.list$X,function(x){(x$XDSs)})))
 
    if(nbeta[1]>0){
      X_design_betaDus[which(is.na(X_design_betaDus)==TRUE)]<-0
@@ -167,10 +169,10 @@ function(PdP=PdataPed(),
    if(length(sP$G)!=0){              # if sP$G is specified then convert to c++ format
        sP$G<-GtoC(sP$G, biallelic=(GdP$marker.type!="MS"))
     }else{
-      sP$G<-0  
-      sP$A<-0
-      sP$E1<-0
-      sP$E2<-0
+      sP$estG<-0  
+      sP$estA<-0
+      sP$estE1<-0
+      sP$estE2<-0
    }
     	
    sP$dam[which(is.na(sP$dam)==T)]<-nind+1
@@ -184,16 +186,19 @@ function(PdP=PdataPed(),
    if(is.null(sP$USdam) & is.null(sP$USsire)){sP$USdam<--999}
    pPUSmu<-c(pP$USdam$mu, pP$USsire$mu)
    pPUSsigma<-c(pP$USdam$sigma, pP$USsire$sigma)
+
    if(FALSE%in%(as.integer(pPUSmu)%in%999)){    
      pPUSsigma<-pPUSsigma[-which(as.integer(pPUSmu)==999)]
      pPUSmu<-pPUSmu[-which(as.integer(pPUSmu)==999)]
    }
-   
+
    if(pP$beta$mu[1]!=999 & length(pP$beta$mu)>1){
      pP$beta$mu<-pP$beta$mu[X.list[[2]]]
      pP$beta$sigma<-pP$beta$sigma[,X.list[[2]]][X.list[[2]],]
    }
+
 # get linked parameters
+
   if(sum(nbeta)>0){
     beta_map<-X.list$beta_map-1
     nunique_beta<-length(unique(beta_map))
@@ -204,7 +209,7 @@ function(PdP=PdataPed(),
 
   mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%GdP$marker.type*c(1:3))
 
-estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"))
+estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"), checkP, jointP)
 store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
 
 Merge4C<-function(X.list){
@@ -213,8 +218,8 @@ Merge4C<-function(X.list){
  for(i in 1:(length(X.list$X[[1]]$mergeN)/2)){
      Mmat[[i]]<-Merge[(2*i-1):(2*i),]
  } 
- Mmat<-unlist(lapply(Mmat, t))
- Mmat
+# Mmat<-unlist(lapply(Mmat, t))
+ unlist(Mmat)
 }
 
  if(length(X.list$merge)>0){
@@ -228,7 +233,6 @@ Merge4C<-function(X.list){
    MergeUS<--999
    nMerge<-0
  }
-
 ################# Error Check ##########################################################################
 
 output<-.C("MCMCped",

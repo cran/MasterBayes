@@ -34,7 +34,7 @@ res1<-expression(varPed("offspring", restrict=0))
 # indivdiuals from the offspring generation are excluded as parents
 
 res2<-expression(varPed("terr", gender="Female", relational="OFFSPRING", 
-  restrict=TRUE))
+  restrict="=="))
 
 # mothers not from the offspring territory are excluded
  
