@@ -25,7 +25,7 @@ varPed(x, gender=NULL, lag=c(0,0), relational=FALSE,
 
   Additional variables can be fitted that relate specific parental combinations to specific offspring, or specific dams to specific sires.  Elements of the design matrices refering to specific parental combinations are then free to vary across offspring.  The most obvious variable of this type is the mendelian transition probability obtained from the genetic data themsleves. However, by specifying \code{relational="OFFSPRING"}, \code{relational="OFFSPRINGV"}, \code{relational="MATE"} or \code{relational="MATEV"}, non-genetic variables are free to vary across offspring. When \code{x} is \code{numeric} the Euclidean distances between parents and offspring, or between mates enter into the design matrix, when \code{relational="OFFSPRING"} or \code{relational="MATE"} respectively.  When \code{relational="OFFSPRINGV"} or \code{relational="MATEV"} are specified a signed vector is calculated rather than a distance.  When \code{x} is a \code{factor} then an indicator variable is set up indicating whether parent and offspring, or mate, factor levels match.  Often, each offspring will have a variable number of candidate parents as some parents may be excluded \emph{a priori}. When \code{x} is a \code{factor} and both \code{relational="OFFSPRING"} and \code{restrict="=="}, only those potential parents that have factor levels matching the offspring factor level are retained.  When \code{relational=FALSE}, \code{restrict} can take on factor levels which exclude parents that have non-matching factor levels. 
 
-If a time variable (\code{timevar}) is not passed to \code{PdataPed} the data are assumed to be cross-sectional and each indivdiual only respresented once.  If a time variable (\code{timevar}) is passed to \code{PdataPed} then \code{lag} and \code{lag_relational} can be set so that time specific covariates are used.  \code{lag} designates time units relative to the offspring record when \code{relational=FALSE}; for example, if \code{lag=c(0,0)} the value of \code{x} is taken for that parent during the same time period as the offspring record.   If \code{relational="OFFSPRING"} or \code{relational="MATE"} then \code{lag} determines the time units relative to the record of the offspring or mate to which the focal inidvidual is being compared.  This record can be specified by using \code{lag_relational}, which is always relative to the offspring record. Negative lags refer to previous time intervals (e.g. \code{lag=c(-1,-1)} takes \code{x} from the previous time step), and if the elements of \code{lag} or \code{lag_relational} differ then the average value of \code{x} during this period is taken (e.g \code{lag=c(-1,0)} averages \code{x} in the record matching and preceding the offspring record).  This is not applicable when \code{x} is a \code{factor} unless \code{restrict} takes one of the logical values (e.g.\code{"=="}) in which case parents are retained when the logical value is \code{TRUE} at least once in the specified interval. 
+If a time variable (\code{timevar}) is not passed to \code{PdataPed} the data are assumed to be cross-sectional and each indivdiual only respresented once.  If a time variable (\code{timevar}) is passed to \code{PdataPed} then \code{lag} and \code{lag_relational} can be set so that time specific covariates are used.  \code{lag} designates time units relative to the offspring record when \code{relational=FALSE}; for example, if \code{lag=c(0,0)} the value of \code{x} is taken for that parent during the same time period as the offspring record.   If \code{relational="OFFSPRING"} or \code{relational="MATE"} then \code{lag} determines the time units relative to the record of the offspring or mate to which the focal inidvidual is being compared.  This record can be specified by using \code{lag_relational}, which is always relative to the offspring record. Negative lags refer to previous time intervals (e.g. \code{lag=c(-1,-1)} takes \code{x} from the previous time step), and if the elements of \code{lag} or \code{lag_relational} differ then the average value of \code{x} during this period is taken (e.g \code{lag=c(-1,0)} averages \code{x} in the record matching and preceding the offspring record).  This is not applicable when \code{x} is a \code{factor} unless \code{restrict="=="} in which case parents are retained when factor levels match for any times in the specified interval. 
  
 
 Below are models that can be fitted using \code{varPed}, where \code{x} is a univariate continuous variable:
@@ -60,12 +60,7 @@ Below are models that can be fitted using \code{varPed}, where \code{x} is a uni
 \code{varPed(x, gender="Female", lag=c(-2,-2), relational="MATE",}
 
   \code{   lag_relational=c(-1,-1))}
-\deqn{p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|x_{i,t-2}-x_{j,t-1}|)...)}{p(i,j) = exp(b*(abs(x(i,t-2)-x(j,t-1)))...)}
-
-\code{varPed(x, gender="Male", lag=c(-2,-2), relational="OFFSPRING",}
-
-  \code{   lag_relational=c(-1,-1))}
-\deqn{p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|x_{j,t-2}-x_{o,t-1}|)...)}{p(i,j) = exp(b*(abs(x(j,t-2)-x(o,t-1)))...)}
+\deqn{p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(x_{i,t-2}+x_{j,t-1})...)}{p(i,j) = exp(b*(x(i,t-2)+x(j,t-1))...)}
 
 Where \eqn{p^{(o)}_{i,j}}{p(i,j)} is the probability that dam \eqn{i}{i} and sire \eqn{j}{j} are the parents of an offspring \eqn{o}{o}. \eqn{x}{x} and \eqn{\beta}{b} are the variable of interest and the associated parameter, and \eqn{t} is the time period to which the offspring record belongs.
 
@@ -86,15 +81,9 @@ The denominator of the multinomial likelihood is the summed linear predictors of
 
 and the likelihood of \eqn{\beta}{b} is 
 
-\deqn{Pr(x| \bm{\beta})  = \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{i}}_{i=1}\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{i,j})}\right]}{Pr(x| b) = prod(no)(exp(eta(d,s))/sum(ni*nj)(exp(eta(i,j))))}  
+\deqn{Pr(x|\bf{\beta})  = \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{i}}_{i=1}\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{i,j})}\right]}{Pr(x| b) = prod(no)(exp(eta(d,s))/sum(ni*nj)(exp(eta(i,j))))}  
 
 where \eqn{n_{o}}{no}, \eqn{n^{(o)}_{i}}{ni} and \eqn{n^{(o)}_{j}}{nj} are the number of offspring, the number of potential mothers for offspring \eqn{o}{o}, and the number of potential fathers for offspring \eqn{o}{o}, respectively.  \eqn{d}{d} and \eqn{s}{s} are the actual parents of offspring \eqn{o}{o}. The set of possible parents  in the denominator of the multinomial likelihood are those that are not excluded using the argument \code{restrict}. However, if the argument \code{keep=TRUE} is used then the denominator of the likelihood will include excluded parents depsite the fact that \eqn{d\neq i}{d!=i} and \eqn{s\neq j}{s!=j}.
-
-In recent versions \code{DSapprox=TRUE} can be passed to \code{MCMCped} which approximates the likelihood of \eqn{\beta}{b} when a variable specifies the distance between mates (i.e \code{relational="MATE"}). This approximation reduces the computational burden by fixing \eqn{i=d}{i=d} or \eqn{i=s}{i=s} in the denominator of the multinomial likelihood. The parent defined as the "MATE" is fixed, so that a \code{varPed} expression with gender="Male" has the approximated likelihood:
-
-\deqn{Pr(x, i=d| \bm{\beta})  = \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{d,j})}\right]}{Pr(x, i=d| b) = prod(no)(exp(eta(d,s))/sum(nj)(exp(eta(d,j))))}  
-
- 
 }
 \value{
   list containing the design matrix for variable \code{x}, the identity of retained parents and the gender of the parents
@@ -102,7 +91,7 @@ In recent versions \code{DSapprox=TRUE} can be passed to \code{MCMCped} which ap
 \note{
 Versions >=2.1 accept different arguments for \code{restrict} than earlier versions.  When \code{relational="OFFSPRING"}, earlier versions accepted \code{restrict=TRUE} and \code{restrict=FALSE}, but these have now been replaced with \code{restrict="=="} and \code{restrict="!="}, respectively.  In addition, \code{restrict} now also accepts \code{">"}, \code{">="}, \code{"<"} and \code{"<="} with parental values on the LHS and offspring values on the RHS.
 
-Also, versions >=2.1 also accept \code{"OFFSPRINGV"} and \code{"MATEV"} for \code{relational} in addition to \code{"OFFSPRING"} and \code{"MATE"}.  \code{"V"} specifies that the signed vector should be used rather than the Euclidean distance.
+Also, versions >=2.1 also accept \code{"OFFSPRINGV"} and \code{"MATEV"} for \code{realtional} in addition to \code{"OFFSPRING"} and \code{"MATE"}.  \code{"V"} specifies that the signed vector should be used rather than the Euclidean distance.
   }
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}

@@ -1,0 +1,1064 @@
+This is pdfeTeX, Version 3.141592-1.21a-2.2 (Web2C 7.5.4) (format=pdflatex 2008.2.18)  10 APR 2008 16:54
+entering extended mode
+**MasterBayes.Tutorial.tex
+(./MasterBayes.Tutorial.tex
+LaTeX2e <2003/12/01>
+Babel <v3.8d> and hyphenation patterns for american, french, german, ngerman, b
+ahasa, basque, bulgarian, catalan, croatian, czech, danish, dutch, esperanto, e
+stonian, finnish, greek, icelandic, irish, italian, latin, magyar, norsk, polis
+h, portuges, romanian, russian, serbian, slovak, slovene, spanish, swedish, tur
+kish, ukrainian, nohyphenation, loaded.
+(/usr/share/texmf/tex/latex/base/article.cls
+Document Class: article 2004/02/16 v1.4f Standard LaTeX document class
+(/usr/share/texmf/tex/latex/base/size10.clo
+File: size10.clo 2004/02/16 v1.4f Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texmf/tex/latex/graphics/graphics.sty
+Package: graphics 2001/07/07 v1.0n Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/share/texmf/tex/latex/graphics/graphics.cfg
+File: graphics.cfg 2005/02/03 v1.3 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 80.
+
+(/usr/share/texmf/tex/latex/graphics/pdftex.def
+File: pdftex.def 2002/06/19 v0.03k graphics/color for pdftex
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/share/texmf/tex/latex/natbib/natbib.sty
+Package: natbib 2003/06/06 7.1 (PWD)
+\bibhang=\skip43
+\bibsep=\skip44
+LaTeX Info: Redefining \cite on input line 518.
+\c@NAT@ctr=\count88
+)
+(/usr/share/texmf/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2001/10/25 v2.2f
+\@emptytoks=\toks15
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 132.
+)
+(/usr/share/texmf/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2002/01/22 v2.2d
+)
+(/usr/share/texmf/tex/latex/amscls/amsthm.sty
+Package: amsthm 2004/08/06 v2.20
+\thm@style=\toks16
+\thm@bodyfont=\toks17
+\thm@headfont=\toks18
+\thm@notefont=\toks19
+\thm@headpunct=\toks20
+\thm@preskip=\skip45
+\thm@postskip=\skip46
+\thm@headsep=\skip47
+\dth@everypar=\toks21
+)
+(/usr/share/texmf/tex/latex/tools/bm.sty
+Package: bm 2004/02/26 v1.1c Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup6
+\symboldletters=\mathgroup7
+\symboldsymbols=\mathgroup8
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 137.
+LaTeX Info: Redefining \bm on input line 203.
+) (/usr/share/R/texmf/Sweave.sty
+
+LaTeX Warning: You have requested package `/usr/share/R/texmf/Sweave',
+               but the package provides `Sweave'.
+
+Package: Sweave 
+(/usr/share/texmf/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/share/texmf/tex/latex/fancyvrb/fancyvrb.sty
+Package: fancyvrb 1998/07/17
+
+Style option: `fancyvrb' v2.6, with DG/SPQR fixes <1998/07/17> (tvz)
+\FV@CodeLineNo=\count89
+\FV@InFile=\read1
+\FV@TabBox=\box26
+\c@FancyVerbLine=\count90
+\FV@StepNumber=\count91
+\FV@OutFile=\write3
+
+No file fancyvrb.cfg.
+) (/usr/share/texmf/tex/latex/upquote/upquote.sty
+Package: upquote 2003/08/11 v1.1 Covington's upright-quote modification to verb
+atim and verb
+
+(/usr/share/texmf/tex/latex/base/textcomp.sty
+Package: textcomp 2004/02/22 v1.99f Standard LaTeX package
+Package textcomp Info: Sub-encoding information:
+(textcomp)               5 = only ISO-Adobe without \textcurrency
+(textcomp)               4 = 5 + \texteuro
+(textcomp)               3 = 4 + \textohm
+(textcomp)               2 = 3 + \textestimated + \textcurrency
+(textcomp)               1 = TS1 - \textcircled - \t
+(textcomp)               0 = TS1 (full)
+(textcomp)             Font families with sub-encoding setting implement
+(textcomp)             only a restricted character set as indicated.
+(textcomp)             Family '?' is the default used for unknown fonts.
+(textcomp)             See the documentation for details.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 71.
+
+(/usr/share/texmf/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+)
+LaTeX Info: Redefining \oldstylenums on input line 266.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 281.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 282.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 283.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 284.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 285.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 286.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 287.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 288.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 289.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 290.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 291.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 292.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 293.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 294.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 295.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 296.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 297.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 298.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 299.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 300.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 301.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 302.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 303.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 304.
+
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 305.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 306.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 307.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 308.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 309.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 310.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 311.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 312.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 313.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 314.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 315.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 316.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 317.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 318.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 319.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 320.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 321.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 322.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 323.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 324.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 325.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 326.
+))
+(/usr/share/texmf/tex/latex/base/fontenc.sty
+Package: fontenc 2004/02/22 v1.99f Standard LaTeX package
+
+(/usr/share/texmf/tex/latex/base/t1enc.def
+File: t1enc.def 2004/02/22 v1.99f Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+(/usr/share/texmf/tex/latex/ae/ae.sty
+Package: ae 2001/02/12 1.3 Almost European Computer Modern
+
+(/usr/share/texmf/tex/latex/base/fontenc.sty
+Package: fontenc 2004/02/22 v1.99f Standard LaTeX package
+
+(/usr/share/texmf/tex/latex/base/t1enc.def
+File: t1enc.def 2004/02/22 v1.99f Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+)
+LaTeX Font Info:    Try loading font information for T1+aer on input line 100.
+
+(/usr/share/texmf/tex/latex/ae/t1aer.fd
+File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
+)))) (./MasterBayes.Tutorial.aux)
+\openout1 = `MasterBayes.Tutorial.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 16.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 16.
+
+(/usr/share/texmf/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 16.
+
+(/usr/share/texmf/tex/context/base/supp-pdf.tex
+(/usr/share/texmf/tex/context/base/supp-mis.tex
+loading : Context Support Macros / Miscellaneous (2004.10.26)
+\protectiondepth=\count92
+\scratchcounter=\count93
+\scratchtoks=\toks22
+\scratchdimen=\dimen105
+\scratchskip=\skip48
+\scratchmuskip=\muskip10
+\scratchbox=\box27
+\scratchread=\read2
+\scratchwrite=\write4
+\zeropoint=\dimen106
+\onepoint=\dimen107
+\onebasepoint=\dimen108
+\minusone=\count94
+\thousandpoint=\dimen109
+\onerealpoint=\dimen110
+\emptytoks=\toks23
+\nextbox=\box28
+\nextdepth=\dimen111
+\everyline=\toks24
+\!!counta=\count95
+\!!countb=\count96
+\recursecounter=\count97
+)
+loading : Context Support Macros / PDF (2004.03.26)
+\nofMPsegments=\count98
+\nofMParguments=\count99
+\MPscratchCnt=\count100
+\MPscratchDim=\dimen112
+\MPnumerator=\count101
+\everyMPtoPDFconversion=\toks25
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 27.
+ (/usr/share/texmf/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2002/01/19 v2.2g AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 27.
+
+(/usr/share/texmf/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2002/01/19 v2.2g AMS font definitions
+)
+<Rlogo.pdf, id=1, 101.37875pt x 77.28876pt>
+File: Rlogo.pdf Graphic file (type pdf)
+ <use Rlogo.pdf> [1
+
+{/usr/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./Rlogo.pdf>]
+(./MasterBayes.Tutorial.toc
+LaTeX Font Info:    Try loading font information for T1+aett on input line 2.
+ (/usr/share/texmf/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+))
+\tf@toc=\write5
+\openout5 = `MasterBayes.Tutorial.toc'.
+
+ [2]
+Overfull \hbox (1.93517pt too wide) in paragraph at lines 48--49
+\T1/aer/m/n/10 many rou-tines have been writ-ten in com-piled C++ code for ef-f
+i-ciency. Netherthe-
+ []
+
+
+Package natbib Warning: Citation `Gelman.2004' on page 3 undefined on input lin
+e 54.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--63
+
+ []
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-006' not found on input line 68.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-006.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.68 \includegraphics{MasterBayes.Tutorial-006}
+                                               
+? q
+OK, entering \batchmode...
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
+
+ []
+
+ [3]
+Underfull \hbox (badness 10000) in paragraph at lines 76--77
+
+ []
+
+
+LaTeX Font Warning: Font shape `T1/aett/bx/n' undefined
+(Font)              using `T1/aett/m/n' instead on input line 78.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--81
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--83
+
+ []
+
+ [4]
+Underfull \hbox (badness 10000) in paragraph at lines 84--85
+
+ []
+
+ [5]
+
+LaTeX Warning: File `MasterBayes.Tutorial-007' not found on input line 98.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-007.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.98 \includegraphics{MasterBayes.Tutorial-007}
+                                               
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--105
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 109--110
+
+ []
+
+ [6]
+Underfull \hbox (badness 10000) in paragraph at lines 111--112
+
+ []
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-008' not found on input line 117.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-008.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.117 \includegraphics{MasterBayes.Tutorial-008}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--130
+
+ []
+
+ [7]
+
+LaTeX Warning: File `MasterBayes.Tutorial-009' not found on input line 133.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-009.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.133 \includegraphics{MasterBayes.Tutorial-009}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Package natbib Warning: Citation `Richardson.2001' on page 8 undefined on input
+ line 144.
+
+
+Package natbib Warning: Citation `Richardson.2000' on page 8 undefined on input
+ line 153.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--154
+
+ []
+
+ [8]
+Overfull \hbox (34.06679pt too wide) in paragraph at lines 184--185
+\T1/aer/m/n/10 (\T1/aett/m/n/10 relational=FALSE\T1/aer/m/n/10 ), or is to be t
+rans-formed into a dis-tance. \T1/aett/m/n/10 re-la-tional="OFFSPRING"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 184--185
+
+ []
+
+ [9]
+Underfull \hbox (badness 10000) in paragraph at lines 195--196
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 213--214
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 224--225
+
+ []
+
+ [10]
+Underfull \hbox (badness 10000) in paragraph at lines 234--235
+
+ []
+
+
+Package natbib Warning: Citation `Kalinowski.2006' on page 11 undefined on inpu
+t line 239.
+
+ [11]
+
+Package natbib Warning: Citation `Marshall.1998' on page 12 undefined on input 
+line 245.
+
+
+Package natbib Warning: Citation `Nielsen.2001' on page 12 undefined on input l
+ine 245.
+
+ [12] [13]
+
+LaTeX Warning: File `MasterBayes.Tutorial-022' not found on input line 345.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-022.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.345 \includegraphics{MasterBayes.Tutorial-022}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [14]
+
+Package natbib Warning: Citation `Hadfield.2006c' on page 15 undefined on input
+ line 430.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 430--431
+
+ []
+
+ [15]
+
+LaTeX Warning: File `MasterBayes.Tutorial-027' not found on input line 470.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-027.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.470 \includegraphics{MasterBayes.Tutorial-027}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--478
+
+ []
+
+ [16]
+
+LaTeX Warning: File `MasterBayes.Tutorial-030' not found on input line 518.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-030.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.518 \includegraphics{MasterBayes.Tutorial-030}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 524--525
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 526--527
+
+ []
+
+ [17]
+
+Package natbib Warning: Citation `Nielsen.2001' on page 18 undefined on input l
+ine 528.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 535--536
+
+ []
+
+
+Package natbib Warning: Citation `Nielsen.2001' on page 18 undefined on input l
+ine 537.
+
+ [18]
+Underfull \hbox (badness 10000) in paragraph at lines 579--580
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 594--595
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 603--604
+
+ []
+
+ [19]
+Underfull \hbox (badness 10000) in paragraph at lines 605--606
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 607--608
+
+ []
+
+
+Package natbib Warning: Citation `Gelman.2004' on page 20 undefined on input li
+ne 615.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 615--616
+
+ []
+
+ [20]
+Underfull \hbox (badness 10000) in paragraph at lines 636--637
+
+ []
+
+
+Package natbib Warning: Citation `Wang.2004' on page 21 undefined on input line
+ 639.
+
+ [21]
+
+LaTeX Warning: File `MasterBayes.Tutorial-035' not found on input line 653.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-035.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.653 \includegraphics{MasterBayes.Tutorial-035}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-039' not found on input line 693.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-039.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.693 \includegraphics{MasterBayes.Tutorial-039}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+ [22] [23]
+Underfull \hbox (badness 10000) in paragraph at lines 766--767
+
+ []
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-043' not found on input line 771.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-043.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.771 \includegraphics{MasterBayes.Tutorial-043}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [24]
+Underfull \hbox (badness 10000) in paragraph at lines 827--828
+
+ []
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-047' not found on input line 844.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-047.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.844 \includegraphics{MasterBayes.Tutorial-047}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+ [25]
+
+LaTeX Warning: File `MasterBayes.Tutorial-050' not found on input line 875.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-050.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.875 \includegraphics{MasterBayes.Tutorial-050}
+                                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Package natbib Warning: Citation `Sheehan.2000' on page 26 undefined on input l
+ine 881.
+
+
+Package natbib Warning: Citation `Lange.2002' on page 26 undefined on input lin
+e 881.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 885--886
+
+ []
+
+ [26] [27]
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 966
+.
+LaTeX Font Info:    No file TS1aett.fd. on input line 966.
+
+LaTeX Font Warning: Font shape `TS1/aett/m/n' undefined
+(Font)              using `TS1/cmr/m/n' instead
+(Font)              for symbol `textquotesingle' on input line 966.
+
+ [28]
+
+Package natbib Warning: Citation `McCullagh.1989' on page 29 undefined on input
+ line 991.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 995--996
+
+ []
+
+ [29]
+
+LaTeX Warning: File `MasterBayes.Tutorial-057' not found on input line 1043.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-057.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1043 \includegraphics{MasterBayes.Tutorial-057}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [30]
+
+LaTeX Warning: File `MasterBayes.Tutorial-060' not found on input line 1073.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-060.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1073 \includegraphics{MasterBayes.Tutorial-060}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-063' not found on input line 1092.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-063.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1092 \includegraphics{MasterBayes.Tutorial-063}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [31] [32]
+Underfull \hbox (badness 10000) in paragraph at lines 1148--1149
+
+ []
+
+ [33]
+
+LaTeX Warning: File `MasterBayes.Tutorial-068' not found on input line 1212.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-068.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1212 \includegraphics{MasterBayes.Tutorial-068}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1219--1220
+
+ []
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-070' not found on input line 1224.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-070.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1224 \includegraphics{MasterBayes.Tutorial-070}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+ [34]
+
+LaTeX Warning: File `MasterBayes.Tutorial-073' not found on input line 1245.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-073.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1245 \includegraphics{MasterBayes.Tutorial-073}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-076' not found on input line 1269.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-076.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1269 \includegraphics{MasterBayes.Tutorial-076}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1275--1276
+
+ []
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-078' not found on input line 1280.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-078.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1280 \includegraphics{MasterBayes.Tutorial-078}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+ [35]
+
+LaTeX Warning: File `MasterBayes.Tutorial-081' not found on input line 1301.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-081.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1301 \includegraphics{MasterBayes.Tutorial-081}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: File `MasterBayes.Tutorial-084' not found on input line 1324.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-084.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1324 \includegraphics{MasterBayes.Tutorial-084}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [36]
+
+LaTeX Warning: File `MasterBayes.Tutorial-087' not found on input line 1374.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-087.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1374 \includegraphics{MasterBayes.Tutorial-087}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [37]
+Underfull \hbox (badness 10000) in paragraph at lines 1385--1386
+
+ []
+
+ [38]
+
+LaTeX Warning: File `MasterBayes.Tutorial-090' not found on input line 1420.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-090.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1420 \includegraphics{MasterBayes.Tutorial-090}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Package natbib Warning: Citation `Thompson.1976a' on page 39 undefined on input
+ line 1426.
+
+
+Package natbib Warning: Citation `Emery.2001' on page 39 undefined on input lin
+e 1426.
+
+
+Package natbib Warning: Citation `Elston.1971' on page 39 undefined on input li
+ne 1426.
+
+ [39]
+
+LaTeX Warning: File `MasterBayes.Tutorial-093' not found on input line 1452.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-093.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1452 \includegraphics{MasterBayes.Tutorial-093}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1464--1465
+
+ []
+
+ [40]
+
+LaTeX Warning: File `MasterBayes.Tutorial-096' not found on input line 1489.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-096.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1489 \includegraphics{MasterBayes.Tutorial-096}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [41]
+
+LaTeX Warning: File `MasterBayes.Tutorial-099' not found on input line 1511.
+
+
+! LaTeX Error: Unknown graphics extension: .Tutorial-099.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1511 \includegraphics{MasterBayes.Tutorial-099}
+                                                 
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ [42]
+Overfull \hbox (5.35938pt too wide) in paragraph at lines 1574--1575
+[]\T1/aett/m/n/10 varPed(x, gen-der="Female", lag=c(-1,-1), re-la-tional="OFFSP
+RING") 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1585--1586
+
+ []
+
+ [43]
+Underfull \hbox (badness 10000) in paragraph at lines 1599--1600
+
+ []
+
+
+Package natbib Warning: Citation `Smouse.1999' on page 44 undefined on input li
+ne 1601.
+
+No file MasterBayes.Tutorial.bbl.
+
+Package natbib Warning: There were undefined citations.
+
+ [44] (./MasterBayes.Tutorial.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 3007 strings out of 94500
+ 37884 string characters out of 1176766
+ 80836 words of memory out of 1000000
+ 6055 multiletter control sequences out of 10000+50000
+ 44279 words of font info for 102 fonts, out of 500000 for 2000
+ 580 hyphenation exceptions out of 1000
+ 35i,8n,22p,2138b,280s stack positions out of 1500i,500n,5000p,200000b,5000s
+PDF statistics:
+ 223 PDF objects out of 300000
+ 0 named destinations out of 131072
+ 6 words of extra memory for PDF output out of 65536
+</usr/share/texmf/fonts/type1/bluesky/cm/cmr5.pfb></usr/share/texmf/fonts/typ
+e1/bluesky/cm/cmti10.pfb> </var/lib/texmf/pk/ljfour/jknappen/tc/tcrm1000.600pk>
+</usr/share/texmf/fonts/type1/bluesky/cm/cmsy7.pfb></usr/share/texmf/fonts/type
+1/bluesky/cm/cmmi5.pfb></usr/share/texmf/fonts/type1/public/tt2001/fmex8.pfb></
+usr/share/texmf/fonts/type1/bluesky/cm/cmsy8.pfb></usr/share/texmf/fonts/type1/
+bluesky/cm/cmmi6.pfb></usr/share/texmf/fonts/type1/bluesky/cmextra/cmmib7.pfb><
+/usr/share/texmf/fonts/type1/bluesky/cm/cmex10.pfb></usr/share/texmf/fonts/type
+1/bluesky/cm/cmtt8.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmmi8.pfb></usr
+/share/texmf/fonts/type1/bluesky/cm/cmr8.pfb></usr/share/texmf/fonts/type1/blue
+sky/cm/cmr6.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmmi7.pfb></usr/share/
+texmf/fonts/type1/bluesky/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/bluesky/c
+m/cmsy10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmmib10.pfb></usr/share/t
+exmf/fonts/type1/bluesky/cm/cmr7.pfb></usr/share/texmf/fonts/type1/bluesky/cm/c
+mmi10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsltt10.pfb></usr/share/tex
+mf/fonts/type1/bluesky/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/c
+mbx10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr10.pfb></usr/share/texmf/
+fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmbx1
+2.pfb>
+Output written on MasterBayes.Tutorial.pdf (44 pages, 298934 bytes).

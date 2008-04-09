@@ -13,6 +13,7 @@ double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories
         int ind;
         double LLB = 0.0;
 
+        
         switch(mtype){
 
           case 1:
@@ -79,7 +80,7 @@ double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories
 return LLB; 
 }
 
-double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [], Matrix<double> X_design_betaSus [], Matrix<double> X_design_betaDSus [], Matrix<double> X_design_betaDs [], Matrix<double> X_design_betaSs [], Matrix<double> X_design_betaDSs [], int *npar, int *DSuu, int *dam, int *sire, Matrix<double> beta, int *ntdam, int *ntsire, int *ndam, int *nsire,  std::map<int, int> Dams [], std::map<int, int> Sires [], int nusd, int *usdamcat, int nuss, int *ussirecat, Matrix<double> us, Matrix<double> ratio[], int nmerge, int *mergeV, int *mergeUS, Matrix<double> mergeN [], int DSapprox){
+double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [], Matrix<double> X_design_betaSus [], Matrix<double> X_design_betaDSus [], Matrix<double> X_design_betaDs [], Matrix<double> X_design_betaSs [], Matrix<double> X_design_betaDSs [], int *npar, int *DSuu, int *dam, int *sire, Matrix<double> beta, int *ntdam, int *ntsire, int *ndam, int *nsire,  std::map<int, int> Dams [], std::map<int, int> Sires [], int nusd, int *usdamcat, int nuss, int *ussirecat, Matrix<double> us, Matrix<double> ratio[], int nmerge, int *mergeV, int *mergeUS, Matrix<double> mergeN []){
 
  	int i;
         int dv;
@@ -186,53 +187,25 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
              }
            }
 
+           if(damsireV){
+             if(npar[4]>0 && npar[5]>0){
+	        DSpred = cbind(X_design_betaDSus[i], X_design_betaDSs[i])*betaDS;         
+             }else{
+               if(npar[4]>0){
+                 DSpred = X_design_betaDSus[i]*betaDS;   
+               }else{
+                 DSpred = X_design_betaDSs[i]*betaDS;  
+               } 
+             }
+           }
+
            d = dam[offid[i]];
            s = sire[offid[i]];          
            d = Dams[i][d]; 
            s = Sires[i][s];
 
-           if(damsireV){
-             if(DSapprox!=0){
-                if(DSapprox==1){            // mate = dam
-                 if(sireV==false){
-                   Spred = Matrix<double>(ntsire[i],1);
-                 }
-                 for(sv=0; sv<ntsire[i]; sv++){ 
-                   for(dv=0; dv<npar[4]; dv++){ 
-                     Spred[sv] += X_design_betaDSus[i]((d*ntsire[i])+sv,dv)*betaDS[dv];
-                   }
-                   for(dv=0; dv<npar[5]; dv++){ 
-                     Spred[sv] += X_design_betaDSs[i]((d*ntsire[i])+sv,dv)*betaDS[dv+npar[4]];
-                   }
-                 }
-               }else{
-                 if(damV==false){
-                   Dpred = Matrix<double>(ntdam[i],1);
-                 }
-                 for(dv=0; dv<ntdam[i]; dv++){ 
-                   for(sv=0; sv<npar[4]; sv++){ 
-                     Dpred[dv] += X_design_betaDSus[i]((dv*ntsire[i])+s,sv)*betaDS[sv];
-                   }
-                  for(sv=0; sv<npar[5]; sv++){ 
-                     Dpred[dv] += X_design_betaDSus[i]((dv*ntsire[i])+s,sv)*betaDS[sv+npar[4]];
-                   }
-                 } 
-               }
-             }else{
-               if(npar[4]>0 && npar[5]>0){
-	         DSpred = cbind(X_design_betaDSus[i], X_design_betaDSs[i])*betaDS;         
-               }else{
-                 if(npar[4]>0){
-                   DSpred = X_design_betaDSus[i]*betaDS;   
-                 }else{
-                   DSpred = X_design_betaDSs[i]*betaDS;  
-                 } 
-               }
-             }
-           }  
-
-           if(damsireV && DSapprox==0){    
-              if(sireV==true || damV==true){
+            if(damsireV){    
+             if(sireV==true || damV==true){
                cnt = 0;
                if(damV && sireV){              // D S and DS exist
                  for(dv = 0; dv < ntdam[i]; dv++){  
@@ -265,8 +238,8 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
              DSpred = DSpred - (maxc(DSpred)[0] - 500.0);
              DSpred = exp(DSpred);
 
-             pos_in_a = (d*ntsire[i])+s;
-             l_par = log(DSpred[pos_in_a]);                
+	     pos_in_a = (d*ntsire[i])+s;
+	     l_par = log(DSpred[pos_in_a]);                
 	     ll_sum = sumc(DSpred)[0];	     
 
              if((npar[0]+npar[2]+npar[4])==0){ // all variables sampled
@@ -280,85 +253,82 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                    ll_sum += DSpred[(dv*ntsire[i])+(nsire[i]-1)]*(us[nusd+ussirecat[i]]-1.0);
                  }
                }
-
                ll_P_b += l_par - log(ll_sum);
              }else{                     
                if(DSuu[0]==1 && DSuu[1]==1){  // dam and sire unsampled
-                 if(s!=(nsire[i]-1) && d!=(ndam[i]-1)){       
-                   for(dv = 0; dv < ntdam[i]; dv++){  
-                     ll_sum -= DSpred[(dv*ntsire[i])+(nsire[i]-1)];
-                   }
-                   for(sv = 0; sv < ntsire[i]; sv++){  
-                     ll_sum -= DSpred[((ndam[i]-1)*ntsire[i])+sv];
-                   }     
-                   ll_P_b += l_par - log(ll_sum+DSpred[((ndam[i]-1)*ntsire[i])+(nsire[i]-1)]);
-                 }
-               }else{
-                 if(DSuu[0]==1){              // dam unsampled only
-                   if(d!=(ndam[i]-1)){
-                     for(sv = 0; sv < ntsire[i]; sv++){  
-                       ll_sum -= DSpred[((ndam[i]-1)*ntsire[i])+sv];
-                     }      
-                     ll_P_b += l_par - log(ll_sum);
-                   }
-                 }else{                      // sire unsampled only
-                   if(s!=(nsire[i]-1)){
-                     for(dv = 0; dv < ntdam[i]; dv++){  
-                       ll_sum -= DSpred[(dv*ntsire[i])+(nsire[i]-1)];
-                     }
-                     ll_P_b += l_par - log(ll_sum);
-                   }
-                 }
-               }
-             }  
-           }else{
-             if(DSapprox!=0 && ((s==(nsire[i]-1)) || (d==(ndam[i]-1)))){  // for relational="MATE" if either parents is missing ignore
-             }else{
-               if(sireV || DSapprox==1){                // S exists
-                 Spred = Spred - (maxc(Spred)[0] - 500.0);
-                 Spred = exp(Spred);
-                 l_par = log(Spred[s]);  
-                 ll_sum = sumc(Spred)[0];  
-                 if((npar[2]==0 && DSapprox==0) || (npar[2]==0 && DSapprox==1 && DSuu[1]!=1)){  
-                   if(nuss>0){
-                     ll_P_b += l_par - log(ll_sum+(Spred[nsire[i]-1]*(us[nusd+ussirecat[i]]-1.0)));
-                     ratio[1][i] = Spred[nsire[i]-1];
-                     ratio[1][i] = (ll_sum-ratio[1][i])/((double(ntsire[i])-1.0)*ratio[1][i]);
-                   }else{
-                     ratio[1][i] = 1.0;
-                     ll_P_b += l_par - log(ll_sum);
-                   }
-                 }else{
-                   ratio[1][i] = 1.0;
-                   if(s!=(nsire[i]-1)){      
-                     ll_P_b += l_par - log(ll_sum-Spred[nsire[i]-1]);
-                   }
-                 }
-               }
-               if(damV || DSapprox==2){  
+                if(s!=(nsire[i]-1) && d!=(ndam[i]-1)){       
+                  for(dv = 0; dv < ntdam[i]; dv++){  
+                    ll_sum -= DSpred[(dv*ntsire[i])+(nsire[i]-1)];
+                  }
+                  for(sv = 0; sv < ntsire[i]; sv++){  
+                    ll_sum -= DSpred[((ndam[i]-1)*ntsire[i])+sv];
+                  }     
+                  ll_P_b += l_par - log(ll_sum+DSpred[((ndam[i]-1)*ntsire[i])+(nsire[i]-1)]);
+                }
+              }else{
+                if(DSuu[0]==1){              // dam unsampled only
+                  if(d!=(ndam[i]-1)){
+                    for(sv = 0; sv < ntsire[i]; sv++){  
+                      ll_sum -= DSpred[((ndam[i]-1)*ntsire[i])+sv];
+                    }     
+                    ll_P_b += l_par - log(ll_sum);
+                  }
+                }else{                      // sire unsampled only
+                  if(s!=(nsire[i]-1)){
+                    for(dv = 0; dv < ntdam[i]; dv++){  
+                      ll_sum -= DSpred[(dv*ntsire[i])+(nsire[i]-1)];
+                    }
+                    ll_P_b += l_par - log(ll_sum);
+                  }
+                }
+              }
+            }  
+          }else{
+            if(sireV){                // S exists
+               Spred = Spred - (maxc(Spred)[0] - 500.0);
+               Spred = exp(Spred);
+               l_par = log(Spred[s]);  
+                ll_sum = sumc(Spred)[0];  
+                if(npar[2]==0){
+                  if(nuss>0){
+                    ll_P_b += l_par - log(ll_sum+(Spred[nsire[i]-1]*(us[nusd+ussirecat[i]]-1.0)));
+                    ratio[1][i] = Spred[nsire[i]-1];
+                    ratio[1][i] = (ll_sum-ratio[1][i])/((double(ntsire[i])-1.0)*ratio[1][i]);
+                  }else{
+                    ratio[1][i] = 1.0;
+                    ll_P_b += l_par - log(ll_sum);
+                  }
+                }else{
+                    ratio[1][i] = 1.0;
+                  if(s!=(nsire[i]-1)){      
+                    ll_P_b += l_par - log(ll_sum-Spred[nsire[i]-1]);
+                  }
+                }
+              }
+              if(damV){  
                  Dpred = Dpred - (maxc(Dpred)[0] - 500.0);
                  Dpred = exp(Dpred);
 	         l_par = log(Dpred[d]);            // log(Pr(P|beta, X)) for the parent not normalised          
 	         ll_sum = sumc(Dpred)[0];	    // sum(log(Pr(P|beta, X))) not normalised  
-                 if((npar[0]==0 && DSapprox==0)  || (npar[0]==0 && DSapprox==2 && DSuu[0]!=1)){
+                 if(npar[0]==0){
                    if(nusd>0){
                      ll_P_b += l_par - log(ll_sum+(Dpred[ndam[i]-1]*(us[usdamcat[i]]-1.0)));
-                     ratio[0][i] = Dpred[ndam[i]-1];
-                     ratio[0][i] = (ll_sum-ratio[0][i])/((double(ntdam[i])-1.0)*ratio[0][i]);
+                      ratio[0][i] = Dpred[ndam[i]-1];
+                      ratio[0][i] = (ll_sum-ratio[0][i])/((double(ntdam[i])-1.0)*ratio[0][i]);
                    }else{
-                     ratio[0][i] = 1.0;
+                      ratio[0][i] = 1.0;
                      ll_P_b += l_par - log(ll_sum);
                    }
                  }else{
-                   ratio[0][i] = 1.0;
+                     ratio[0][i] = 1.0;
                    if(d!=(ndam[i]-1)){                     
                      ll_P_b += l_par - log(ll_sum-Dpred[ndam[i]-1]);
-                   } 
+                   }
                  }
                }
              }
-           }	
-         }
+ 	   }	
+
 return ll_P_b;
 }
 
@@ -388,24 +358,23 @@ double LLN_P(int *offid, int noff, int nind, int *ntdam, int *ntsire, int *dam, 
 
 double llik = 0.0;
 
-
     for(int i = 0; i < noff; i++){
 
       if(nusd>0){
         if(dam[offid[i]]>=nind){
-          llik += log(double(us[usdamcat[i]]));
-          llik -= log(ratio[0][i]*double(ntdam[i]-1)+us[usdamcat[i]]);
+          llik += ratio[0][i]*log(double(us[usdamcat[i]]));
+          llik -= ratio[0][i]*log(double(ntdam[i]-1)+us[usdamcat[i]]);
         }else{
-           llik -= log(ratio[0][i]*double(ntdam[i]-1)+us[usdamcat[i]]);
+           llik -= log(double(ntdam[i]-1)+us[usdamcat[i]]);
         }
       }
 
       if(nuss>0){
         if(sire[offid[i]]>=nind){
-          llik += log(double(us[nusd+ussirecat[i]]));
-          llik -= log(ratio[1][i]*double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
+          llik += ratio[1][i]*log(double(us[nusd+ussirecat[i]]));
+          llik -= ratio[1][i]*log(double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
         }else{
-          llik -= log(ratio[1][i]*double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
+          llik -= log(double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
         }
       }
    }

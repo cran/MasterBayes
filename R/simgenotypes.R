@@ -16,12 +16,12 @@
     alleles<-lapply(A, function(x){names(x)})
   }
 
-  true_genotypes<-lapply(names(A), function(x){x=list()})
-  obs_genotypes<-lapply(names(A), function(x){x=list()})
-  Gobs<-lapply(names(A), function(x){x=list()})
+true_genotypes<-lapply(names(A), function(x){x=list()})
+obs_genotypes<-lapply(names(A), function(x){x=list()})
+Gobs<-lapply(names(A), function(x){x=list()})
 
-  base_ind<-which(is.na(pedigreeN[,2])==TRUE & is.na(pedigreeN[,3])==TRUE)
-  descend_ind<-which(is.na(pedigreeN[,2])==FALSE | is.na(pedigreeN[,3])==FALSE)
+base_ind<-which(is.na(pedigreeN[,2])==TRUE & is.na(pedigreeN[,3])==TRUE)
+descend_ind<-which(is.na(pedigreeN[,2])==FALSE | is.na(pedigreeN[,3])==FALSE)
 
 
 for(l in 1:length(A)){
@@ -39,9 +39,7 @@ for(l in 1:length(A)){
       }else{
         true_genotypes[[l]][,1][off]<-sample(alleles[[l]], 1, prob=A[[l]])
       }
-
       sire_o<-pedigreeN[,3][off]
-
       if(is.na(sire_o)==F){
         true_genotypes[[l]][,2][off]<-sample(true_genotypes[[l]][sire_o,], 1)
       }else{

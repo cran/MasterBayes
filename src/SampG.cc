@@ -1,7 +1,7 @@
 #include "SampG.h"
 
 void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double **A, int *categories, double **E_mat, int maxall, int maxrep, int *dam, int *sire, int nind, bool estA){
-         
+
         int l;                    // locus
         int i;                    // sample
         int o; 
@@ -21,7 +21,7 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         double vec[2][maxall];
         int which_vec = 0;
         int offhom_sizeS;
-        int cat_tmp[maxrep];      // categories to which those genotypes belong
+        int cat_tmp[50];          // categories to which those genotypes belong
         double Ppart[100];        // Probability vector for true genotypes
         int a1;                   // observed allele 1
         int a2;                   // observed allele 2
@@ -76,7 +76,7 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
               no_off[l]++;
            }
         }
-        
+
         IBL[0] = -999;
         IBL[1] = -999;
 
@@ -90,6 +90,7 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
           }      
 
           for(i=0; i <nsamp; i++){                 // iterates through samples
+
                if(Gobs[i][l*2]!=-999){               
                  obs_G[n][0] = Gobs[i][l*2];       // gets observed genotypes 
                  obs_G[n][1] = Gobs[i][(l*2)+1];    
@@ -550,7 +551,6 @@ case 2: // contextual information provided by both parents only /
             }else{
              G[ind][(l*2)+1] = sa[1];
             }
-
 break;     
 
 case 3:
@@ -1511,14 +1511,15 @@ case 4: // has offspring but no parents, or one parent //
            cout << "No Offspring exist" << endl;
          }
        }
- */
+*/
           ind++;         
           n = 0; 
           misstype = 0;
         }                    // end this is the last record if statement
      }   
                     // end sample loop
-      if(estA==TRUE){
+
+     if(estA==TRUE){
         rdirichlet(newA, nl, PA);
         for(i=0; i < nl; i++){  
           A[l][i] = PA[i];

@@ -13,7 +13,6 @@ function(PdP=PdataPed(),
          write_postP="MARGINAL",
          checkP = FALSE,
          jointP = TRUE,
-         DSapprox = FALSE,
          verbose=TRUE,
          ...
 ){
@@ -21,12 +20,6 @@ function(PdP=PdataPed(),
     if(is.null(PdP$id)==FALSE){                    # if phenotypic data exists then use id's from PdP as reference
       unique_id<-as.character(unique(PdP$id))     
       PdP$id<-match(PdP$id, unique_id)             # convert phenotypic id's to numeric
-      if(length(PdP$USsire)>1 & length(PdP$USsire)==length(PdP$offspring)){
-        PdP$USsire<-as.character(PdP$USsire[which(PdP$offspring==1)])
-      }
-      if(length(PdP$USdam)>1 & length(PdP$USdam)==length(PdP$offspring)){
-        PdP$USdam<-as.character(PdP$USdam[which(PdP$offspring==1)])
-      }
     }else{             
       unique_id<-as.character(unique(GdP$id))
     }    
@@ -122,7 +115,7 @@ function(PdP=PdataPed(),
           nusd<-0
         }
       }else{
-        PdP$USdam<-match(PdP$USdam, unique(PdP$USdam))
+        PdP$USdam<-match(PdP$USdam[which(PdP$offspring==1)], unique(PdP$USdam))
         nusd<-length(unique(PdP$USdam))
       }
     }else{
@@ -140,7 +133,7 @@ function(PdP=PdataPed(),
         nuss<-0
       }
     }else{
-      PdP$USsire<-match(PdP$USsire, unique(PdP$USsire))
+      PdP$USsire<-match(PdP$USsire[which(PdP$offspring==1)], unique(PdP$USsire))
       nuss<-length(unique(PdP$USsire))
     }
    }else{
@@ -216,27 +209,10 @@ function(PdP=PdataPed(),
 
   mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%GdP$marker.type*c(1:3))
 
-  rel.mate<-unlist(lapply(PdP$formula, function(x){length(grep("relational.*MATE",x))==TRUE}))  # another hack - relational=MATE variables
+estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"), checkP, jointP)
+store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
 
-  DSapprox<-as.numeric(DSapprox)
-
-  if(any(rel.mate)){
-    if(DSapprox==1){
-      if(length(grep(PdP$formula[[match(TRUE, rel.mate)]], "Female"))>0){
-        DSapprox<-2   # mate=male
-      }else{
-        DSapprox<-1   # mate=female
-      }
-    }
-  }else{
-    DSapprox<-0    # no mate variables 
-  }
-
-  estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"), checkP, jointP,DSapprox)
-
-  store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
-
- Merge4C<-function(X.list){
+Merge4C<-function(X.list){
  Merge<-matrix(unlist(lapply(X.list$X, function(x){x$mergeN})), length(X.list$X[[1]]$mergeN), length(X.list$X))
  Mmat<-list()
  for(i in 1:(length(X.list$X[[1]]$mergeN)/2)){
@@ -298,7 +274,7 @@ output<-.C("MCMCped",
 	as.double(sP$E1),	             # starting values of E1 and E2
 	as.double(sP$E2),	             # starting values of E1 and E2
 	as.double(c(sP$beta)),	             # starting vector of beta
-	as.double(c(sP$USdam, sP$USsire)),   # starting vector of US numbers
+	as.double(c(sP$USdam, sP$USsire)),   # starting vector of beta
         as.integer(sP$G),                    # starting true genotypes  
 	as.integer(as.numeric(sP$dam)-1),    # starting vector of dams
 	as.integer(as.numeric(sP$sire)-1),   # starting vector of sires

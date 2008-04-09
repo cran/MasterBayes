@@ -74,10 +74,11 @@ getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...){
 for(off in 1:sum(PdP$offspring==1)){
 
   PdP$off_record<-which(PdP$offspring==1)[off]
-  PdP$keepDam<-unique(PdP$id)
-  PdP$keepSire<-unique(PdP$id)
-  PdP$restDam<-unique(PdP$id)
-  PdP$restSire<-unique(PdP$id)
+  not_after_off<-c(PdP$timevar<=PdP$timevar[PdP$off_record] | is.na(PdP$timevar))
+  PdP$keepDam<-unique(PdP$id[which(not_after_off)])
+  PdP$keepSire<-unique(PdP$id[which(not_after_off)])
+  PdP$restDam<-unique(PdP$id[which(not_after_off)])
+  PdP$restSire<-unique(PdP$id[which(not_after_off)])
 
   predictors<-lapply(PdP$formula[restrictions], eval, envir=PdP)
 
@@ -90,10 +91,15 @@ for(off in 1:sum(PdP$offspring==1)){
     }
   }else{
     if(length(PdP$sex)>0){
-      PdP$keepDam<-unique(PdP$keepDam[which(PdP$sex=="Female")])
-      PdP$keepSire<-unique(PdP$keepSire[which(PdP$sex=="Male")])
-      PdP$restDam<-unique(PdP$restDam[which(PdP$sex=="Female")])
-      PdP$restSire<-unique(PdP$restSire[which(PdP$sex=="Male")])
+      PdP$keepDam<-PdP$id[which(PdP$sex=="Female" & not_after_off)]
+      PdP$keepSire<-PdP$id[which(PdP$sex=="Male" & not_after_off)]
+      PdP$restDam<-PdP$id[which(PdP$sex=="Female" & not_after_off)]
+      PdP$restSire<-PdP$id[which(PdP$sex=="Male" & not_after_off)]
+    }else{
+      PdP$keepDam<-PdP$id[which(not_after_off)]
+      PdP$keepSire<-PdP$id[which(not_after_off)]
+      PdP$restDam<-PdP$id[which(not_after_off)]
+      PdP$restSire<-PdP$id[which(not_after_off)]
     }
   }
 
@@ -432,23 +438,25 @@ for(off in 1:sum(PdP$offspring==1)){
         if(dam.sire){
           int.tmp<-matrix(NA,nrow(t1$Dam$X), ncol(t1$Dam$X)*ncol(t2$Sire$X))
           colnames(int.tmp)<-rep("G", ncol(int.tmp))
-           for(v1 in 1:ncol(t1$Dam$X)){
+          colnames(int.tmp)[col]<-paste(t1$Dam$var_name[v1], t2$Sire$var_name[v2], sep=".")
+          for(v1 in 1:ncol(t1$Dam$X)){
             for(v2 in 1:ncol(t2$Sire$X)){
               col<-col+1
               nsires<-length(X.list$X[[off]]$sire.id)
               ndams<-length(X.list$X[[off]]$dam.id)
               int.tmp[,col]<-rep(t1$Dam$X[,v1], each=nsires)*rep(t2$Sire$X[,v2], ndams)
-              colnames(int.tmp)[col]<-paste(t1$Sire$var_name[v1], t2$Sire$var_name[v2], sep=".")
+              colnames(int.tmp)[col]<-paste(colnames(t1$Dam$X)[v1], colnames(t2$Sire$X)[v2], sep=".")
             }
           }
         }else{
           int.tmp<-matrix(NA,nrow(t1$DamSire$X), ncol(t1$DamSire$X)*ncol(t2$DamSire$X))
           colnames(int.tmp)<-rep("G", ncol(int.tmp))
+          colnames(int.tmp)[col]<-paste(t1$DamSire$var_name[v1], t2$DamSire$var_name[v2], sep=".")
           for(v1 in 1:ncol(t1$DamSire$X)){
             for(v2 in 1:ncol(t2$DamSire$X)){
               col<-col+1
               int.tmp[,col]<-t1$DamSire$X[,v1]*t2$DamSire$X[,v2]
-              colnames(int.tmp)[col]<-paste(t1$DamSire$var_name[v1], t2$DamSire$var_name[v2], sep=".")
+              colnames(int.tmp)[col]<-paste(colnames(t1$DamSire$X)[v1], colnames(t2$DamSire$X)[v2], sep=".")
             }
           }
         }
@@ -540,7 +548,6 @@ for(off in 1:sum(PdP$offspring==1)){
       Dlinked<-c(grep("linked", colnames(X.list$X[[1]]$XDus)), grep("linked", colnames(X.list$X[[1]]$XDs))+nvar[1])
       Dlinked_names<-c(colnames(X.list$X[[1]]$XDus), colnames(X.list$X[[1]]$XDs))[Dlinked]
       Slinked<-match(c(colnames(X.list$X[[1]]$XSus), colnames(X.list$X[[1]]$XSs)), Dlinked_names)
-      Slinked[is.na(Slinked)==FALSE]<-Dlinked
       Slinked[is.na(Slinked)==TRUE]<-sum(nvar[1:2])+c(1:sum(is.na(Slinked)))
       beta_map[sum(nvar[1:2])+(1:sum(nvar[3:4]))]<-Slinked
     }
@@ -585,7 +592,7 @@ for(off in 1:sum(PdP$offspring==1)){
       if(nvar[2]>0){
         nrowX=dim(X.list$X[[off]]$XDs)[1]
         ncolX=dim(X.list$X[[off]]$XDs)[2]
-        base<-X.list$X[[off]]$XDs[1,]
+         base<-X.list$X[[off]]$XDs[1,]
         X.list$X[[off]]$XDs<-X.list$X[[off]]$XDs-matrix(rep(base,each=nrowX), nrowX, ncolX) 
         col2scale<-which(X.list$X[[off]]$vtDs=="numeric")
         if(length(col2scale)>0){
@@ -625,6 +632,7 @@ for(off in 1:sum(PdP$offspring==1)){
           center.val<-colMeans(as.matrix(X.list$X[[off]]$XDSus[,col2scale]), na.rm=T)
           X.list$X[[off]]$XDSus[,col2scale]<-scale(X.list$X[[off]]$XDSus[,col2scale], center=center.val, scale=FALSE)
         } 
+
       }
       if(nvar[6]>0){
         nrowX=dim(X.list$X[[off]]$XDSs)[1]

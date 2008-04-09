@@ -1,0 +1,100 @@
+\begin{thebibliography}{15}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Elston and Stewart(1971)]{Elston.1971}
+R.~C. Elston and J.~Stewart.
+\newblock General model for genetic analysis of pedigree data.
+\newblock \emph{Human Heredity}, 21:\penalty0 523--542, 1971.
+
+\bibitem[Emery et~al.(2001)Emery, Wilson, Craig, Boyle, and Noble]{Emery.2001}
+A.~M. Emery, I.~J. Wilson, S.~Craig, P.~R. Boyle, and L.~R. Noble.
+\newblock Assignment of paternity groups without access to parental genotypes:
+  multiple mating and developmental plasticity in squid.
+\newblock \emph{Molecular Ecology}, 10:\penalty0 1265--1278, 2001.
+
+\bibitem[Gelman et~al.(2004)Gelman, Carlin, Stern, and Rubin]{Gelman.2004}
+A.~Gelman, J.~B. Carlin, H.~S. Stern, and D.~B. Rubin.
+\newblock \emph{Bayesian Data Analysis}.
+\newblock Chapman {\&} Hall, {2$^{nd}$} edition, 2004.
+
+\bibitem[Hadfield et~al.(2006)Hadfield, Richardson, and Burke]{Hadfield.2006c}
+J.~D. Hadfield, D.~S. Richardson, and T.~Burke.
+\newblock Towards unbiased parentage assignment: combining genetic, behavioural
+  and spatial data in a {B}ayesian framework.
+\newblock \emph{Molecular Ecology}, 15:\penalty0 3715--31, 2006.
+
+\bibitem[Kalinowski et~al.(2006)Kalinowski, Taper, and
+  Marshall]{Kalinowski.2006}
+S.T. Kalinowski, M.L. Taper, and T.~C. Marshall.
+\newblock Revising how the computer program {CERVUS} accomodates genotyping
+  error increases success in paternity assignment.
+\newblock \emph{Molecular Ecology}, \emph{in press}, 2006.
+
+\bibitem[Lange(2002)]{Lange.2002}
+K.~Lange.
+\newblock \emph{Mathematical and Statistical Methods for Genetic Analyses}.
+\newblock Springer - Verlag, New York, $2^{nd}$ edition, 2002.
+
+\bibitem[Marshall et~al.(1998)Marshall, Slate, Kruuk, and
+  Pemberton]{Marshall.1998}
+T.~C. Marshall, J.~Slate, L.~E.~B. Kruuk, and J.~M. Pemberton.
+\newblock Statistical confidence for likelihood-based paternity inference in
+  natural populations.
+\newblock \emph{Molecular Ecology}, 7:\penalty0 639--655, 1998.
+
+\bibitem[McCullagh and Nelder(1989)]{McCullagh.1989}
+P.~McCullagh and J.~A. Nelder.
+\newblock \emph{Generalised {L}inear {M}odels}.
+\newblock Chapman \& Hall, Cambridge, $2^{nd}$ edition, 1989.
+
+\bibitem[Nielsen et~al.(2001)Nielsen, Mattila, Clapham, and
+  Palsb{\o}ll]{Nielsen.2001}
+R.~Nielsen, D.~K. Mattila, P.~J. Clapham, and P.~J. Palsb{\o}ll.
+\newblock Statistical approaches to paternity analysis in natural populations
+  and applications to the {N}orth {A}tlantic humpback whale.
+\newblock \emph{Genetics}, 157:\penalty0 1673--1682, 2001.
+
+\bibitem[Richardson et~al.(2000)Richardson, Jury, Dawson, Salgueiro, Komdeur,
+  and Burke]{Richardson.2000}
+D.~S. Richardson, F.~L. Jury, D.~A. Dawson, P.~Salgueiro, J.~Komdeur, and
+  T.~Burke.
+\newblock Fifty {S}eychelles warbler (\emph{Acrocephalus sechellensis})
+  microsatellite loci polymorphic in {S}ylviidae species and their
+  cross-species amplification in other passerine birds.
+\newblock \emph{Molecular Ecology}, 9:\penalty0 2226--2231, 2000.
+
+\bibitem[Richardson et~al.(2001)Richardson, Jury, Blaakmeer, Komdeur, and
+  Burke]{Richardson.2001}
+D.~S. Richardson, F.~L. Jury, K.~Blaakmeer, J.~Komdeur, and T.~Burke.
+\newblock Parentage assignment and extra-group paternity in a cooperative
+  breeder: the {S}eychelles warbler (\emph{{A}crocephalus sechellensis}).
+\newblock \emph{Molecular Ecology}, 10:\penalty0 2263--2273, 2001.
+
+\bibitem[Sheehan(2000)]{Sheehan.2000}
+N.~A. Sheehan.
+\newblock On the application of {M}arkov chain {M}onte {C}arlo methods to
+  genetic analyses on complex pedigrees.
+\newblock \emph{International Statistical Review}, 68:\penalty0 83--110, 2000.
+
+\bibitem[Smouse et~al.(1999)Smouse, Meagher, and Kobak]{Smouse.1999}
+P.~E. Smouse, T.~R. Meagher, and C.~J. Kobak.
+\newblock Parentage analysis in \emph{Chamaelirium luteum} ({L.}) {G}ray
+  ({L}iliaceae): why do some males have higher reproductive contributions?
+\newblock \emph{Journal of Evolutionary Biology}, 12:\penalty0 1069--1077,
+  1999.
+
+\bibitem[Thompson(1976)]{Thompson.1976a}
+E.~A. Thompson.
+\newblock Paradox of genealogical inference.
+\newblock \emph{Advances in Applied Probability}, 8:\penalty0 648--650, 1976.
+
+\bibitem[Wang(2004)]{Wang.2004}
+J.~L. Wang.
+\newblock Sibship reconstruction from genetic data with typing errors.
+\newblock \emph{Genetics}, 166:\penalty0 1963--1979, 2004.
+
+\end{thebibliography}

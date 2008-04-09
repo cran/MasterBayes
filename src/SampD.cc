@@ -17,7 +17,6 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
         double n;
         double N;
         int dsmatch[noff];
-
          
          Matrix<double> betaDus (npar[0],1); 
 
@@ -25,16 +24,16 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
            betaDus [i] = beta[i];
          }
 
-         Matrix<double> betaDs (npar[1],1); 
-
-         for(i = 0; i < npar[1]; i++){   
-           betaDs [i] = beta[i+npar[0]];
-         }
-
          Matrix<double> betaDSus (npar[4],1);
 
          for(i = 0; i < npar[4]; i++){   
            betaDSus [i] = beta[npar[0]+npar[1]+npar[2]+npar[3]+i];
+         }
+           
+         Matrix<double> betaDs (npar[1],1); 
+
+         for(i = 0; i < npar[1]; i++){   
+           betaDs [i] = beta[i+npar[0]];
          }
 
          Matrix<double> betaDSs (npar[5],1); 
@@ -87,7 +86,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
                   Dpred_tmp = Matrix<double>(ntdam[i],1);
                 }
               }
-          
+
               if(npar[4]!=0 && sire[offid[i]]<nind){ 
                 for(d=0; d<ntdam[i]; d++){ 
                   for(s=0; s<npar[4]; s++){ 
@@ -102,22 +101,18 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
                 mean_vec = meanc(Dpred)[0];
                 n = double(ntdam[i]-1);
                 mean_vec -= Dpred[ndam[i]-1]/(n+1.0);  
-                if(n<2){
-                  if(n==0){Dpred[ndam[i]-1] = 1.0;}    
-                  if(n==1){Dpred[ndam[i]-1] = mean_vec*2.0;}
-                }else{
-                  mean_vec *= (n+1.0)/n;                  // mean linear predictor of sampled dams
-                  S_vec = varc(Dpred)[0];                 // variance of the vector = sample variance of linear -
-                  N = n+us[usdamcat[i]];                  // predictor of sampled dams
-                  S_vec *= N/(n*(N-n));
-                  Dpred[ndam[i]-1] = rnorm(mean_vec, sqrt(S_vec));
-                  if(Dpred[ndam[i]-1]<0.0){               // for those instances where the linear predictor goes negative
-                    Dpred[ndam[i]-1]=1e-100;
-                  }
+                mean_vec *= (n+1.0)/n;                  // mean linear predictor of sampled dams
+                Dpred[ndam[i]-1] = mean_vec;            // replace linear predictor of unsampled dams with sampled mean
+                S_vec = varc(Dpred)[0];                 // variance of the vector = sample variance of linear -
+                N = n+us[usdamcat[i]];                  // predictor of sampled dams
+                S_vec *= N/(n*(N-n));
+                Dpred[ndam[i]-1] = rnorm(mean_vec, sqrt(S_vec));
+                if(Dpred[ndam[i]-1]<0.0){               // for those instances where the linear predictor goes negative
+                  Dpred[ndam[i]-1]=1e-100;
                 }
                 Dpred_tmp[ndam[i]-1] = log(Dpred[ndam[i]-1]);      
               }
-              
+
 /* combine complete and incomplete design matrices */
 
               Dpreds = Matrix<double>(ndam[i],1);
@@ -147,7 +142,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
                   for(d=0; d<ndam[i]; d++){
                     Dpreds[d] = Dpred[d]; // note that it is already exponentiated in this case
                   } 
-                }
+                 }
               }
 
               if((npar[0]!=0 || (npar[4]!=0 && sire[offid[i]]<nind)) && npar[1]==0 && npar[5]==0 && DSuu[0]==1){ 
@@ -156,7 +151,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
                 }
               }else{
                 if((npar[0]+npar[1]+(npar[4]*int(sire[offid[i]]<nind))+npar[5])>0){ 
-                   Dpreds -= (maxc(Dpreds)[0]-100.0);
+                   Dpreds -= (maxc(Dpreds)[0]-650.0);
                    Dpreds = exp(Dpreds);
                    for(d=0; d<ndam[i]; d++){
                      Dpreds[d] *= X_design_GD[i][d]; 
@@ -165,6 +160,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
                    Dpreds = X_design_GD[i];  
                 }
               }
+
 
               if(nusd>0){
                 Dpreds[(ndam[i]-1)] *= us[usdamcat[i]];

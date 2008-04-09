@@ -34,7 +34,7 @@
       nUS<-matrix(1E-5, nbetaD+nbetaS*(USsiredam==FALSE),1)
   }else{
     if(length(nUS)!=(nbetaD+nbetaS*(USsiredam==FALSE))){
-      stop("beta is wrong size in popsize.loglik")
+      stop("beta is wrong size in ped.loglik")
     }else{
       nUS<-as.matrix(nUS)
     }

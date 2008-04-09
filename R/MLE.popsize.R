@@ -7,11 +7,14 @@
     }else{
       nbetaD<-0
     }
-  }else{  
+  }else{
     nbetaD<-length(unique(USdam))
+    if(length(USdam)!=length(X.list$X)){
+      USdam<-USdam[match(X.list$id[as.numeric(names(X.list$X))], X.list$id)]
+    }   
   }
 
-  if(USsire[1]=="USdam"){
+  if(USsire=="USdam"){
     USsiredam<-TRUE
     USsire<-USdam
   }else{  
@@ -27,13 +30,16 @@
     }
   }else{
     nbetaS<-length(unique(USsire))
+    if(length(USsire)!=length(X.list$X)){
+      USsire<-USsire[match(X.list$id[as.numeric(names(X.list$X))], X.list$id)]
+    }   
   }
 
   if(length(nUS)==0){
     nUS<-matrix(1E-5, (nbetaD+nbetaS*(USsiredam==FALSE)),1)
   }else{
     if(length(nUS)!=(nbetaD+nbetaS*(USsiredam==FALSE))){
-      warning("beta is wrong size in popsize.loglik")
+      warning("beta is wrong size in ped.loglik")
       stop()
     }else{
       nUS<-as.matrix(nUS)

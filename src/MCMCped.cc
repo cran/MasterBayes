@@ -121,9 +121,7 @@ bool    estP = bool(estimatingP[0]),
         writeJP = bool(store_postP[2]),  
         verbose = bool(store_postP[3]);
 
-int mtype = estimatingP[8],
-    DSapprox = estimatingP[12];
-
+int mtype = estimatingP[8];
 
 /*************************************
 * declare some variable sized arrays *
@@ -431,7 +429,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
 
            
            llB_0 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
-X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP, nsireP, Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN, DSapprox);
+X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP, nsireP, Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN);
            if(est_pbeta){
                llB_0 += lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
              }
@@ -564,7 +562,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 
               if(estbeta==TRUE){
                 llB_1 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
-X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_1, ratio_1, nmerge, mergeV, mergeUS, mergeN, DSapprox);
+X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_1, ratio_1, nmerge, mergeV, mergeUS, mergeN);
                 if(est_pbeta){
                   llB_1 += lmvnormM(beta_1,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
                 }
@@ -583,11 +581,9 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 * sample G & A*
 ***************/
 
-
 	    if(estG==TRUE){  
-
               switch(mtype){ 
-                 case 1:  
+                 case 1:                      
                  sampG(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
                  break;
                  case 2:
@@ -605,7 +601,6 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                   calcX_GS(X_design_GS, offidP, noff , nsireP, nind, Sires_vec, dam, G, nloci, A, mtype);
                 }
               }
-
               if(estE1==TRUE || estE2==TRUE){
                 llE_1 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
                 if(est_pE1){		
@@ -696,12 +691,13 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                 E2_1 = E2_0;
               }
 
+ 
+
 /**************
 * sample beta *
 ***************/
 
             if(estbeta==TRUE){ 
-
               beta_0 = rmvnormM(beta_1, int_beta, nbeta);
 
               for(i = 0; i < tot_par; i++){
@@ -709,7 +705,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
               }
 
               llB_0 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
-X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN, DSapprox);
+X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN);
 
               if(est_pbeta){
                 llB_0 += lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
