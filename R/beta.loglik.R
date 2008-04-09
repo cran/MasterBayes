@@ -68,7 +68,7 @@
      }
    }else{
      if(is.na(par_pos[i])==FALSE){
-       DSpred = exp(X[[i]]$DS%*%beta_tmp[beta_map])
+       DSpred = exp(X[[i]]$DS%*%beta_tmp)
        l_par<-log(DSpred[par_pos[i]])     
        ll_sum<-log(sum(DSpred, na.rm=T))	       
        if(is.na(l_par)==FALSE){

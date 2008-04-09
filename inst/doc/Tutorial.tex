@@ -37,7 +37,7 @@
 
 \newpage
 
-This document provides worked examples for several types of model that can be fitted using MasterBayes.  The main emphasis is on the syntax used to specify, estimate and interpret the models, although in some cases I have tried to explain the underlying theory.  These explanations are intended for non-statisticians and vary from the patronising to the arcane. I assume a basic familiarity with R.
+This document provides worked examples for several types of model that can be fitted using MasterBayes.  The main emphasis is on the syntax used to specify, estimate and interpret the models, although in some cases I have tried to explain the underlying theory.  These explanations are intended for non-statisticians and vary from the patronising to the arcane. I assume a basic familiarity with R.  All example code can be extracted by using the \texttt{Stangle} function on the file \texttt{Tutorial.Rnw} in the \texttt{MasterBayes/inst/doc/Figures} folder.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -126,7 +126,7 @@ fail to pass under the low probability ridge that connects the two high probabil
 \subsection{Prior Specifications and \texttt{priorPed} Objects}
 \label{prior-sec}
 
-The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it would be compromised.  For many models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for datasets where there is little or no pedigree structure, or for models in which parameters are confounded, a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they are older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
+The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it would be compromised.  For some models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for chains in which a sampled pedigree has little or no structure (i.e. all parents are unsampled), or no sampled parents exist for some level of a categorical predictor variable\footnote{It turns out that this is a common problem in real datasets and has been refered to as the extreme category problem.  For example, the catgorical variable \texttt{`recorded in that year/only recorded in the previous year'} may be fitted to account for individuals that were not recorded but may have been alive.  If these indiviuals really were dead then the estimated probability of them having offspring tends to zero which is $-\infty$ on the logit scale.  This problem can usually be idenitified by the chain making long excursions into extreme values of the parameter space.}, then problems can occur unless informative priors are used. In the extreme case, models in which parameters are confounded, a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they are older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
 
 \begin{figure}[!h]
 \begin{center}
@@ -329,12 +329,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-    -0.0704713      0.0100907      0.0003191      0.0003271 
+    -0.0705708      0.0095894      0.0003032      0.0002839 
 
 2. Quantiles for each variable:
 
     2.5%      25%      50%      75%    97.5% 
--0.09250 -0.07671 -0.06989 -0.06364 -0.05184 
+-0.08912 -0.07720 -0.07046 -0.06364 -0.05249 
 \end{Soutput}
 \end{Schunk}
 
@@ -454,12 +454,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-    -0.2558857      0.0316019      0.0009993      0.0015364 
+    -0.2548820      0.0309223      0.0009778      0.0015165 
 
 2. Quantiles for each variable:
 
    2.5%     25%     50%     75%   97.5% 
--0.3206 -0.2767 -0.2548 -0.2340 -0.2002 
+-0.3190 -0.2736 -0.2534 -0.2336 -0.1978 
 \end{Soutput}
 \end{Schunk}
  
@@ -503,12 +503,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-       35.8654        14.2812         0.4516         0.5141 
+       35.9265        15.0032         0.4744         0.5258 
 
 2. Quantiles for each variable:
 
  2.5%   25%   50%   75% 97.5% 
-13.32 25.24 34.81 44.30 67.97 
+13.39 25.56 33.79 43.99 71.92 
 \end{Soutput}
 \end{Schunk}
 
@@ -521,7 +521,7 @@ Sample size per chain = 1000
 \label{model4US-fig}
 \end{figure}
 
-The population of Seychelles Warbler on Cousin Island is small and essentially closed. Given that the island has been extensively sampled we have reasonable prior belief that the number of unsampled males is somewhere between 2 and 15, and an estimate of 34.81 unsampled males seems unreasonably large.  We could set up a prior specification that reflected this, but before doing this it will be usefull to discuss some possible reasons why the model has failed to estimate the number of unsampled males accurately.\\
+The population of Seychelles Warbler on Cousin Island is small and essentially closed. Given that the island has been extensively sampled we have reasonable prior belief that the number of unsampled males is somewhere between 2 and 15, and an estimate of 33.79 unsampled males seems unreasonably large.  We could set up a prior specification that reflected this, but before doing this it will be usefull to discuss some possible reasons why the model has failed to estimate the number of unsampled males accurately.\\
 
 The problem of accomodating unsampled parents is a difficult one beacuse the genotypes and phenotypes of unsampled indivduals are by definition unobserved. This does not mean that information does not exist in the observed data regarding the genotypes and phenotypes of unsampled individuals.  Imagine, that 3 offspring in the north of the island possess an allele that is not present in the sampled parental population. If genotyping error was low enough we could be reasonbaly confident in stating that an unsampled male was present in the north of the island and that his genotype contained the rare allele.  However, using this information is difficult and I use two approximations for dealing with unobserved genotypes and phenotypes that are based around the same logic.\\
 
@@ -593,10 +593,10 @@ Here we have replaced the genetic likelihoods in Nielen's original equation with
 
 where $n_{o}^{us}$ and $n_{o}^{s}$ are the number of offspring with sampled and unsampled parents parents, respectively.\\
 
-A more general solution than Equation \ref{us-eq} is
+A more general solution than Equation \ref{us-eq} is \footnote{In earlier versions $<2.22$ this equation was wrong, as was the code. The original equation was $Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N}E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right](1-\delta^{obs}_{i})+\frac{1}{N}\delta^{obs}_{i}\right]$, and is invariant to the ratio of linear predictors. It will not have made a large difference unless unsampled parents had known phenotype.}
 
 \begin{equation}
-Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N}E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right](1-\delta^{obs}_{i})+\frac{1}{N}\delta^{obs}_{i}\right]
+Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N-n+E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right]n}(1-\delta^{obs}_{i})+\frac{1}{N-n+E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right]n}\delta^{obs}_{i}\right]
 \label{usgen-eq}
 \end{equation}
 
@@ -668,10 +668,10 @@ The chain is slow to mix when genotypes are estimated and successive samples fro
 
                 E1
 Lag 0   1.00000000
-Lag 1   0.41968520
-Lag 5   0.17883376
-Lag 10  0.13301507
-Lag 50 -0.08035494
+Lag 1   0.41765511
+Lag 5   0.13362918
+Lag 10  0.07404815
+Lag 50 -0.04446042
 \end{Soutput}
 \end{Schunk}
 
@@ -731,12 +731,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     0.0986928      0.0098152      0.0003104      0.0003024 
+     0.0958506      0.0097635      0.0003087      0.0003627 
 
 2. Quantiles for each variable:
 
    2.5%     25%     50%     75%   97.5% 
-0.08055 0.09214 0.09868 0.10501 0.11922 
+0.07777 0.08908 0.09567 0.10187 0.11620 
 \end{Soutput}
 \begin{Sinput}
 > summary(model.dupE$E2)
@@ -751,19 +751,19 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     4.095e-03      2.019e-03      6.385e-05      8.778e-05 
+     4.624e-03      2.294e-03      7.254e-05      1.086e-04 
 
 2. Quantiles for each variable:
 
     2.5%      25%      50%      75%    97.5% 
-0.001029 0.002527 0.003881 0.005273 0.008656 
+0.001239 0.002921 0.004238 0.005955 0.010264 
 \end{Soutput}
 \begin{Sinput}
 > plot(model.dupE$E2)
 \end{Sinput}
 \end{Schunk}
 
-The posterior summaries are consistent with the data we simulated, but notice that the mean may not be a very good summary of the central tendency of the posterior distribution for stochastic error (see Figure \ref{E2-fig}). We can simulate a similar set of data but with pedigree information\\
+The posterior summaries are consistent with the data we simulated, but notice that the mean may not be a very good summary of the central tendency of the posterior distribution for stochastic error (see Figure \ref{E2-fig})\footnote{\citet{Johnson.2007b} claim that MasterBayes overestimates error rates by 31\% when error rates are low (compared to a downward bias of 18\% for Pedant).  However, large scale simulation shows that MasterBayes is unbiased (if such a thing exists in a Bayesian analysis) if the posterior mode is used rather than the posterior mean.}. We can simulate a similar set of data but with pedigree information\\
 
 
 \begin{figure}[!h]
@@ -795,12 +795,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     0.1225024      0.0139681      0.0004417      0.0004134 
+     0.0798425      0.0117579      0.0003718      0.0004700 
 
 2. Quantiles for each variable:
 
    2.5%     25%     50%     75%   97.5% 
-0.09667 0.11255 0.12238 0.13153 0.15076 
+0.05774 0.07143 0.07935 0.08780 0.10261 
 \end{Soutput}
 \begin{Sinput}
 > summary(model.pedE$E2)
@@ -815,12 +815,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     0.0117584      0.0071157      0.0002250      0.0006725 
+     0.0042802      0.0037796      0.0001195      0.0002858 
 
 2. Quantiles for each variable:
 
-    2.5%      25%      50%      75%    97.5% 
-0.001025 0.006125 0.011012 0.016261 0.027761 
+     2.5%       25%       50%       75%     97.5% 
+7.568e-05 1.428e-03 3.223e-03 6.312e-03 1.342e-02 
 \end{Soutput}
 \end{Schunk}
 
@@ -913,25 +913,25 @@ A pedigree is simulated with $\beta_{1}$ and $\beta_{2}$ set to -1 and 1, respec
 > summary(model_pedMM999$beta)[[1]][, 1:2][1:2, ]
 \end{Sinput}
 \begin{Soutput}
-            Mean        SD
-size.D  0.761513 0.2248310
-size.S -1.227569 0.1379026
+             Mean        SD
+size.D  0.9487343 0.1564830
+size.S -0.8567577 0.1290054
 \end{Soutput}
 \begin{Sinput}
 > summary(model_pedMM2$beta)[[1]][, 1:2][1:2, ]
 \end{Sinput}
 \begin{Soutput}
              Mean        SD
-size.D  0.7654357 0.2162905
-size.S -1.2245849 0.1420295
+size.D  0.9666110 0.1616535
+size.S -0.8644591 0.1225466
 \end{Soutput}
 \begin{Sinput}
 > summary(model_pedMM1$beta)[[1]][, 1:2][1:2, ]
 \end{Sinput}
 \begin{Soutput}
              Mean        SD
-size.D  0.7681255 0.2356683
-size.S -1.2230786 0.1399274
+size.D  0.9585069 0.1660709
+size.S -0.8569236 0.1225317
 \end{Soutput}
 \end{Schunk}
 
@@ -956,20 +956,20 @@ glm(formula = counts ~ size[1:50], family = "poisson")
 
 Deviance Residuals: 
     Min       1Q   Median       3Q      Max  
--1.9409  -1.0400  -0.4649   0.5520   2.2162  
+-1.7051  -0.8373  -0.6440   0.4065   1.9651  
 
 Coefficients:
             Estimate Std. Error z value Pr(>|z|)    
-(Intercept)  -8.4840     2.2287  -3.807 0.000141 ***
-size[1:50]    0.8158     0.2097   3.890 0.000100 ***
+(Intercept)  -9.7396     1.6199  -6.012 1.83e-09 ***
+size[1:50]    0.9308     0.1477   6.304 2.91e-10 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
 (Dispersion parameter for poisson family taken to be 1)
 
-    Null deviance: 71.408  on 49  degrees of freedom
-Residual deviance: 54.533  on 48  degrees of freedom
-AIC: 125.84
+    Null deviance: 86.281  on 49  degrees of freedom
+Residual deviance: 42.987  on 48  degrees of freedom
+AIC: 108.86
 
 Number of Fisher Scoring iterations: 5
 \end{Soutput}
@@ -984,11 +984,11 @@ The slopes are virtually the same,  but the standard errors are a little larger 
 \end{Sinput}
 \begin{Soutput}
 FALSE  TRUE 
-    7    93 
+   12    88 
 \end{Soutput}
 \end{Schunk}
 
-The modal parenatge assignments are close to the true pedigree, with 93\% of assignments correct. One important difference arises because \texttt{MCMCped} uses a mutinomial log-linear model rather than the Poisson log-linear model used above.  The models are very similar except the multinomial model conditions on the number of counts (offspring) whereas the Possion model does not. Consequently the number of parameters in a multinomial model (excluding the count total) is one less than the equivalent Poisson model. In the above example an intercept term is not calculated becuase it can be derived directly from the number of parental combinations and the number of offspring which we have conditioned on \citep{McCullagh.1989}.  
+The modal parenatge assignments are close to the true pedigree, with 88\% of assignments correct. One important difference arises because \texttt{MCMCped} uses a mutinomial log-linear model rather than the Poisson log-linear model used above.  The models are very similar except the multinomial model conditions on the number of counts (offspring) whereas the Possion model does not. Consequently the number of parameters in a multinomial model (excluding the count total) is one less than the equivalent Poisson model. In the above example an intercept term is not calculated becuase it can be derived directly from the number of parental combinations and the number of offspring which we have conditioned on \citep{McCullagh.1989}.  
 
 \subsection{Interactions and Reparameterisation}
 
@@ -1027,12 +1027,12 @@ Markov chains do not mix well when the posterior distribution of the parameters 
 > autocorr(model.INT$beta)[, , 3]
 \end{Sinput}
 \begin{Soutput}
-              size    age.young size.age.young
-Lag 0  -0.63485425 -0.994997618    1.000000000
-Lag 1  -0.11204174 -0.226006864    0.224393455
-Lag 5  -0.03848422 -0.020309777    0.021312539
-Lag 10 -0.04776557 -0.009519676    0.008780786
-Lag 50 -0.01312706 -0.015248778    0.009541189
+               size   age.young size.age.young
+Lag 0  -0.679447739 -0.99182549    1.000000000
+Lag 1  -0.168695476 -0.27650174    0.276980894
+Lag 5  -0.008297778 -0.04498004    0.049770485
+Lag 10  0.045420532  0.01070933   -0.005485801
+Lag 50 -0.008027279 -0.02455821    0.022886000
 \end{Soutput}
 \end{Schunk}
 
@@ -1058,12 +1058,12 @@ The dependency between slopes and intercpets in regression models is well know a
 > autocorr(model.INT.cntr$beta)[, , 3]
 \end{Sinput}
 \begin{Soutput}
-               size   age.young size.age.young
-Lag 0  -0.610053820 -0.06814169    1.000000000
-Lag 1  -0.090093775  0.04622399    0.196311548
-Lag 5  -0.070864110 -0.05950184   -0.007449064
-Lag 10 -0.004720568  0.01227779    0.010440894
-Lag 50 -0.015033478 -0.05092515    0.008822389
+                size    age.young size.age.young
+Lag 0  -0.6833482238 -0.034066030     1.00000000
+Lag 1  -0.1562431963 -0.009102893     0.28964502
+Lag 5   0.0003164919 -0.005746424    -0.03614487
+Lag 10  0.0372870968  0.021355725    -0.05675842
+Lag 50 -0.0512534320 -0.053455951     0.02039196
 \end{Soutput}
 \end{Schunk}
 
@@ -1113,23 +1113,23 @@ Call:
 glm(formula = counts ~ par_age * par_size, family = "poisson")
 
 Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--1.7827  -1.1409  -0.1569   0.4395   2.5595  
+     Min        1Q    Median        3Q       Max  
+-1.85658  -1.16297  -0.07152   0.61389   2.45469  
 
 Coefficients:
                       Estimate Std. Error z value Pr(>|z|)    
-(Intercept)            0.03767    0.14399   0.262 0.793600    
-par_ageyoung          -0.16290    0.20986  -0.776 0.437618    
-par_size               0.31489    0.13166   2.392 0.016766 *  
-par_ageyoung:par_size -0.70663    0.20567  -3.436 0.000591 ***
+(Intercept)            -0.1857     0.1636  -1.136 0.256104    
+par_ageyoung            0.1478     0.2223   0.665 0.506146    
+par_size                0.3676     0.1359   2.705 0.006838 ** 
+par_ageyoung:par_size  -0.6878     0.1856  -3.705 0.000211 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
 (Dispersion parameter for poisson family taken to be 1)
 
-    Null deviance: 109.91  on 99  degrees of freedom
-Residual deviance:  97.08  on 96  degrees of freedom
-AIC: 253.76
+    Null deviance: 112.684  on 99  degrees of freedom
+Residual deviance:  98.845  on 96  degrees of freedom
+AIC: 254.14
 
 Number of Fisher Scoring iterations: 5
 \end{Soutput}
@@ -1357,7 +1357,7 @@ $\delta_{i,j}$ takes on the value one when the mating type of female $i$ matches
 \end{Sinput}
 \begin{Soutput}
 FALSE  TRUE 
-    5    25 
+    9    21 
 \end{Soutput}
 \begin{Sinput}
 > G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, 
@@ -1581,7 +1581,14 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i,t-1}-\textr
 \texttt{lag\_relational=c(-1,-1))}
 
 \begin{equation}
-p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(\textrm{\texttt{x}}_{i,t}+\textrm{\texttt{x}}_{j,t-1})...)
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i,t}-\textrm{\texttt{x}}_{j,t-1}|)...)
+\end{equation}\\
+
+\texttt{varPed(x, gender="Male", lag=c(0,0), relational="OFFSPRING",}\\
+\texttt{lag\_relational=c(-1,-1))}
+
+\begin{equation}
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{j,t}-\textrm{\texttt{x}}_{o,t-1}|)...)
 \end{equation}\\
 
 For a categorical variable with two levels (\texttt{A} and \texttt{B}) the model specified by \texttt{varPed(x, gender="Female")} takes on the form

@@ -114,7 +114,7 @@
 
 \newpage
 
-This document provides worked examples for several types of model that can be fitted using MasterBayes.  The main emphasis is on the syntax used to specify, estimate and interpret the models, although in some cases I have tried to explain the underlying theory.  These explanations are intended for non-statisticians and vary from the patronising to the arcane. I assume a basic familiarity with R.
+This document provides worked examples for several types of model that can be fitted using MasterBayes.  The main emphasis is on the syntax used to specify, estimate and interpret the models, although in some cases I have tried to explain the underlying theory.  These explanations are intended for non-statisticians and vary from the patronising to the arcane. I assume a basic familiarity with R.  All example code can be extracted by using the \texttt{Stangle} function on the file \texttt{Tutorial.Rnw} in the \texttt{MasterBayes/inst/doc/Figures} folder.
 
 <<echo=true>>=
 library("MasterBayes")  
@@ -207,7 +207,7 @@ fail to pass under the low probability ridge that connects the two high probabil
 \subsection{Prior Specifications and \texttt{priorPed} Objects}
 \label{prior-sec}
 
-The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it would be compromised.  For many models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for datasets where there is little or no pedigree structure, or for models in which parameters are confounded, a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they are older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
+The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it would be compromised.  For some models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for chains in which a sampled pedigree has little or no structure (i.e. all parents are unsampled), or no sampled parents exist for some level of a categorical predictor variable\footnote{It turns out that this is a common problem in real datasets and has been refered to as the extreme category problem.  For example, the catgorical variable \texttt{`recorded in that year/only recorded in the previous year'} may be fitted to account for individuals that were not recorded but may have been alive.  If these indiviuals really were dead then the estimated probability of them having offspring tends to zero which is $-\infty$ on the logit scale.  This problem can usually be idenitified by the chain making long excursions into extreme values of the parameter space.}, then problems can occur unless informative priors are used. In the extreme case, models in which parameters are confounded, a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they are older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
 
 \begin{figure}[!h]
 \begin{center}
@@ -516,10 +516,10 @@ Here we have replaced the genetic likelihoods in Nielen's original equation with
 
 where $n_{o}^{us}$ and $n_{o}^{s}$ are the number of offspring with sampled and unsampled parents parents, respectively.\\
 
-A more general solution than Equation \ref{us-eq} is
+A more general solution than Equation \ref{us-eq} is \footnote{In earlier versions $<2.22$ this equation was wrong, as was the code. The original equation was $Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N}E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right](1-\delta^{obs}_{i})+\frac{1}{N}\delta^{obs}_{i}\right]$, and is invariant to the ratio of linear predictors. It will not have made a large difference unless unsampled parents had known phenotype.}
 
 \begin{equation}
-Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N}E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right](1-\delta^{obs}_{i})+\frac{1}{N}\delta^{obs}_{i}\right]
+Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N-n+E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right]n}(1-\delta^{obs}_{i})+\frac{1}{N-n+E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right]n}\delta^{obs}_{i}\right]
 \label{usgen-eq}
 \end{equation}
 
@@ -649,7 +649,7 @@ To illustrate some further functionality we will use the functions \texttt{simpe
 %%plot(model.dupE$E2)
 %%@
 
-The posterior summaries are consistent with the data we simulated, but notice that the mean may not be a very good summary of the central tendency of the posterior distribution for stochastic error (see Figure \ref{E2-fig}). We can simulate a similar set of data but with pedigree information\\
+The posterior summaries are consistent with the data we simulated, but notice that the mean may not be a very good summary of the central tendency of the posterior distribution for stochastic error (see Figure \ref{E2-fig})\footnote{\citet{Johnson.2007b} claim that MasterBayes overestimates error rates by 31\%%% when error rates are low (compared to a downward bias of 18\%%% for Pedant).  However, large scale simulation shows that MasterBayes is unbiased (if such a thing exists in a Bayesian analysis) if the posterior mode is used rather than the posterior mean.}. We can simulate a similar set of data but with pedigree information\\
 
 %%<<label=model.dupEE2, echo=FALSE, fig=TRUE, include=FALSE>>=
 %%plot(model.dupE$E2)
@@ -1457,7 +1457,14 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i,t-1}-\textr
 \texttt{lag\_relational=c(-1,-1))}
 
 \begin{equation}
-p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(\textrm{\texttt{x}}_{i,t}+\textrm{\texttt{x}}_{j,t-1})...)
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i,t}-\textrm{\texttt{x}}_{j,t-1}|)...)
+\end{equation}\\
+
+\texttt{varPed(x, gender="Male", lag=c(0,0), relational="OFFSPRING",}\\
+\texttt{lag\_relational=c(-1,-1))}
+
+\begin{equation}
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{j,t}-\textrm{\texttt{x}}_{o,t-1}|)...)
 \end{equation}\\
 
 For a categorical variable with two levels (\texttt{A} and \texttt{B}) the model specified by \texttt{varPed(x, gender="Female")} takes on the form

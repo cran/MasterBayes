@@ -1,4 +1,4 @@
-\begin{thebibliography}{15}
+\begin{thebibliography}{16}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -26,6 +26,12 @@ J.~D. Hadfield, D.~S. Richardson, and T.~Burke.
 \newblock Towards unbiased parentage assignment: combining genetic, behavioural
   and spatial data in a {B}ayesian framework.
 \newblock \emph{Molecular Ecology}, 15:\penalty0 3715--31, 2006.
+
+\bibitem[Johnson and Haydon(2007)]{Johnson.2007b}
+P.~C.~D. Johnson and D.~T. Haydon.
+\newblock Software for quantifying and simulating microsatellite genotyping
+  error.
+\newblock \emph{Bioinformatics \& Biology Insights}, 1:\penalty0 71--75, 2007.
 
 \bibitem[Kalinowski et~al.(2006)Kalinowski, Taper, and
   Marshall]{Kalinowski.2006}

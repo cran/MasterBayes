@@ -16,7 +16,7 @@ function(x, gender=NULL, lag=c(0,0), relational=FALSE, lag_relational=c(0,0), re
       data<-with(parent.frame(), data)                 # these are objects taken from the environment in which
       keepDam<-with(parent.frame(), keepDam)           # varPed is called - typically MCMCped
       keepSire<-with(parent.frame(), keepSire)  
-      time_var<-with(parent.frame(), timevar)  
+      time_var<-with(parent.frame(), timevar) 
       namevar<-x
       x<-data[,x]                                      # gets variable(s)
       if(length(USvar)>0 & relational==FALSE){
@@ -41,20 +41,19 @@ if(length(restrict)!=0){
 
   PedDesMatrix<-list(Dam=list(id=NULL), Sire=list(id=NULL), Dam_restrict=list(id=NULL), Sire_restrict=list(id=NULL)) 
 
-  not_after_off<-c(time_var<=time_var[off_record] | is.na(time_var))
-
   if(hermaphrodite==FALSE){
-     PedDesMatrix$Dam$id<-unique(id[which(sex=="Female" & not_after_off)])
-     PedDesMatrix$Sire$id<-unique(id[which(sex=="Male"  & not_after_off)])
-     PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & not_after_off)])
-     PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & not_after_off)])
+     PedDesMatrix$Dam$id<-unique(id[which(sex=="Female")])
+     PedDesMatrix$Sire$id<-unique(id[which(sex=="Male")])
+     PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female")])
+     PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male")])
   }else{
-     PedDesMatrix$Dam$id<-unique(id[which(not_after_off)])
-     PedDesMatrix$Sire$id<-unique(id[which(not_after_off)])
+     PedDesMatrix$Dam$id<-unique(id)
+     PedDesMatrix$Sire$id<-unique(id)
      PedDesMatrix$Dam_restrict$id<-PedDesMatrix$Dam$id
      PedDesMatrix$Sire_restrict$id<-PedDesMatrix$Sire$id
   }
 
+  not_after_off<-c((time_var>=(time_var[off_record]+lag[1]) & time_var<=(time_var[off_record]+lag[2])) | is.na(time_var))
 
   if(relational==FALSE){
     if(hermaphrodite==FALSE){
@@ -90,15 +89,27 @@ if(length(restrict)!=0){
   }
 
   if(relational=="OFFSPRING" | relational=="OFFSPRINGV"){
+    if(lag_relational[1]!=0 | lag_relational[2]!=0){
+       off_time<-time_var[off_record]
+       off_records<-which(id%in%id[off_record] & ((time_var>=(lag_relational[1]+off_time) & time_var<=(lag_relational[2]+off_time)) | is.na(time_var)))
+    }
     if(hermaphrodite==FALSE){
       if("Female"%in%gender | sex_specific==FALSE){
-        PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+        if(lag_relational[1]==0 & lag_relational[2]==0){
+           PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+        }else{
+           PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+        }
         if(keep==FALSE){
           PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
         }
       }
       if("Male"%in%gender | sex_specific==FALSE){
-        PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+        if(lag_relational[1]==0 & lag_relational[2]==0){
+          PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+        }else{
+          PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+        }
         if(keep==FALSE){
            PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
         }
@@ -106,14 +117,27 @@ if(length(restrict)!=0){
     }else{
       if(sex_specific==TRUE){
         if("Male"%in%gender){
-           PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+          if(lag_relational[1]==0 & lag_relational[2]==0){
+            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+          }else{
+            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+          }
         }
         if("Female"%in%gender){
-          PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
-         }
+          if(lag_relational[1]==0 & lag_relational[2]==0){
+            PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+          }else{
+            PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+          }
+        }
       }else{
-        PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
-        PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+        if(lag_relational[1]==0 & lag_relational[2]==0){
+          PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+          PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+        }else{
+          PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+          PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+        } 
       }
       if(keep==FALSE){
          PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
@@ -169,8 +193,13 @@ if(length(restrict)==0){
     predict_ped=NULL
 
     off_time<-time_var[off_record]
-    off_var<-as.matrix(x)[off_record,]
 
+    if(relational=="OFFSPRING" & lag_relational[1]!=0 & lag_relational[2]!=0){
+      off_var<-as.matrix(x)[off_record,]
+    }else{
+      off_var<-as.matrix(x)[which(id%in%id[off_record] & ((time_var>=(lag_relational[1]+off_time) & time_var<=(lag_relational[2]+off_time)) | is.na(time_var))),]
+    }
+ 
 ############### Covariates of fecundity, or distance from offspring ###############################
 
     if(relational!="MATE"){
@@ -253,7 +282,7 @@ if(length(restrict)==0){
         if(relational==FALSE & "factor"%in%facnum){
           var_tmp<-var_tmp[time_for_P]
           id_tmp<-id_tmp[time_for_P]
-          NAvec<-which(is.na(var_tmp)==TRUE)
+           NAvec<-which(is.na(var_tmp)==TRUE)
           if(length(USvar)>0){
             var_tmp[NAvec]<-USvar                # Fills missing values if specified in USvar
           }else{
