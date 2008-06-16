@@ -74,11 +74,10 @@ getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...){
 for(off in 1:sum(PdP$offspring==1)){
 
   PdP$off_record<-which(PdP$offspring==1)[off]
-  not_after_off<-c(PdP$timevar<=PdP$timevar[PdP$off_record] | is.na(PdP$timevar))
-  PdP$keepDam<-unique(PdP$id[which(not_after_off)])
-  PdP$keepSire<-unique(PdP$id[which(not_after_off)])
-  PdP$restDam<-unique(PdP$id[which(not_after_off)])
-  PdP$restSire<-unique(PdP$id[which(not_after_off)])
+  PdP$keepDam<-unique(PdP$id)
+  PdP$keepSire<-unique(PdP$id)
+  PdP$restDam<-unique(PdP$id)
+  PdP$restSire<-unique(PdP$id)
 
   predictors<-lapply(PdP$formula[restrictions], eval, envir=PdP)
 
@@ -91,15 +90,10 @@ for(off in 1:sum(PdP$offspring==1)){
     }
   }else{
     if(length(PdP$sex)>0){
-      PdP$keepDam<-PdP$id[which(PdP$sex=="Female" & not_after_off)]
-      PdP$keepSire<-PdP$id[which(PdP$sex=="Male" & not_after_off)]
-      PdP$restDam<-PdP$id[which(PdP$sex=="Female" & not_after_off)]
-      PdP$restSire<-PdP$id[which(PdP$sex=="Male" & not_after_off)]
-    }else{
-      PdP$keepDam<-PdP$id[which(not_after_off)]
-      PdP$keepSire<-PdP$id[which(not_after_off)]
-      PdP$restDam<-PdP$id[which(not_after_off)]
-      PdP$restSire<-PdP$id[which(not_after_off)]
+      PdP$keepDam<-unique(PdP$keepDam[which(PdP$sex=="Female")])
+      PdP$keepSire<-unique(PdP$keepSire[which(PdP$sex=="Male")])
+      PdP$restDam<-unique(PdP$restDam[which(PdP$sex=="Female")])
+      PdP$restSire<-unique(PdP$restSire[which(PdP$sex=="Male")])
     }
   }
 
@@ -548,6 +542,7 @@ for(off in 1:sum(PdP$offspring==1)){
       Dlinked<-c(grep("linked", colnames(X.list$X[[1]]$XDus)), grep("linked", colnames(X.list$X[[1]]$XDs))+nvar[1])
       Dlinked_names<-c(colnames(X.list$X[[1]]$XDus), colnames(X.list$X[[1]]$XDs))[Dlinked]
       Slinked<-match(c(colnames(X.list$X[[1]]$XSus), colnames(X.list$X[[1]]$XSs)), Dlinked_names)
+      Slinked[is.na(Slinked)==FALSE]<-Dlinked
       Slinked[is.na(Slinked)==TRUE]<-sum(nvar[1:2])+c(1:sum(is.na(Slinked)))
       beta_map[sum(nvar[1:2])+(1:sum(nvar[3:4]))]<-Slinked
     }

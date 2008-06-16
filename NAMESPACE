@@ -37,7 +37,8 @@ export(
   legalG,
   order.ped,
   extractA,
-  post.pairs 
+  post.pairs,
+  autocorrP 
 ) 
 S3method(summary, genotypeD)
 S3method(print, genotypeD)

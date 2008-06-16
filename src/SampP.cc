@@ -23,7 +23,12 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
         bool sireV;
         bool damsireV;
         int dsmatch[noff];
-         
+        bool mother_complete = TRUE;
+        bool father_complete = TRUE;
+
+        if(npar[0]!=0 || (npar[4]!=0 && DSuu[0]==1)){mother_complete=FALSE;}
+        if(npar[2]!=0 || (npar[4]!=0 && DSuu[1]==1)){father_complete=FALSE;}
+
          Matrix<double> betaDus (npar[0],1); 
 
            for(i = 0; i < npar[0]; i++){   
@@ -117,259 +122,309 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
              }    
            }
 
-/***********************/
-/* sample missing data */
-/***********************/
-
-            if(npar[0]!=0){   
-              Dpred_tmp = X_design_betaDus[i]*betaDus;
-              Dpred_tmp -= (maxc(Dpred_tmp)[0]-100.0);
-              Dpred = exp(Dpred_tmp);
-              mean_vec = meanc(Dpred)[0];
-              n = double(ntdam[i]-1);
-              mean_vec -= Dpred[ndam[i]-1]/(n+1.0);  
-              mean_vec *= (n+1.0)/n;                  // mean linear predictor of sampled dams
-              Dpred[ndam[i]-1] = mean_vec;            // replace linear predictor of unsampled dams with sampled mean
-              S_vec = varc(Dpred)[0];                 // variance of the vector = sample variance of linear -
-              N = n+us[usdamcat[i]];                  // predictor of sampled dams
-              S_vec *= N/(n*(N-n));
-              Dpred[ndam[i]-1] = rnorm(mean_vec, sqrt(S_vec));
-              if(Dpred[ndam[i]-1]<0.0){               // for those instances where the linear predictor goes negative
-                Dpred[ndam[i]-1]=1e-100;
-              }
-              Dpred_tmp[ndam[i]-1] = log(Dpred[ndam[i]-1]);      
-            }
-            if(npar[2]!=0){          
-              Spred_tmp = X_design_betaSus[i]*betaSus;
-              Spred_tmp -= (maxc(Spred_tmp)[0]-100.0);
-              Spred = exp(Spred_tmp);
-              mean_vec = meanc(Spred)[0];
-              n = double(ntsire[i]-1);
-              mean_vec -= Spred[nsire[i]-1]/(n+1.0);
-              mean_vec *= (n+1.0)/n;
-              Spred[nsire[i]-1] = mean_vec;
-              S_vec = varc(Spred)[0];
-              N = n+us[ussirecat[i]+nusd];
-              S_vec *= N/(n*(N-n));
-              Spred[nsire[i]-1] = rnorm(mean_vec, sqrt(S_vec));
-              if(Spred[nsire[i]-1]<0.0){
-                Spred[nsire[i]-1]=1e-100;
-              }
-              Spred_tmp[nsire[i]-1] = log(Spred[nsire[i]-1]);   
-             }
-            if(npar[4]!=0){       
-              DSpred_tmp = X_design_betaDSus[i]*betaDSus;
-              DSpred_tmp -= (maxc(DSpred_tmp)[0]-100.0);
-              DSpred = exp(DSpred_tmp);
-              tot_mean=0.0;
-              if(DSuu[0]==1){ 
-                tot_mean=0.0;
-                for(s=0; s<nsire[i]; s++){
-                  mean_vec = 0.0;
-                  S_vec = 0.0;   
-                  for(d=0; d<ntdam[i]; d++){                   
-                    mean_vec += DSpred[(d*ntsire[i])+s];
-                  }
-                  mean_vec -= DSpred[((ndam[i]-1)*ntsire[i])+s];
-                  mean_vec /= (ntdam[i]-1);
-                  for(d=0; d<ntdam[i]; d++){        
-                    S_vec += pow(DSpred[(d*ntsire[i])+s]-mean_vec,2);
-                  }
-                  S_vec -= pow(DSpred[((ndam[i]-1)*ntsire[i])+s]-mean_vec,2);                        
-                  S_vec  /= (ntdam[i]-1);
-                  n = double(ntdam[i]-1);
-                  N = n+us[usdamcat[i]];
-                  S_vec *= N/(n*(N-n));
-                  DSpred[((ndam[i]-1)*ntsire[i])+s] = rnorm(mean_vec, sqrt(S_vec));
-                  if(DSpred[((ndam[i]-1)*ntsire[i])+s]<0.0){
-                    DSpred[((ndam[i]-1)*ntsire[i])+s]=1e-100;
-                  }
-                  DSpred_tmp[((ndam[i]-1)*ntsire[i])+s] = log(DSpred[((ndam[i]-1)*ntsire[i])+s]);     
-                  tot_mean += DSpred[((ndam[i]-1)*ntsire[i])+s];
-                }
-              }
-              if(DSuu[1]==1){
-                for(d=0; d<ndam[i]; d++){
-                  mean_vec = 0.0;
-                  S_vec = 0.0;   
-                  for(s=0; s<ntsire[i]; s++){                   
-                    mean_vec += DSpred[(d*ntsire[i])+s];
-                  }
-                  mean_vec -= DSpred[(d*ntsire[i])+(nsire[i]-1)];
-                  mean_vec /= (ntsire[i]-1);
-                  for(s=0; s<ntsire[i]; s++){    
-                     S_vec += pow(DSpred[(d*ntsire[i])+s]-mean_vec,2);
-                  }
-                  S_vec -= pow(DSpred[(d*ntsire[i])+(nsire[i]-1)]-mean_vec,2);          
-                  S_vec  /= (ntsire[i]-1);
-                  n = double(ntsire[i]-1);
-                  N = n+us[ussirecat[i]+nusd];
-                  S_vec *= N/(n*(N-n));
-                  DSpred[(d*ntsire[i])+(nsire[i]-1)] = rnorm(mean_vec, sqrt(S_vec));
-                  if(DSpred[(d*ntsire[i])+(nsire[i]-1)] <0.0){
-                   DSpred[(d*ntsire[i])+(nsire[i]-1)]=1e-100;
-                  }
-                  DSpred_tmp[(d*ntsire[i])+(nsire[i]-1)] = log(DSpred[(d*ntsire[i])+(nsire[i]-1)]);         
-                  tot_mean += DSpred[(d*ntsire[i])+(nsire[i]-1)];
-                }
-              } 
-
-              if(DSuu[0]==1 && DSuu[1]==1){
-                DSpred[((ndam[i]-1)*ntsire[i])+(nsire[i]-1)] = tot_mean/(ndam[i]*nsire[i]);
-                DSpred_tmp[((ndam[i]-1)*ntsire[i])+(nsire[i]-1)] = log(tot_mean/(ndam[i]*nsire[i]));
-              }
-            }
-
 /* combine complete and incomplete design matrices */
- 
-            if(npar[1]>0){
-              Dpreds = Matrix<double>(ndam[i],1);
-              for(d=0; d<ndam[i]; d++){
-                 for(b=0; b<npar[1]; b++){
-                   Dpreds[d] += X_design_betaDs[i](d,b)*betaDs[b]; 
+
+           if(npar[4]!=0){
+             DSpred_tmp = X_design_betaDSus[i]*betaDSus;
+             if(npar[5]!=0){
+               DSpred_tmp = DSpred_tmp + X_design_betaDSs[i]*betaDSs;
+             }
+           }else{
+             if(npar[5]!=0){
+               if(mother_complete && father_complete){  // Both parents have complete information
+                 DSpred_tmp = Matrix<double>(nsire[i]*ndam[i],1);
+                 for(d=0; d<ndam[i]; d++){
+                   for(s=0; s<nsire[i]; s++){            
+                     for(b=0; b<npar[5]; b++){
+                       DSpred_tmp[(d*nsire[i])+s] += X_design_betaDSs[i]((d*ntsire[i])+s, b)*betaDSs[b]; 
+                     }
+                   }
                  }
-              }      
-              if(npar[0]>0){  
-                  for(d=0; d<ndam[i]; d++){
-                    Dpreds[d] += Dpred_tmp[d];
-                }
-              }
-            }else{       
-              if(npar[0]>0){ 
-                Dpreds = Matrix<double>(ndam[i],1);     
-                for(d=0; d<ndam[i]; d++){
-                  Dpreds[d] = Dpred_tmp[d];
-                }
-              }
-            }
+               }else{   
+                 DSpred_tmp = X_design_betaDSs[i]*betaDSs;
+               }
+             }
+           }
 
-            if(npar[3]>0){
-              Spreds = Matrix<double>(nsire[i],1);
-              for(s=0; s<nsire[i]; s++){
-                for(b=0; b<npar[3]; b++){
-                  Spreds[s] += X_design_betaSs[i](s,b)*betaSs[b]; 
-                }
-              }      
-              if(npar[2]>0){  
-                for(s=0; s<nsire[i]; s++){
-                  Spreds[s] += Spred_tmp[s];
-                }
-              }
-            }else{
-              if(npar[2]>0){ 
-                Spreds = Matrix<double>(nsire[i],1);
-                for(s=0; s<nsire[i]; s++){
-                  Spreds[s] = Spred_tmp[s];
-                }
-              }
-            }
+           if(npar[0]!=0){
+             Dpred_tmp = X_design_betaDus[i]*betaDus;
+             if(npar[1]!=0){
+               Dpred_tmp = Dpred_tmp + X_design_betaDs[i]*betaDs;
+             }
+           }else{
+             if(npar[1]!=0){
+               if(mother_complete){  // Mothers have complete information
+                 Dpred_tmp = Matrix<double>(ndam[i],1);
+                 for(d=0; d<ndam[i]; d++){
+                   for(b=0; b<npar[1]; b++){
+                     Dpred_tmp[d] += X_design_betaDs[i](d,b)*betaDs[b]; 
+                   }
+                 }  
+               }else{
+                 Dpred_tmp = X_design_betaDs[i]*betaDs;
+               }
+             }
+           }
 
-            if(npar[5]>0){
-              DSpreds = Matrix<double>(nsire[i]*ndam[i],1);
-              for(d=0; d<ndam[i]; d++){
-                for(s=0; s<nsire[i]; s++){            
-                  for(b=0; b<npar[5]; b++){
-                    DSpreds[(d*nsire[i])+s] += X_design_betaDSs[i]((d*ntsire[i])+s, b)*betaDSs[b]; 
-                  }
-                }
-              }   
-              if(npar[4]>0){  
-                for(d=0; d<ndam[i]; d++){
-                  for(s=0; s<nsire[i]; s++){            
-                    DSpreds[(d*nsire[i])+s] += DSpred_tmp[(d*ntsire[i])+s]; 
-                  }
-                }
-              }      
-            }else{
-              if(npar[4]>0){  
-                DSpreds = Matrix<double>(nsire[i]*ndam[i],1);
-                for(d=0; d<ndam[i]; d++){
-                  for(s=0; s<nsire[i]; s++){            
-                    DSpreds[(d*nsire[i])+s] = DSpred_tmp[(d*ntsire[i])+s]; 
-                  }
-                }
-              }
-            }
+           
+           if(npar[2]!=0){
+             Spred_tmp = X_design_betaSus[i]*betaSus;
+             if(npar[3]!=0){
+               Spred_tmp +=  X_design_betaSs[i]*betaSs;
+             }
+           }else{
+             if(npar[3]!=0){
+               if(father_complete){  // Fathers have complete information
+                 Spred_tmp = Matrix<double>(nsire[i],1);
+                 for(d=0; d<nsire[i]; d++){
+                   for(b=0; b<npar[3]; b++){
+                     Spred_tmp[d] += X_design_betaSs[i](d,b)*betaSs[b]; 
+                   }
+                 }  
+               }else{
+                 Spred_tmp = X_design_betaSs[i]*betaSs;
+               }
+             }
+           }
 
-            cnt = 0;
+/****************************/
+/* combine with DS variable */
+/****************************/
+           
+           if(damsireV){ 
+             if(damV){  
+               if(mother_complete && father_complete){  
+                 for(d=0; d<ndam[i]; d++){
+                   for(s=0; s<nsire[i]; s++){            
+                     DSpred_tmp[(d*nsire[i])+s] += Dpred_tmp[d]; 
+                   }
+                 }
+               }else{
+                 for(d=0; d<ntdam[i]; d++){
+                   for(s=0; s<ntsire[i]; s++){            
+                     DSpred_tmp[(d*ntsire[i])+s] += Dpred_tmp[d]; 
+                   }
+                 }
+               }
+             }
+             if(sireV){
+               if(mother_complete && father_complete){   
+                 for(d=0; d<ndam[i]; d++){
+                   for(s=0; s<nsire[i]; s++){            
+                     DSpred_tmp[(d*nsire[i])+s] += Spred_tmp[s]; 
+                   }
+                 }
+               }else{
+                 for(d=0; d<ntdam[i]; d++){
+                   for(s=0; s<ntsire[i]; s++){            
+                     DSpred_tmp[(d*ntsire[i])+s] += Spred_tmp[s]; 
+                   }
+                 }
+               } 
+             }
+           }
 
-            if(damsireV==false){ 
-              if(sireV==false && damV==false){ 
-                DSpreds = log(X_design_G[i]);
-              }else{
-                DSpreds = Matrix<double>(ndam[i]*nsire[i],1);
-                if(sireV && damV){ 
-                  for(d=0; d<ndam[i]; d++){
-                    for(s=0; s<nsire[i]; s++){
-                      DSpreds[cnt] = Spreds[s]+Dpreds[d]+log(X_design_G[i][cnt]);
-                      cnt++;
-                    }
-                  }
-                }else{
-                  if(sireV){ 
-                    for(d=0; d<ndam[i]; d++){
-                      for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] = Spreds[s]+log(X_design_G[i][cnt]);
-                        cnt++;
-                      }
-                    }
-                  }else{
-                    for(d=0; d<ndam[i]; d++){
-                      for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] = Dpreds[d]+log(X_design_G[i][cnt]);
-                        cnt++;
-                      }
-                    }
-                  }
-                }
-              }  
-            }else{
-              if(sireV==false && damV ==false){
-                for(d=0; d<(ndam[i]*nsire[i]); d++){
-                  DSpreds[d] += log(X_design_G[i][d]);
-                }
-              }else{
-                if(sireV && damV){ 
-                for(d=0; d<ndam[i]; d++){
-                    for(s=0; s<nsire[i]; s++){
-                      DSpreds[cnt] += Dpreds[d]+Spreds[s]+log(X_design_G[i][cnt]);
-                      cnt++;
-                    }
-                  }
-                }else{
-                  if(sireV){ 
-                    for(d=0; d<ndam[i]; d++){
-                      for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] += Spreds[s]+log(X_design_G[i][cnt]);
-                        cnt++;
-                      }
-                    }
-                  }else{
-                    for(d=0; d<ndam[i]; d++){
-                      for(s=0; s<nsire[i]; s++){
-                        DSpreds[cnt] += Dpreds[d]+log(X_design_G[i][cnt]);
-                        cnt++;
-                      }
-                    }
-                  }
-                }
-              }
-            }
+/****************/
+/* exponentiate */
+/****************/
 
-            DSpreds -= (maxc(DSpreds)[0]-650.0);
-            DSpreds = exp(DSpreds);
+           if(damsireV){
+             DSpred_tmp -= (maxc(DSpred_tmp)[0]-100.0);
+             if(mother_complete==FALSE || father_complete==FALSE){
+               DSpred = exp(DSpred_tmp);
+             }
+           }else{
+             if(damV){
+               Dpred_tmp -= (maxc(Dpred_tmp)[0]-100.0);
+               if(mother_complete==FALSE){
+                 Dpred = exp(Dpred_tmp);
+               }
+             }
+             if(sireV){
+               Spred_tmp -= (maxc(Spred_tmp)[0]-100.0);
+               if(father_complete==FALSE){
+                 Spred = exp(Spred_tmp);
+               }
+             }
+           }
 
-            if(nuss>0){
-              for(d=0; d<ndam[i]; d++){
+/************************/
+/* sample missing data  */
+/************************/
+
+           if(damsireV){
+             tot_mean=0.0;    /*sample missing for DS variables */
+             if(mother_complete==FALSE){ 
+               for(s=0; s<nsire[i]; s++){
+                 mean_vec = 0.0;
+                 S_vec = 0.0;   
+                 for(d=0; d<ntdam[i]; d++){                   
+                   mean_vec += DSpred[(d*ntsire[i])+s];
+                 }
+                 mean_vec -= DSpred[((ndam[i]-1)*ntsire[i])+s];
+                 if(ntdam[i]<3){
+                   if(ntdam[i]==1){DSpred[((ndam[i]-1)*ntsire[i])+s] = 1.0;}    
+                   if(ntdam[i]==2){DSpred[((ndam[i]-1)*ntsire[i])+s] = mean_vec;}
+                 }else{
+                   mean_vec /= (ntdam[i]-1);
+                   for(d=0; d<ntdam[i]; d++){        
+                     S_vec += pow(DSpred[(d*ntsire[i])+s]-mean_vec,2);
+                   }
+                   S_vec -= pow(DSpred[((ndam[i]-1)*ntsire[i])+s]-mean_vec,2);                        
+                   S_vec  /= (ntdam[i]-1);
+                   n = double(ntdam[i]-1);
+                   N = n+us[usdamcat[i]];
+                   S_vec *= N/(n*(N-n));
+                   DSpred[((ndam[i]-1)*ntsire[i])+s] = rnorm(mean_vec, sqrt(S_vec));
+                   if(DSpred[((ndam[i]-1)*ntsire[i])+s]<0.0){
+                     DSpred[((ndam[i]-1)*ntsire[i])+s]=1e-100;
+                   }
+                 }
+                 DSpred_tmp[((ndam[i]-1)*ntsire[i])+s] = log(DSpred[((ndam[i]-1)*ntsire[i])+s]);     
+                 tot_mean += DSpred[((ndam[i]-1)*ntsire[i])+s];
+               }
+             }
+             if(father_complete==FALSE){
+               for(d=0; d<ndam[i]; d++){
+                 mean_vec = 0.0;
+                 S_vec = 0.0;   
+                 for(s=0; s<ntsire[i]; s++){                   
+                   mean_vec += DSpred[(d*ntsire[i])+s];
+                 }
+                 mean_vec -= DSpred[(d*ntsire[i])+(nsire[i]-1)];
+                 if(ntsire[i]<3){
+                   if(ntsire[i]==1){DSpred[(d*ntsire[i])+(nsire[i]-1)] = 1.0;}    
+                   if(ntsire[i]==2){DSpred[(d*ntsire[i])+(nsire[i]-1)] = mean_vec;}
+                 }else{
+                   mean_vec /= (ntsire[i]-1);
+                   for(s=0; s<ntsire[i]; s++){    
+                     S_vec += pow(DSpred[(d*ntsire[i])+s]-mean_vec,2);
+                   }
+                   S_vec -= pow(DSpred[(d*ntsire[i])+(nsire[i]-1)]-mean_vec,2);          
+                   S_vec  /= (ntsire[i]-1);
+                   n = double(ntsire[i]-1);
+                   N = n+us[ussirecat[i]+nusd];
+                   S_vec *= N/(n*(N-n));
+                   DSpred[(d*ntsire[i])+(nsire[i]-1)] = rnorm(mean_vec, sqrt(S_vec));
+                   if(DSpred[(d*ntsire[i])+(nsire[i]-1)] <0.0){
+                     DSpred[(d*ntsire[i])+(nsire[i]-1)]=1e-100;
+                   }
+                 }
+                 DSpred_tmp[(d*ntsire[i])+(nsire[i]-1)] = log(DSpred[(d*ntsire[i])+(nsire[i]-1)]);         
+                 tot_mean += DSpred[(d*ntsire[i])+(nsire[i]-1)];
+               }
+             }  
+             if(mother_complete==FALSE && father_complete==FALSE){
+               DSpred[((ndam[i]-1)*ntsire[i])+(nsire[i]-1)] = tot_mean/(ndam[i]+nsire[i]);
+               DSpred_tmp[((ndam[i]-1)*ntsire[i])+(nsire[i]-1)] = log(tot_mean/(ndam[i]+nsire[i]));
+             }
+           }else{
+             if(sireV && father_complete==FALSE){ 
+               mean_vec = meanc(Spred)[0];
+               n = double(ntsire[i]-1);
+               mean_vec -= Spred[nsire[i]-1]/(n+1.0);
+               if(n<2){
+                 if(n==0){Spred[nsire[i]-1] = 1.0;}    
+                 if(n==1){Spred[nsire[i]-1] = mean_vec*2.0;}
+               }else{
+                 mean_vec *= (n+1.0)/n;
+                 S_vec = varc(Spred)[0];
+                 N = n+us[ussirecat[i]+nusd];
+                 S_vec *= N/(n*(N-n));
+                 Spred[nsire[i]-1] = rnorm(mean_vec, sqrt(S_vec));
+                 if(Spred[nsire[i]-1]<0.0){
+                   Spred[nsire[i]-1]=1e-100;
+                 }
+               }
+               Spred_tmp[nsire[i]-1] = log(Spred[nsire[i]-1]);   
+             }
+             if(damV && mother_complete==FALSE){
+               mean_vec = meanc(Dpred)[0];
+               n = double(ntdam[i]-1);
+               mean_vec -= Dpred[ndam[i]-1]/(n+1.0);  
+               if(n<2){
+                 if(n==0){Dpred[ndam[i]-1] = 1.0;}    
+                 if(n==1){Dpred[ndam[i]-1] = mean_vec*2.0;}
+               }else{
+                 mean_vec *= (n+1.0)/n;                  // mean linear predictor of sampled dams
+                 S_vec = varc(Dpred)[0];                 // variance of the vector = sample variance of linear -
+                 N = n+us[usdamcat[i]];                  // predictor of sampled dams
+                 S_vec *= N/(n*(N-n));
+                 Dpred[ndam[i]-1] = rnorm(mean_vec, sqrt(S_vec));
+                 if(Dpred[ndam[i]-1]<0.0){               // for those instances where the linear predictor goes negative
+                   Dpred[ndam[i]-1]=1e-100;
+                 }
+               }
+               Dpred_tmp[ndam[i]-1] = log(Dpred[ndam[i]-1]);      
+             }
+           }
+
+/**************************************/
+/* combine matrices and genetic data  */
+/**************************************/
+
+           if(damsireV==false && sireV==false && damV==false){   // no variables
+             DSpreds = X_design_G[i];
+           }else{
+             DSpreds = log(X_design_G[i]);
+           }
+
+
+           if(damsireV){
+             if(mother_complete && father_complete){
+               DSpreds += DSpred_tmp;
+             }else{
+               for(d=0; d<ndam[i]; d++){
+                 for(s=0; s<nsire[i]; s++){            
+                   DSpreds[(d*nsire[i])+s] += DSpred_tmp[(d*ntsire[i])+s]; 
+                 }
+               }
+             }
+           }else{
+             cnt=0;
+             if(sireV && damV){ 
+               for(d=0; d<ndam[i]; d++){
+                 for(s=0; s<nsire[i]; s++){
+                   DSpreds[cnt] += Spred_tmp[s]+Dpred_tmp[d];
+                   cnt++;
+                 }
+               }
+             }else{
+               if(sireV){ 
+                 for(d=0; d<ndam[i]; d++){
+                   for(s=0; s<nsire[i]; s++){
+                     DSpreds[cnt] += Spred_tmp[s];
+                     cnt++;
+                   }
+                 }
+               }
+               if(damV){ 
+                 for(d=0; d<ndam[i]; d++){
+                   for(s=0; s<nsire[i]; s++){
+                     DSpreds[cnt] += Dpred_tmp[d];
+                     cnt++;
+                   }
+                 }
+               }
+             }
+           }  
+
+           if(damsireV || sireV ||  damV){ 
+             DSpreds -= (maxc(DSpreds)[0]-650.0);
+             DSpreds = exp(DSpreds);
+           }
+
+           if(nuss>0){
+             for(d=0; d<ndam[i]; d++){
                 DSpreds[(nsire[i]*(d+1))-1] *= us[ussirecat[i]+nusd];
-              }
-            }
+             }
+           }
 
-            if(nusd>0){
-              for(s=0; s<nsire[i]; s++){
-                DSpreds[(nsire[i]*(ndam[i]-1))+s] *= us[usdamcat[i]];
-              }
-            }              
+           if(nusd>0){
+             for(s=0; s<nsire[i]; s++){
+               DSpreds[(nsire[i]*(ndam[i]-1))+s] *= us[usdamcat[i]];
+             }
+           }              
  
             if(checkP){
               dsmatch[0] = offid[i];

@@ -698,6 +698,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 ***************/
 
             if(estbeta==TRUE){ 
+
               beta_0 = rmvnormM(beta_1, int_beta, nbeta);
 
               for(i = 0; i < tot_par; i++){

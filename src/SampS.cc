@@ -24,16 +24,16 @@ void sampS(int *offid, int noff, Matrix<double> X_design_GS [], int *npar, int *
            betaSus [i] = beta[npar[0]+npar[1]+i];
          }
 
-         Matrix<double> betaDSus (npar[4],1);
-
-         for(i = 0; i < npar[4]; i++){   
-           betaDSus [i] = beta[npar[0]+npar[1]+npar[2]+npar[3]+i];
-         }
-           
          Matrix<double> betaSs (npar[3],1); 
 
          for(i = 0; i < npar[3]; i++){   
            betaSs [i] = beta[npar[0]+npar[1]+npar[2]+i];
+         }
+
+         Matrix<double> betaDSus (npar[4],1);
+
+         for(i = 0; i < npar[4]; i++){   
+           betaDSus [i] = beta[npar[0]+npar[1]+npar[2]+npar[3]+i];
          }
 
          Matrix<double> betaDSs (npar[5],1); 
@@ -101,14 +101,18 @@ void sampS(int *offid, int noff, Matrix<double> X_design_GS [], int *npar, int *
                 mean_vec = meanc(Spred)[0];
                 n = double(ntsire[i]-1);
                 mean_vec -= Spred[nsire[i]-1]/(n+1.0);  
-                mean_vec *= (n+1.0)/n;                  // mean linear predictor of sampled dams
-                Spred[nsire[i]-1] = mean_vec;            // replace linear predictor of unsampled dams with sampled mean
-                S_vec = varc(Spred)[0];                 // variance of the vector = sample variance of linear -
-                N = n+us[ussirecat[i]+nusd];                  // predictor of sampled dams
-                S_vec *= N/(n*(N-n));
-                Spred[nsire[i]-1] = rnorm(mean_vec, sqrt(S_vec));
-                if(Spred[nsire[i]-1]<0.0){               // for those instances where the linear predictor goes negative
-                  Spred[nsire[i]-1]=1e-100;
+                if(n<2){
+                  if(n==0){Spred[nsire[i]-1] = 1.0;}    
+                  if(n==1){Spred[nsire[i]-1] = mean_vec*2.0;}
+                }else{
+                  mean_vec *= (n+1.0)/n;                  // mean linear predictor of sampled dams
+                  S_vec = varc(Spred)[0];                 // variance of the vector = sample variance of linear -
+                  N = n+us[ussirecat[i]+nusd];                  // predictor of sampled dams
+                  S_vec *= N/(n*(N-n));
+                  Spred[nsire[i]-1] = rnorm(mean_vec, sqrt(S_vec));
+                  if(Spred[nsire[i]-1]<0.0){               // for those instances where the linear predictor goes negative
+                    Spred[nsire[i]-1]=1e-100;
+                  }
                 }
                 Spred_tmp[nsire[i]-1] = log(Spred[nsire[i]-1]);      
               }

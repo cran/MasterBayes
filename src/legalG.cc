@@ -284,12 +284,14 @@ index  += maxall;
                   }else{
                      Pall[o2] ++;
                   }
-
                 }
               }
-              if(index!=2){
+              if(index==0){
                 G[i][l*2] = rmultinom_size1(Pall, nall[l]);
                 if(Pall[G[i][l*2]]>1.0){Pall[G[i][l*2]]--;}
+                G[i][(l*2)+1] = rmultinom_size1(Pall, nall[l]);
+              }
+              if(index==1){
                 G[i][(l*2)+1] = rmultinom_size1(Pall, nall[l]);
               }
             }

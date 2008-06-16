@@ -320,7 +320,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                      ll_P_b += l_par - log(ll_sum);
                    }
                  }else{
-                     ratio[0][i] = 1.0;
+                   ratio[0][i] = 1.0;
                    if(d!=(ndam[i]-1)){                     
                      ll_P_b += l_par - log(ll_sum-Dpred[ndam[i]-1]);
                    }
@@ -358,23 +358,24 @@ double LLN_P(int *offid, int noff, int nind, int *ntdam, int *ntsire, int *dam, 
 
 double llik = 0.0;
 
+
     for(int i = 0; i < noff; i++){
 
       if(nusd>0){
         if(dam[offid[i]]>=nind){
-          llik += ratio[0][i]*log(double(us[usdamcat[i]]));
-          llik -= ratio[0][i]*log(double(ntdam[i]-1)+us[usdamcat[i]]);
+          llik += log(double(us[usdamcat[i]]));
+          llik -= log(ratio[0][i]*double(ntdam[i]-1)+us[usdamcat[i]]);
         }else{
-           llik -= log(double(ntdam[i]-1)+us[usdamcat[i]]);
+           llik -= log(ratio[0][i]*double(ntdam[i]-1)+us[usdamcat[i]]);
         }
       }
 
       if(nuss>0){
         if(sire[offid[i]]>=nind){
-          llik += ratio[1][i]*log(double(us[nusd+ussirecat[i]]));
-          llik -= ratio[1][i]*log(double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
+          llik += log(double(us[nusd+ussirecat[i]]));
+          llik -= log(ratio[1][i]*double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
         }else{
-          llik -= log(double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
+          llik -= log(ratio[1][i]*double(ntsire[i]-1)+us[nusd+ussirecat[i]]);
         }
       }
    }

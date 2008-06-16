@@ -20,6 +20,12 @@ function(PdP=PdataPed(),
     if(is.null(PdP$id)==FALSE){                    # if phenotypic data exists then use id's from PdP as reference
       unique_id<-as.character(unique(PdP$id))     
       PdP$id<-match(PdP$id, unique_id)             # convert phenotypic id's to numeric
+      if(length(PdP$USsire)>1 & length(PdP$USsire)==length(PdP$offspring)){
+        PdP$USsire<-as.character(PdP$USsire[which(PdP$offspring==1)])
+      }
+      if(length(PdP$USdam)>1 & length(PdP$USdam)==length(PdP$offspring)){
+        PdP$USdam<-as.character(PdP$USdam[which(PdP$offspring==1)])
+      }
     }else{             
       unique_id<-as.character(unique(GdP$id))
     }    
@@ -115,7 +121,7 @@ function(PdP=PdataPed(),
           nusd<-0
         }
       }else{
-        PdP$USdam<-match(PdP$USdam[which(PdP$offspring==1)], unique(PdP$USdam))
+        PdP$USdam<-match(PdP$USdam, unique(PdP$USdam))
         nusd<-length(unique(PdP$USdam))
       }
     }else{
@@ -133,7 +139,7 @@ function(PdP=PdataPed(),
         nuss<-0
       }
     }else{
-      PdP$USsire<-match(PdP$USsire[which(PdP$offspring==1)], unique(PdP$USsire))
+      PdP$USsire<-match(PdP$USsire, unique(PdP$USsire))
       nuss<-length(unique(PdP$USsire))
     }
    }else{
@@ -274,7 +280,7 @@ output<-.C("MCMCped",
 	as.double(sP$E1),	             # starting values of E1 and E2
 	as.double(sP$E2),	             # starting values of E1 and E2
 	as.double(c(sP$beta)),	             # starting vector of beta
-	as.double(c(sP$USdam, sP$USsire)),   # starting vector of beta
+	as.double(c(sP$USdam, sP$USsire)),   # starting vector of US numbers
         as.integer(sP$G),                    # starting true genotypes  
 	as.integer(as.numeric(sP$dam)-1),    # starting vector of dams
 	as.integer(as.numeric(sP$sire)-1),   # starting vector of sires

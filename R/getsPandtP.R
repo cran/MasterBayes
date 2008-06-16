@@ -83,7 +83,7 @@
         MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=ped)
       }
     }
-  
+
     if(length(PdP$USdam)==1 & PdP$USdam[1]==FALSE){
       nusd<-0
     }else{
@@ -198,7 +198,6 @@
        }
        tP$USsire<-abs(tP$USsire*diag(MLENus$C)[nusd+(1:nuss)])
     }
-
 
 
 list(sP=sP, tP=tP)

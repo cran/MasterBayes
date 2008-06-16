@@ -5,100 +5,24 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{bm}
-%%% \VignetteIndexEntry{MasterBayes Tutorial}
+\usepackage{Sweave}
+% \VignetteIndexEntry{MasterBayes Tutorial}
 
 \title{\bf{\Large{MasterBayes: Maximum Likelihood and Markov chain Monte Carlo methods for pedigree reconstruction, analysis and simulation.}}}
 
 \author{\bf{\large{J. D. Hadfield}}}
 
 
+
 \begin{document}
 
-%%<<label=dplot, echo=FALSE, include=FALSE>>=
-%%library(mvtnorm)
-%%  x <- seq(-3, 3, length = 50)
-%%  y <- x
-%%  z<-matrix(0, 50, 50)
-%%  mu<-c(0,0)
-%%  sigma<-cbind(c(1,0.4),c(0.4,1))
-%%  for(i in 1:50){
-%%     for(j in 1:50){
-%%      z[,i][j]<-dmvnorm(c(x[i], y[j]), mu, sigma)
-%%    }
-%%  }
-%%par(bg="white")
-%%xlab<-expression(beta)
-%%persp(x, y, z, theta = 20, ltheta=60, phi = 30, lphi=0.3, expand = 0.5, col ="lightblue", shade=0.3, xlab="", ylab="", zlab="") 
-%%text(-0.45,-0.11,expression(Pr))
-%%text(-0.1,-0.35,expression(beta[1]))
-%%text(0.3,-0.2,expression(beta[2]))
-%%@
 
 
 
 
-%%<<label=dplotgibbs, echo=FALSE, include=FALSE>>=
-%%library(mvtnorm)
-%%  x <- seq(0, 3, length = 50)
-%%  y <- seq(-3, 3, length = 50)
-%%  z<-matrix(0, 50, 50)
-%%  mu<-c(0,0)
-%%  sigma<-cbind(c(1,0.4),c(0.4,1))
-%%  for(i in 1:50){
-%%    for(j in 1:50){
-%%      z[,i][j]<-dmvnorm(c(x[i], y[j]), mu, sigma)
-%%    }
-%%  }
-%%par(bg="white")
-%%xlab<-expression(beta)
-%%persp(x, y, z, theta = 20, ltheta=60, phi = 30, lphi=0.3, expand = 0.5, col ="lightblue", shade=0.3, xlab="", ylab="", zlab="") 
-%%text(-0.45,-0.11,expression(Pr))
-%%text(-0.1,-0.35,expression(beta[1]))
-%%text(0.3,-0.2,expression(beta[2]))
-%%@
-
-%%<<label=dplotMM, echo=FALSE, include=FALSE>>=
-%%library(mvtnorm)
-%%  x <- seq(-6, 6, length = 50)
-%%  y <- seq(-6, 6, length = 50)
-%%  z<-matrix(0, 50, 50)
-%%  mu1<-c(-3,-3)
-%%  mu2<-c(3,3)
-%%  sigma<-cbind(c(1,0.4),c(0.4,1))
-%%  for(i in 1:50){
-%%    for(j in 1:50){
-%%      z[,i][j]<-0.5*dmvnorm(c(x[i], y[j]), mu1, sigma)+dmvnorm(c(x[i], y[j]), mu2, sigma)
-%%    }
-%%  }
-%%par(bg="white")
-%%xlab<-expression(beta)
-%%persp(x, y, z, theta = 20, ltheta=60, phi = 30, lphi=0.3, expand = 0.5, col ="lightblue", shade=0.3, xlab="", ylab="", zlab="") 
-%%text(-0.45,-0.11,expression(Pr))
-%%text(-0.1,-0.35,expression(beta[1]))
-%%text(0.3,-0.2,expression(beta[2]))
-%%text(0.2,-0.15,expression(C[2]), col="white", cex=2)
-%%text(-0.1,-0.25,expression(C[1]), col="white", cex=2)
-%%@
 
 
-%%<<label=conflik, echo=FALSE, include=FALSE>>=
-%%library(mvtnorm)
-%%  x <- seq(-3, 3,length = 50)
-%%  y <- x
-%%  z<-matrix(0, 50, 50)
-%%  sigma<-cbind(c(1,0),c(0,1))
-%%  for(i in 1:50){
-%%     for(j in 1:50){
-%%      z[,i][j]<-dmvnorm(c(x[i], y[j]), mu<-c(x[i],x[i]), sigma)
-%%    }
-%%  }
-%%par(bg="white")
-%%xlab<-expression(beta)
-%%persp(x, y, z, theta = -30, ltheta=60, phi = 30, lphi=0.3, expand = 0.5, col ="lightblue", shade=0.3, xlab="", ylab="", zlab="") 
-%%text(-0.38,0.02,expression(Pr))
-%%text(-0.27,-0.25,expression(beta[1]))
-%%text(0.16,-0.33,expression(beta[2]))
-%%@
+
 
 
 \maketitle
@@ -114,11 +38,13 @@
 
 \newpage
 
-This document provides worked examples for several types of model that can be fitted using MasterBayes.  The main emphasis is on the syntax used to specify, estimate and interpret the models, although in some cases I have tried to explain the underlying theory.  These explanations are intended for non-statisticians and vary from the patronising to the arcane. I assume a basic familiarity with R.
+This document provides worked examples for several types of model that can be fitted using MasterBayes.  The main emphasis is on the syntax used to specify, estimate and interpret the models, although in some cases I have tried to explain the underlying theory.  These explanations are intended for non-statisticians and vary from the patronising to the arcane. I assume a basic familiarity with R.  All example code can be extracted by using the \texttt{Stangle} function on the file \texttt{Tutorial.Rnw} in the \texttt{MasterBayes/inst/doc/Figures} folder.
 
-<<echo=true>>=
-library("MasterBayes")  
-@
+\begin{Schunk}
+\begin{Sinput}
+> library("MasterBayes")
+\end{Sinput}
+\end{Schunk}
 
 Many of the models that can be fitted are computationally intensive, and many routines have been written in compiled C++ code for efficiency.  Nethertheless, the amount of computing time required by some models may be a limiting factor, and I incude model run times for many examples.  These examples were run on a dual Xeon 2.8GHz Linux machine with 1Gb RAM. In general the length of the Markov chain is much shorter that what would be used in a real analysis.  Generally, these examples can be fitted in a few minutes, even seconds, but for real problems I would suggest running multiple chains for as long as possible.  
 
@@ -140,9 +66,7 @@ The posterior probability distribution is a complete description of our state of
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<dplot>>
-%%@
+\includegraphics{Tutorial-006}
 \end{center}
 \caption{Bivariate posterior distribution of $\bm{\beta}$}
 \label{densityP}
@@ -172,9 +96,7 @@ Pr(\beta_{1}|\beta_{2}=0, \bm{y}).
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<dplotgibbs>>
-%%@
+\includegraphics{Tutorial-007}
 \end{center}
 \caption{Bivariate posterior distribution of $\bm{\beta}$, for postive values of $\beta_{2}$}
 \label{densityPgibbs}
@@ -185,7 +107,7 @@ Pr(\beta_{1}|\beta_{2}=0, \bm{y}).
 \subsection{MCMC Diagnostics}
 \label{MCMC.D-sec}
 
-When fitting a model using \texttt{MCMCped} the parameter values through which the Markov chain has travelled are stored and returned.  The length of the chain (the number of iterations) can be specified using the \texttt{nitt} argument of \texttt{MCMCped}, and should be long enough so that the posterior approximation is valid.  If we had known the joint posterior distribution in Figure \ref{densityP} we could have set up a Markov chain that sampled directly from the posterior.  If this had been the case each successive value in the Markov chain would be independent of the previous value after conditioning on the data, ${\bm y}$, and a thousand iterations of the chain would have produced a histogram that resembled Figure \ref{densityP} very closely.  However, generally we do not know the joint posterior distribution of the parameters, and we use Gibbs sampling and Metropolis-Hastings updates to approximate this distribution. For this reason the parameter values of the Markov chain at sucessive iterations are usually not idependent and care needs to be taken regarding the validity of the approximation.  \texttt{MCMCped} returns the Markov chain for continous parameters as \texttt{mcmc} objects, which can be analysed using the \texttt{coda} pacakge.  The function \texttt{autocorr} estimates the level of non-independence between succesive samples in the chain.  When autocorrelation is high the chain needs to be run for longer, and this can lead to storage problems for high dimensional problems. The argument \texttt{thin} can be passed to \texttt{MCMCped} specifying the intervals at which the Markov chain is stored.\\
+When fitting a model using \texttt{MCMCped} the parameter values through which the Markov chain has travelled are stored and returned.  The length of the chain (the number of iterations) can be specified using the \texttt{nitt} argument of \texttt{MCMCped}, and should be long enough so that the posterior approximation is valid.  If we had known the joint posterior distribution in Figure \ref{densityP} we could have set up a Markov chain that sampled directly from the posterior.  If this had been the case each successive value in the Markov chain would be independent of the previous value after conditioning on the data, ${\bm y}$, and a thousand iterations of the chain would have produced a histogram that resembled Figure \ref{densityP} very closely.  However, generally we do not know the joint posterior distribution of the parameters, and we use Gibbs sampling and Metropolis-Hastings updates to approximate this distribution. For this reason the parameter values of the Markov chain at sucessive iterations are usually not idependent and care needs to be taken regarding the validity of the approximation.  \texttt{MCMCped} returns the Markov chain for continous parameters as \texttt{mcmc} objects, which can be analysed using the \texttt{coda} pacakge.  The function \texttt{autocorr} estimates the level of non-independence between succesive samples in the chain\footnote{Later versions of MasterBayes $>$2.2 also include the function \texttt{autocorrP} which calculates an autocorrelation metric for parentage assignements when \texttt{write\_postP="JOINT"} is sepcified in \texttt{MCMCped}.}.  When autocorrelation is high the chain needs to be run for longer, and this can lead to storage problems for high dimensional problems. The argument \texttt{thin} can be passed to \texttt{MCMCped} specifying the intervals at which the Markov chain is stored.\\
 
 The approximation obtained from the Markov chain is conditional on the set of parameter values that were used to initialise the chain.  In many cases the first iterations show a strong dependence on the starting parameteristaion, but as the chain progresses this dependence may be lost.  As the dependence on the starting parameterisation diminishes the chain is said to converge and the argument \texttt{burnin} can be passed to \texttt{MCMCped} specifying the number of iterations which must pass before samples are stored.  Assessing convergence of the chain is notoriously difficult.  The posterior distribution in Figure \ref{densityP} has a simple form and the convergence of the chain would be easy to acheive.  If however, the posterior was multimodal convergence would be harder to acheive and diagnose.\\  
  
@@ -193,9 +115,7 @@ The approximation obtained from the Markov chain is conditional on the set of pa
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<dplotMM>>
-%%@
+\includegraphics{Tutorial-008}
 \end{center}
 \caption{A bimodal bivariate posterior distribution of $\bm{\beta}$.}
 \label{densityPMM}
@@ -207,13 +127,11 @@ fail to pass under the low probability ridge that connects the two high probabil
 \subsection{Prior Specifications and \texttt{priorPed} Objects}
 \label{prior-sec}
 
-The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it would be compromised.  For many models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for datasets where there is little or no pedigree structure, or for models in which parameters are confounded, a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they are older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
+The posterior distribution is the product of the likelihood and the prior. If a prior is not specified using the function \texttt{priorPed}, the default is to use an improper uniform prior for all parameters, except allele frequencies, which have a vague Dirichlet prior. For the size of the unsampled population and the genotyping error rates the prior has zero probability for negative values.  When the posterior distribution itself is improper (i.e if the volume under the surfaces plotted in Figures \ref{densityP} and \ref{densityPMM} are not finite) then the posterior can no longer be treated as a probability, and inferences taken from it would be compromised.  For some models the data will contain enough information to make the posterior proper despite an improper prior specification. However, for chains in which a sampled pedigree has little or no structure (i.e. all parents are unsampled), or no sampled parents exist for some level of a categorical predictor variable\footnote{It turns out that this is a common problem in real datasets and has been refered to as the extreme category problem.  For example, the catgorical variable \texttt{`recorded in that year/only recorded in the previous year'} may be fitted to account for individuals that were not recorded but may have been alive.  If these indiviuals really were dead then the estimated probability of them having offspring tends to zero which is $-\infty$ on the logit scale.  This problem can usually be idenitified by the chain making long excursions into extreme values of the parameter space.}, then problems can occur unless informative priors are used. In the extreme case, models in which parameters are confounded, a proper prior distribution is required to make the parameters idenitifiable.  Imagine that all territorial males were old, and all non-territorial males were young. If we tried to fit the two parameters, $\beta_{1}$ and $\beta_{2}$, in a single model we would run in to difficulties.  The parameters are not identifiable because we cannot distinguish between the two alternatives; whether territorial males gain more paternity beacuse they hold a territory, or because they are older.  The likelihood surface for $\bm{\beta}$ would look something like Figure \ref{likP}, with a ridge of high probability extending to infinity.\\  
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<conflik>>
-%%@
+\includegraphics{Tutorial-009}
 \end{center}
 \caption{The likelihood of $\bm{\beta}$, when the two parameters are not identifiable from the data, $\bm{y}$}
 \label{likP}
@@ -226,10 +144,12 @@ In this insatnce the Markov chain would wander aimlessly along the ridge, perhap
 
 To illustrate the basic methodology, I will use data collected in 1999 from the Cousin Island population of the endangered Seychelles warbler \citep{Richardson.2001}. 
 
-<<echo=true>>=
-data(WarblerP)
-data(WarblerG)
-@
+\begin{Schunk}
+\begin{Sinput}
+> data(WarblerP)
+> data(WarblerG)
+\end{Sinput}
+\end{Schunk}
 
  \texttt{WarblerP} is a data frame containing phenotypic data for all individuals recorded in that year.  This includes a unique identifier for each bird, its sex and the territory it was recorded on. \texttt{offspring} is a binary vector with 1 indicdating the bird was born in 1999, and \texttt{status} is a factorial vector with 2 levels indidcating whether the bird is a dominant or a subordinate. \texttt{lat} and \texttt{long} are x and y coordinates for the centre of each bird's territory. {WarblerG} is a data frame containing the genotypes of each individual at 14 loci \citep{Richardson.2000}.\\
 
@@ -255,27 +175,34 @@ Equations \ref{no_pedigree-eq} and \ref{pedigree-eq} are equivalent. In the latt
 
  To fit the model we need to start by creating a variable that indicates whether particular females and particular offspring occur on the same territory.  Unfortunately the nature of these models precludes us from using the R formula mini-language,  and so variables are created using \texttt{varPed} and then evaluted as part of the model formula in a \texttt{PdataPed} object
 
-%%<<echo=true>>=
-%%res1<-expression(varPed(x="terr",gender="Female",
-%% relational="OFFSPRING",restrict="=="))  
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> res1 <- expression(varPed(x = "terr", gender = "Female", relational = "OFFSPRING", 
++     restrict = "=="))
+\end{Sinput}
+\end{Schunk}
 
 \texttt{x} is the variable we are interested in, in this case territories.  \texttt{gender} specifies whether the variable relates to maternity (\texttt{gender="Female"}), paternity (\texttt{gender="Male"}) or both (\texttt{gender=NULL}). The argument \texttt{relational} is a little more complex, and sepcifies whether the variable is to be treated as it is (\texttt{relational=FALSE}), or is to be transformed into a distance.  \texttt{relational="OFFSPRING"} creates a variable that is the distance between \texttt{x} measured in the offspring and the parent, and \texttt{relational="MATE"} is the distance between \texttt{x} measured in a potential mother and a potential father.  When \texttt{x} is numeric, the transformed variable is a Euclidean distance \footnote{Later versions of MasterBayes ($>2.1$) also include the options \texttt{relational="OFFSPRINGV"} and \texttt{relational="MATEV"} which create a vector of the difference between the two phenotypes (but not absoluted). i.e $x=x_{i}-x_{j}$ rather than $x=\sqrt{x^{2}_{i}-x^{2}_{j}}$.}. When \texttt{x} is a factor, the transformed variable is a logical vector with \texttt{TRUE} indicating that \texttt{x} for the two indivdiuals are the same, and \texttt{FALSE} indicating that they are different.  In this example we are dealing with a logical variable that is \texttt{TRUE} when offspring and females are present on the same territory, and \texttt{FALSE} if not. We could estimate a parameter associated with this variable which would be interpreted as the probability of within territory maternity.  However, in this case we are assuming that extra territory maternity does not occur and we can use the argument \texttt{restrict="=="} to retain mothers that have the same territory as the offspring for the transformed variable. Females that are on a different territory to the offspring are excluded as mothers. This is essentially a strong prior on the parameter associated with within territory/extra territory maternity, but is computationaly faster because excluded mothers can be discarded for particular offspring.\\
 
 We also need to exclude indidvuals that are born in 1999 as potential parents
  
-%%<<echo=true>>=
-%%res2<-expression(varPed(x="offspring",gender=NULL,
-%% relational=FALSE,restrict=0))  
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> res2 <- expression(varPed(x = "offspring", gender = NULL, relational = FALSE, 
++     restrict = 0))
+\end{Sinput}
+\end{Schunk}
 
 We want to exclude individuals that have 1 in the variable \texttt{offspring}, as they represent chicks born in 1999.  We want to exclude offspring irrelevant of their sex so  \texttt{gender=NULL}  and we want to evaluate \texttt{x} as it is (i.e. as a binary variable).  We exclude offspring by specifying \texttt{restrict=0} which retains individuals that have 0 in the offspring variable.\\
 
 The goal of the analysis is to estimate $\beta$, the rate at which paternity drops with distance from an offspring
 
-%%<<echo=true>>=
-%%var1<-expression(varPed(x=c("lat", "long"),gender="Male",relational="OFFSPRING"))  
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> var1 <- expression(varPed(x = c("lat", "long"), gender = "Male", 
++     relational = "OFFSPRING"))
+\end{Sinput}
+\end{Schunk}
 
 \texttt{x} in this instance contains two variables that specify the cordinates of each indivdual on the island. Because \texttt{relational="OFFSPRING"} this variable is interpreted as the Euclidean distance between offspring and fathers (\texttt{gender="Male"}) in 2 dimensions.  \texttt{restrict} is not specified indicdiating that all males are potential fathers. 
 
@@ -288,17 +215,22 @@ The full notation for a multinomial model is cumbersome so I'll express all mode
 
  These variables are to be evaluated inside various functions, and they need to be associated with the \texttt{data.frame} in which \texttt{x} is stored. We also need to provide data on the sex, age, and id of each individual.  This is done by creating a \texttt{PdataPed} object.
 
-%%<<echo=true>>=
-%%PdP<-PdataPed(formula=list(res1, res2, var1), data=WarblerP, USsire=TRUE)  
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> PdP <- PdataPed(formula = list(res1, res2, var1), data = WarblerP, 
++     USsire = TRUE)
+\end{Sinput}
+\end{Schunk}
 
 The variables are passed as a list to the argument \texttt{formula}, and the relevant data are contained in \texttt{WarblerP}.  In this case variables named \texttt{id}, \texttt{sex} and \texttt{offspring} exist in \texttt{WarblerP} and they do not need to be specified explicitly.  All \texttt{PdataPed} objects must contain an \texttt{id} and \texttt{offspring} variable containing unique identifiers for each individual, and a vetcor indicdating whether records belong to offspring. If \texttt{data} does not have a sex column, or \texttt{sex=NULL}, the data are assumed to have been collected from a hermaphrodite system (see Sections \ref{Herm-sec} and \ref{SHC}). Elements of the sex vector must be either \texttt{"Male"}, \texttt{"Female"} or \texttt{NA}.  In this model we also allow for the presence of unsampled males: \texttt{USsire=TRUE}.\\
 
 We also need to create a \texttt{GdataPed} object for storing the genotype data and some associated information
 
-%%<<echo=true>>=
-%%GdP<-GdataPed(G=WarblerG, categories=NULL)  
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> GdP <- GdataPed(G = WarblerG, categories = NULL)
+\end{Sinput}
+\end{Schunk}
 
 \texttt{GdataPed} objects store genotype data (\texttt{G}) as a list of \texttt{genotype} objects for dominant markers (see the package genetics), or \texttt{genotypeD} objects for dominant markers.  A list of \texttt{genotype} or \texttt{genotypeD} objects can be directly passed to the argument \texttt{G}, or a data frame can be passed that is coerced to a list of genotype objects using the function \texttt{genotype.list}. The variable \texttt{id} is required, and links genotypes with individuals.  Indivdiuals can have multiple genotypes if they have been genotyped more than once.  If \texttt{G} is a data.frame with a column named \texttt{id}, \texttt{id} does not have to be explicitly passed to \texttt{GdataPed}.  If \texttt{categories} is not specified then genotyping error rates are assumed not to vary across genotypes, otherwise \texttt{categories} must be a vector of factors the same length as \texttt{id}.\\
 
@@ -313,52 +245,105 @@ The optional \texttt{startPed} object specifies the starting parameterisation fo
 
 The most popular software for parentage anlaysis is CERVUS \citep{Marshall.1998}.  MasterBayes can fit CERVUS type models as a special case, although two major differences exist between the MasterBayes implementation and the CERVUS implementation.  Firstly,  mothers and fathers can be estimated simultaneously in MasterBayes, whereas CERVUS was developed for systems where one parent is already known\footnote{Joint estimation of maternity and paternity is now available in version 3 of CERVUS.}.  Secondly, in MasterBayes confidence in parentage assignments is assesed at the level of individual assignments and the measure of confidence uses all the information provided by potential parents.  CERVUS on the otherhand assesses confidence at the level of the population, and only uses the information provided by the two most likely parents \citep{Nielsen.2001}. By default, the model defined in Equation \ref{pedigree-eq} is fitted with the minimal amount of approximation.  To fit a CERVUS type approximation we need to do a little more work.  We need to specify that an approximation is to be used for genotyping error, and we need to provide point estimates for the allele frequencies and the genotyping error rate (see Sections \ref{approx-sec} and \ref{GE-sec}).  We also need to specify that the number of unsampled males is not to be estimated (see Section \ref{us-sec}), and that a point estimate of 10 is to be used instead. 
 
-%%<<echo=true>>=
-%%sP<-startPed(estG=FALSE, E2=0.005, A=extractA(WarblerG), estUSsire=FALSE, USsire = 10) 
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> sP <- startPed(estG = FALSE, E2 = 0.005, A = extractA(WarblerG), 
++     estUSsire = FALSE, USsire = 10)
+\end{Sinput}
+\end{Schunk}
 
 
 CERVUS breaks the problem down into two stages.  In the fisrt stage the pedigree is estimated using the genetic data alone, and this pedigree (or part of it) is then passed to the second stage, where the spatial parameter, $\beta$ is estimated.  We start by estimating the pedigree using the function \texttt{MCMCped} which returns samples of the posterior distribution of all unkowns.
 
-%%<<echo=true>>=
-%%PdPCervus<-PdataPed(formula=list(res1, res2), data=WarblerP, USsire=TRUE) 
-%%model1<-MCMCped(PdP=PdPCervus, GdP=GdP, sP=sP, 
-%%verbose=FALSE) 
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> PdPCervus <- PdataPed(formula = list(res1, res2), data = WarblerP, 
++     USsire = TRUE)
+> model1 <- MCMCped(PdP = PdPCervus, GdP = GdP, sP = sP, verbose = FALSE)
+\end{Sinput}
+\begin{Soutput}
+[1] "using an approximation for genotyping error"
+\end{Soutput}
+\end{Schunk}
 
 Note that we have created a new \texttt{PdataPed} object, \texttt{PdPCervus}, that does not contain the distance variable as we wish to use the genetic data only to infer parentage.  Beacuse the only unkown in this model is the pedigree the object \texttt{model1} only contains a single element (\texttt{P}): the posterior distribution of the pedigree.  By default this is the marginal distribution of parental pairs, and we can extract the mode of this distribution
 
-%%<<echo=true>>=
-%%ped1<-modeP(model1$P, threshold=0)
-%%ped1[1:10,]
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> ped1 <- modeP(model1$P, threshold = 0)
+> ped1[1:10, ]
+\end{Sinput}
+\begin{Soutput}
+      [,1]      [,2]      [,3]     
+ [1,] "N748835" "K278102" "USsire" 
+ [2,] "Z993558" "K278102" "K278027"
+ [3,] "N748825" "K278115" "N021716"
+ [4,] "N748841" "N021991" "K278027"
+ [5,] "N748842" "J368410" "USsire" 
+ [6,] "N748848" "J854303" "K278101"
+ [7,] "Z993553" "K278011" "J368403"
+ [8,] "N748838" "N021965" "N021760"
+ [9,] "N748827" "K278018" "N021839"
+[10,] "Z993562" "K278018" "USsire" 
+\end{Soutput}
+\end{Schunk}
 
 In this example the most likely pedigree for the first ten offspring is displayed, with the offspring, dam and sire in each column.  If the most likely father for one of these offspring is unsampled then the respective element of the sire column is designated as \texttt{USsire}. For such a simple model, Markov chain Monte Carlo is redundant as the posterior distribution of the pedigree can be calculated analyticly
 
-%%<<echo=true>>=
-%%ped2<-MLE.ped(getXlist(PdPCervus, GdP), USsire=TRUE, nUSsire=10)
-%%ped2[3:12,]
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> ped2 <- MLE.ped(getXlist(PdPCervus, GdP), USsire = TRUE, nUSsire = 10)
+> ped2[3:12, ]
+\end{Sinput}
+\begin{Soutput}
+      [,1]      [,2]      [,3]     
+ [1,] "N748835" "K278102" NA       
+ [2,] "Z993558" "K278102" "K278112"
+ [3,] "N748825" "K278115" "N021716"
+ [4,] "N748841" "N021991" "K278027"
+ [5,] "N748842" "J368410" NA       
+ [6,] "N748848" "J854303" "K278101"
+ [7,] "Z993553" "K278011" "J368403"
+ [8,] "N748838" "N021965" "N021760"
+ [9,] "N748827" "K278018" "N021839"
+[10,] "Z993562" "K278018" NA       
+\end{Soutput}
+\end{Schunk}
 
 This is the Maximum Likelihood estimate of ${\bm P}$ and is equivalent, in this model, to the Bayesian estimate when all parental combinations have an equal prior probability of being the parents.  We will return to the function \texttt{getXlist} later, and proceed to estimate $\beta$ assuming the MLE/posterior mode of the pedigree is the true pedigree.  We do this by passing the ML pedigree (\texttt{dam=ped2[,2]} and \texttt{sire=ped2[,3]}) to a \texttt{startPed} object, and by specifying that the pedigree should not be estimated (\texttt{estP=FALSE}), but should be fixed.
 
-%%<<echo=true, fig=FALSE>>=
-%%sP<-startPed(estP=FALSE, dam=ped2[,2], sire=ped2[,3], estUSsire=FALSE)  
-%%model2<-MCMCped(PdP=PdP, sP=sP, verbose=FALSE) 
-%%plot(model2$beta)
-%%summary(model2$beta)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> sP <- startPed(estP = FALSE, dam = ped2[, 2], sire = ped2[, 3], 
++     estUSsire = FALSE)
+> model2 <- MCMCped(PdP = PdP, sP = sP, verbose = FALSE)
+> plot(model2$beta)
+> summary(model2$beta)
+\end{Sinput}
+\begin{Soutput}
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
 
-%%<<label=model2beta, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model2$beta)
-%%@
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean             SD       Naive SE Time-series SE 
+    -0.0705708      0.0095894      0.0003032      0.0002839 
+
+2. Quantiles for each variable:
+
+    2.5%      25%      50%      75%    97.5% 
+-0.08912 -0.07720 -0.07046 -0.06364 -0.05249 
+\end{Soutput}
+\end{Schunk}
+
 
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model2beta>>
-%%@
+\includegraphics{Tutorial-022}
 \end{center}
 \caption{Posterior distribution of $\bm{\beta}$ from \texttt{model2}. The posterior is conditional on the categorical assignment of the pedigree being true. These plots are a way of summarising a Markov Chain using the coda package.  The left plot is a trace of the sampled posterior, and can be thought of as a time series.  The right plot is a density estimate, and can be thought of a smoothed histogram approximating the posterior.  See Section \ref{MCMC-sec} for more details.}
 \label{model2beta}
@@ -367,26 +352,61 @@ This is the Maximum Likelihood estimate of ${\bm P}$ and is equivalent, in this 
 The genetic data are not required since the pedigree is treated as known, and only the \texttt{PdataPed} object (\texttt{PdP}) needs to be passed to \texttt{MCMCped}.  Again, with such a simple model, Maximum Likelihood gives valid results, and the large sample approximation for the standard error is close to the Bayesian estimate. 
 
 
-%%<<echo=TRUE>>=
-%%MLElat<-MLE.beta(getXlist(PdP), ped2)
-%%MLElat$beta
-%%# ML estimate
-%%sqrt(MLElat$C)
-%%# SE 
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> MLElat <- MLE.beta(getXlist(PdP), ped2)
+> MLElat$beta
+\end{Sinput}
+\begin{Soutput}
+            [,1]
+[1,] -0.06987857
+\end{Soutput}
+\begin{Sinput}
+> sqrt(MLElat$C)
+\end{Sinput}
+\begin{Soutput}
+            [,1]
+[1,] 0.009572814
+\end{Soutput}
+\end{Schunk}
 
 
 Despite the two methods giving similar estimates, they are both severely biased towards zero; the value of $\beta$ that would be observed if fathers were distributed randomly across the island with respect to their offspring.  We can get a feel for this by estimating $\beta$ for those paternity assignments that had a probability exceeding 0.9.   
 
-%%<<echo=TRUE>>=
-%%ped3<-modeP(model1$P, threshold=0.9)
-%%ped3[1:10,]
-%%MLElat3<-MLE.beta(getXlist(PdP), ped3)
-%%MLElat3$beta
-%%# ML estimate
-%%sqrt(MLElat3$C)
-%%# SE estimate
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> ped3 <- modeP(model1$P, threshold = 0.9)
+> ped3[1:10, ]
+\end{Sinput}
+\begin{Soutput}
+      [,1]      [,2]      [,3]     
+ [1,] "N748835" "K278102" NA       
+ [2,] "Z993558" "K278102" NA       
+ [3,] "N748825" "K278115" NA       
+ [4,] "N748841" "N021991" NA       
+ [5,] "N748842" "J368410" NA       
+ [6,] "N748848" "J854303" "K278101"
+ [7,] "Z993553" "K278011" "J368403"
+ [8,] "N748838" "N021965" "N021760"
+ [9,] "N748827" "K278018" NA       
+[10,] "Z993562" "K278018" NA       
+\end{Soutput}
+\begin{Sinput}
+> MLElat3 <- MLE.beta(getXlist(PdP), ped3)
+> MLElat3$beta
+\end{Sinput}
+\begin{Soutput}
+           [,1]
+[1,] -0.2965067
+\end{Soutput}
+\begin{Sinput}
+> sqrt(MLElat3$C)
+\end{Sinput}
+\begin{Soutput}
+          [,1]
+[1,] 0.0517371
+\end{Soutput}
+\end{Schunk}
 
 The first thing to notice is that by only using males that have a greater than 0.9 probability of being the father, we are excluding 75\% of the offspring from the analysis. Because of this the standard error of $\beta$ is more than 5 times larger than that in the previous model.  However, the ML estimate of $\beta$ is significantly larger than in the previous model suggesting that our basic model is wrong. 
 
@@ -412,23 +432,43 @@ The fundamental difference between the exact solution implemented in MasterBayes
 
   We can fit a model where the pedigree and $\beta$ are estimated simultanously, although for now we will retain the CERVUS type approximation for genotyping error and the number of unsampled males.
 
-%%<<echo=true, fig=FALSE>>=
-%%sP<-startPed(estG=FALSE,A=extractA(WarblerG),E2=0.005,estUSsire=FALSE,USsire=10)  
-%%model3<-MCMCped(PdP=PdP, GdP=GdP, sP=sP, verbose=FALSE) 
-%%plot(model3$beta)
-%%summary(model3$beta)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> sP <- startPed(estG = FALSE, A = extractA(WarblerG), E2 = 0.005, 
++     estUSsire = FALSE, USsire = 10)
+> model3 <- MCMCped(PdP = PdP, GdP = GdP, sP = sP, verbose = FALSE)
+\end{Sinput}
+\begin{Soutput}
+[1] "using an approximation for genotyping error"
+\end{Soutput}
+\begin{Sinput}
+> plot(model3$beta)
+> summary(model3$beta)
+\end{Sinput}
+\begin{Soutput}
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean             SD       Naive SE Time-series SE 
+    -0.2548820      0.0309223      0.0009778      0.0015165 
+
+2. Quantiles for each variable:
+
+   2.5%     25%     50%     75%   97.5% 
+-0.3190 -0.2736 -0.2534 -0.2336 -0.1978 
+\end{Soutput}
+\end{Schunk}
  
-%%<<label=model3beta, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model3$beta)
-%%@
 
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model3beta>>
-%%@
+\includegraphics{Tutorial-027}
 \end{center}
 \caption{Posterior distribution of $\bm{\beta}$ from \texttt{model3}. The pedigree and $\beta$ have been simultaneously estimated, but an approximation for genotyping error has still been used. It was also assumed that the we size of the unsampled population and the genotyping error rate were known.}
 \label{model3beta-fig}
@@ -442,28 +482,47 @@ This estimate is much closer to the ML estimate for the restricted pedigree \tex
 
 Next we will relax the assumption that the number of unsampled males is 10 and simultaneously estimate the number from the data:
 
-%%<<echo=true, fig=FALSE>>=
-%%sP<-startPed(estG=FALSE, A=extractA(WarblerG), E2=0.005)  
-%%model4<-MCMCped(PdP=PdP, GdP=GdP, sP=sP, verbose=FALSE) 
-%%plot(model4$USsire)
-%%summary(model4$USsire)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> sP <- startPed(estG = FALSE, A = extractA(WarblerG), E2 = 0.005)
+> model4 <- MCMCped(PdP = PdP, GdP = GdP, sP = sP, verbose = FALSE)
+\end{Sinput}
+\begin{Soutput}
+[1] "using an approximation for genotyping error"
+\end{Soutput}
+\begin{Sinput}
+> plot(model4$USsire)
+> summary(model4$USsire)
+\end{Sinput}
+\begin{Soutput}
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
 
-%%<<label=model4US, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model4$USsire)
-%%@
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean             SD       Naive SE Time-series SE 
+       35.9265        15.0032         0.4744         0.5258 
+
+2. Quantiles for each variable:
+
+ 2.5%   25%   50%   75% 97.5% 
+13.39 25.56 33.79 43.99 71.92 
+\end{Soutput}
+\end{Schunk}
+
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model4US>>
-%%@
+\includegraphics{Tutorial-030}
 \end{center}
 \caption{Posterior distribution of the number of unsampled males from \texttt{model4}. The number of unsampled males, the pedigree and $\beta$ have all been simultaneously estimated, but we have still used an approximation for genotyping error.}
 \label{model4US-fig}
 \end{figure}
 
-The population of Seychelles Warbler on Cousin Island is small and essentially closed. Given that the island has been extensively sampled we have reasonable prior belief that the number of unsampled males is somewhere between 2 and 15, and an estimate of \Sexpr{round(median(model4$USsire),2)} unsampled males seems unreasonably large.  We could set up a prior specification that reflected this, but before doing this it will be usefull to discuss some possible reasons why the model has failed to estimate the number of unsampled males accurately.\\
+The population of Seychelles Warbler on Cousin Island is small and essentially closed. Given that the island has been extensively sampled we have reasonable prior belief that the number of unsampled males is somewhere between 2 and 15, and an estimate of 33.79 unsampled males seems unreasonably large.  We could set up a prior specification that reflected this, but before doing this it will be usefull to discuss some possible reasons why the model has failed to estimate the number of unsampled males accurately.\\
 
 The problem of accomodating unsampled parents is a difficult one beacuse the genotypes and phenotypes of unsampled indivduals are by definition unobserved. This does not mean that information does not exist in the observed data regarding the genotypes and phenotypes of unsampled individuals.  Imagine, that 3 offspring in the north of the island possess an allele that is not present in the sampled parental population. If genotyping error was low enough we could be reasonbaly confident in stating that an unsampled male was present in the north of the island and that his genotype contained the rare allele.  However, using this information is difficult and I use two approximations for dealing with unobserved genotypes and phenotypes that are based around the same logic.\\
 
@@ -478,25 +537,45 @@ $N$ and $n$ are the total and sampled male population sizes, respectively, and $
 
 We can fit Nielsen's [\citeyear{Nielsen.2001}] model using the function \texttt{MLE.popsize} by specifying the genotype error rate to be effectively zero
 
-%%<<echo=true>>=
-%%MLEUSsire<-MLE.popsize(getXlist(PdP, GdP, E2=1e-10), 
-%%USsire=TRUE, USdam=FALSE)
-%%MLEUSsire$nUS
-%%# ML estimate
-%%sqrt(MLEUSsire$C)
-%%# SE estimate
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> MLEUSsire <- MLE.popsize(getXlist(PdP, GdP, E2 = 1e-10), USsire = TRUE, 
++     USdam = FALSE)
+> MLEUSsire$nUS
+\end{Sinput}
+\begin{Soutput}
+         [,1]
+[1,] 95.24434
+\end{Soutput}
+\begin{Sinput}
+> sqrt(MLEUSsire$C)
+\end{Sinput}
+\begin{Soutput}
+         [,1]
+[1,] 30.54465
+\end{Soutput}
+\end{Schunk}
 
 Even larger! The estimates of the unsampled population size are sensitive to even low levels of genotyping error, and this is obvious when we fit the same model but with the genotyping error rate set to 0.01 per allele
   
-%%<<echo=true>>=
-%%MLEUSsire2<-MLE.popsize(getXlist(PdP, GdP, E2=0.01), 
-%%USsire=TRUE, USdam=FALSE)
-%%MLEUSsire2$nUS
-%%# ML estimate
-%%sqrt(MLEUSsire2$C)
-%%# SE estimate
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> MLEUSsire2 <- MLE.popsize(getXlist(PdP, GdP, E2 = 0.01), USsire = TRUE, 
++     USdam = FALSE)
+> MLEUSsire2$nUS
+\end{Sinput}
+\begin{Soutput}
+         [,1]
+[1,] 40.36191
+\end{Soutput}
+\begin{Sinput}
+> sqrt(MLEUSsire2$C)
+\end{Sinput}
+\begin{Soutput}
+         [,1]
+[1,] 19.97673
+\end{Soutput}
+\end{Schunk}
 
 Perhaps we had underestimated the level of genotyping error in our original models, and this possibility will be returned to in Section \ref{GE-sec}.  Another possible reason why our estimate of the unsampled population may be to high, is because Equation \ref{Nielsen-eq} makes the assumption that unsampled males and sampled males do not systematicly differ in their ability to sire the sampled offspring.\\
 
@@ -515,10 +594,10 @@ Here we have replaced the genetic likelihoods in Nielen's original equation with
 
 where $n_{o}^{us}$ and $n_{o}^{s}$ are the number of offspring with sampled and unsampled parents parents, respectively.\\
 
-A more general solution than Equation \ref{us-eq} is
+A more general solution than Equation \ref{us-eq} is \footnote{In earlier versions $<2.22$ this equation was wrong, as was the code. The original equation was $Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N}E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right](1-\delta^{obs}_{i})+\frac{1}{N}\delta^{obs}_{i}\right]$, and is invariant to the ratio of linear predictors. It will not have made a large difference unless unsampled parents had known phenotype.}
 
 \begin{equation}
-Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N}E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right](1-\delta^{obs}_{i})+\frac{1}{N}\delta^{obs}_{i}\right]
+Pr(\bm{P}|N)  = \prod^{n_{o}}_{i}\left[\frac{N-n}{N-n+E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right]n}(1-\delta^{obs}_{i})+\frac{1}{N-n+E\left[\frac{\hat{p}^{obs}_{i}}{\hat{p}^{miss}_{i}}\right]n}\delta^{obs}_{i}\right]
 \label{usgen-eq}
 \end{equation}
 
@@ -560,25 +639,19 @@ The distinction is subtle.  The approximation implicitlty assumes that the genot
 
  At this point we can drop the approximation for genotyping error and work with the exact solution, allowing us to estimate genotyping error rates and the allele frequencies in the parental generation. This becomes computationally demanding, as the probability distribution for each individual's genotype has to be calculated and sampled from each iteration of the Markov chain.  When the exact solution is used we switch from the CERVUUS model of genotyping error to one proposed by \citep{Wang.2004}.  The CERVUS model is mathematically convenient but is unlikely to be biologically realistic.  The main assumption of the CERVUS model is that an erroneous genotype is scored as another genotype (including itself) with a probability equal to that genotypes frequency in the population.  In Wang's model an allele is assumed to be misscored as any other allele with equal probability ($\varepsilon_{2}$).  In addition, the process of allelic dropout is also modelled with the probability of an allele droping out being denoted as $\varepsilon_{1}$
 
-%%<<echo=true, fig=FALSE>>=
-%%model5<-MCMCped(PdP=PdP, GdP=GdP, verbose=FALSE) 
-%%plot(model5$E1)
-%%plot(model5$E2)
-%%plot(model5$USsire)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> model5 <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE)
+> plot(model5$E1)
+> plot(model5$E2)
+> plot(model5$USsire)
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=model5, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%E1<-model5$E1
-%%E2<-model5$E2
-%%USsire<-model5$USsire
-%%plot(mcmc(cbind(E1,E2,USsire)))
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model5>>
-%%@
+\includegraphics{Tutorial-035}
 \end{center}
 \caption{The marginal posterior distributions of the error rates and the number of unsampled males from \texttt{model5}. All unknowns have been simultaneously estimated.}
 \label{model5-fig}
@@ -587,29 +660,38 @@ The distinction is subtle.  The approximation implicitlty assumes that the genot
 
 The chain is slow to mix when genotypes are estimated and successive samples from the posterior show autocorrelation 
 
-%%<<echo=true>>=
-%%autocorr(model5$E1)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> autocorr(model5$E1)
+\end{Sinput}
+\begin{Soutput}
+, , E1
+
+                E1
+Lag 0   1.00000000
+Lag 1   0.41765511
+Lag 5   0.13362918
+Lag 10  0.07404815
+Lag 50 -0.04446042
+\end{Soutput}
+\end{Schunk}
 
 The chain needs to be run for longer to ensure that we gather independent samples from the posterior, but nethertheless it is clear that we had underestimated  the aamount of genotyping error (see Figure \ref{model5-fig}).  Allelic drop out appears to occur for about 1 in 100 genotypes, but the stochastic error rate appears higher at around 1 in 25. The posterior for the number of unsampled males now looks more reasonable but there is still alot of uncertainity and a judicious use of prior information seems reasonable.  The log normal is used as the prior specification for the number of unsampled males (see Figure \ref{model6US-fig})
 
 
-%%<<echo=true, fig=FALSE>>=
-%%pP<-priorPed(USsire=list(mu=log(5), sigma=0.5))  
-%%model6<-MCMCped(PdP=PdP,GdP=GdP,pP=pP,tP=tunePed(USsire=0.1),verbose=FALSE) 
-%%plot(model6$USsire)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> pP <- priorPed(USsire = list(mu = log(5), sigma = 0.5))
+> model6 <- MCMCped(PdP = PdP, GdP = GdP, pP = pP, tP = tunePed(USsire = 0.1), 
++     verbose = FALSE)
+> plot(model6$USsire)
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=model6US, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model6$USsire)
-%%
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model6US>>
-%%@
+\includegraphics{Tutorial-039}
 \end{center}
 \caption{The marginal posterior distribution of the number of unsampled males from \texttt{model6}. In this model an informative prior was used.}
 \label{model6US-fig}
@@ -619,94 +701,148 @@ The chain needs to be run for longer to ensure that we gather independent sample
 
 To illustrate some further functionality we will use the functions \texttt{simpedigree} and \texttt{simgenotypes} to simulate pedigrees and genotypes according to certain models and then analyse them. We will use an estimate of the Seychelles Warbler allele frequencies to sample genotypes from.
 
-%%<<echo=true, fig=FALSE>>=
-%%A<-extractA(WarblerG)
-%%# list off allele frequencies
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> A <- extractA(WarblerG)
+\end{Sinput}
+\end{Schunk}
 
 \subsection{Error Rate Estimation with and without a Pedigree}
 \label{Error-sec}
 
  To start we will simply estimate genotyping error for two data sets, one in which the information comes from individuals being sampled multiple times and one in which the information comes from the pedigree.  We will simulate a large dropout rate (10\% of alleles in a heterozygous state) but a low level of of stochastic error  ($\approx$ 1\% of single locus genotypes).
 
-%%<<echo=true, fig=FALSE>>=
-%%ped<-matrix(NA,50,3)
-%%ped[,1]<-1:50   
-%%# 50 unrelated indivdiuals typed twice
-%%
-%%G<-simgenotypes(A=A,E1=0.1,E2=0.005,ped=ped,no_dup=2)
-%%# each individual is typed twice with high dropout
-%%
-%%tP<-tunePed(E1=15)
-%%#MH tuning paramater needs to be larger
-%%
-%%GdP<-GdataPed(G=G$Gobs,id=G$id)
-%%
-%%model.dupE<-MCMCped(GdP=GdP,tP=tP,verbose=FALSE) 
-%%summary(model.dupE$E1)
-%%summary(model.dupE$E2)
-%%plot(model.dupE$E2)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> ped <- matrix(NA, 50, 3)
+> ped[, 1] <- 1:50
+> G <- simgenotypes(A = A, E1 = 0.1, E2 = 0.005, ped = ped, no_dup = 2)
+> tP <- tunePed(E1 = 15)
+> GdP <- GdataPed(G = G$Gobs, id = G$id)
+> model.dupE <- MCMCped(GdP = GdP, tP = tP, verbose = FALSE)
+> summary(model.dupE$E1)
+\end{Sinput}
+\begin{Soutput}
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
 
-The posterior summaries are consistent with the data we simulated, but notice that the mean may not be a very good summary of the central tendency of the posterior distribution for stochastic error (see Figure \ref{E2-fig}). We can simulate a similar set of data but with pedigree information\\
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
 
-%%<<label=model.dupEE2, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.dupE$E2)
-%%@
+          Mean             SD       Naive SE Time-series SE 
+     0.0958506      0.0097635      0.0003087      0.0003627 
+
+2. Quantiles for each variable:
+
+   2.5%     25%     50%     75%   97.5% 
+0.07777 0.08908 0.09567 0.10187 0.11620 
+\end{Soutput}
+\begin{Sinput}
+> summary(model.dupE$E2)
+\end{Sinput}
+\begin{Soutput}
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean             SD       Naive SE Time-series SE 
+     4.624e-03      2.294e-03      7.254e-05      1.086e-04 
+
+2. Quantiles for each variable:
+
+    2.5%      25%      50%      75%    97.5% 
+0.001239 0.002921 0.004238 0.005955 0.010264 
+\end{Soutput}
+\begin{Sinput}
+> plot(model.dupE$E2)
+\end{Sinput}
+\end{Schunk}
+
+The posterior summaries are consistent with the data we simulated, but notice that the mean may not be a very good summary of the central tendency of the posterior distribution for stochastic error (see Figure \ref{E2-fig})\footnote{\citet{Johnson.2007b} claim that MasterBayes overestimates error rates by 31\% when error rates are low (compared to a downward bias of 18\% for Pedant).  However, large scale simulation shows that MasterBayes is unbiased (if such a thing exists in a Bayesian analysis) if the posterior mode is used rather than the posterior mean.}. We can simulate a similar set of data but with pedigree information\\
+
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.dupEE2>>
-%%@
+\includegraphics{Tutorial-043}
 \end{center}
 \caption{The marginal posterior distribution of stochastic error rate from \texttt{model.dupE}. The mode is probably a better summary of central tendency as the expectation of \texttt{E2} may not coincide with the most likely value it could take.}
 \label{E2-fig}
 \end{figure}
 
-%%<<echo=true>>=
-%%ped<-matrix(NA,100,3)
-%%ped[,1]<-1:100   
-%%ped[,2][51:100]<-1:50 
-%%# 50 dams and their offspring
-%%
-%%G<-simgenotypes(A=A, E1=0.1, E2=0.005, ped=ped, no_dup=1)
-%%# only typed once
-%%
-%%sP<-startPed(dam=ped[,2])
-%%#specify that the dams are known, 
-%%#males are treated as base by default
-%%
-%%GdP<-GdataPed(G=G$Gobs, id=G$id)
-%%model.pedE<-MCMCped(GdP=GdP, sP=sP, tP=tP,
-%%verbose=FALSE) 
-%%summary(model.pedE$E1)
-%%summary(model.pedE$E2)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> ped <- matrix(NA, 100, 3)
+> ped[, 1] <- 1:100
+> ped[, 2][51:100] <- 1:50
+> G <- simgenotypes(A = A, E1 = 0.1, E2 = 0.005, ped = ped, no_dup = 1)
+> sP <- startPed(dam = ped[, 2])
+> GdP <- GdataPed(G = G$Gobs, id = G$id)
+> model.pedE <- MCMCped(GdP = GdP, sP = sP, tP = tP, verbose = FALSE)
+> summary(model.pedE$E1)
+\end{Sinput}
+\begin{Soutput}
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean             SD       Naive SE Time-series SE 
+     0.0798425      0.0117579      0.0003718      0.0004700 
+
+2. Quantiles for each variable:
+
+   2.5%     25%     50%     75%   97.5% 
+0.05774 0.07143 0.07935 0.08780 0.10261 
+\end{Soutput}
+\begin{Sinput}
+> summary(model.pedE$E2)
+\end{Sinput}
+\begin{Soutput}
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean             SD       Naive SE Time-series SE 
+     0.0042802      0.0037796      0.0001195      0.0002858 
+
+2. Quantiles for each variable:
+
+     2.5%       25%       50%       75%     97.5% 
+7.568e-05 1.428e-03 3.223e-03 6.312e-03 1.342e-02 
+\end{Soutput}
+\end{Schunk}
 
 The posterior from the second data set has greater variance.  With respect to genotyping error, multiple samples from the same individual are more informative than genotypes typed once in mother-offspring pairs.  If individuals have been typed more than once then this information should be included in pedigree reconstruction as it improves error rate estimation and increases the precision with which an indivdiual's genotype is estimated.\\
 
 In Section \ref{MCMC.D-sec} I mentioned the fact that MCMC may be sensitive to the starting parameterisation, and that this is particularly so when the posterior distribution is high-dimensional and multimodal.  The posterior distribution of genotypes has these properties, and high probability genotype configurations may seperated by regions of zero probability when pedigree data exist.  As an example we will specify a random (but legal) starting configuration for the previous model:
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%stG<-simgenotypes(A=A, E1=0, E2=0, ped=ped, no_dup=1)
-%%sP<-startPed(dam=ped[,2], G=stG$Gobs)
-%%# A new set of random genotypes with positive probability
-%%# are generated and used as the starting configuration
-%%model.config<-MCMCped(GdP=GdP,sP=sP,tP=tP,verbose=FALSE) 
-%%plot(model.config$E2)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> stG <- simgenotypes(A = A, E1 = 0, E2 = 0, ped = ped, no_dup = 1)
+> sP <- startPed(dam = ped[, 2], G = stG$Gobs)
+> model.config <- MCMCped(GdP = GdP, sP = sP, tP = tP, verbose = FALSE)
+> plot(model.config$E2)
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=model.config, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.config$E2)
-%%@
 
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.config>>
-%%@
+\includegraphics{Tutorial-047}
 \end{center}
 \caption{The marginal posterior distribution of stochastic error rate from \texttt{model.config}. This posterior should be identical to the posterior in Figure \ref{E2-fig}, although the chain was initilised in a very low probability region of genotype parameter space.}
 \label{E2con-fig}
@@ -714,45 +850,30 @@ In Section \ref{MCMC.D-sec} I mentioned the fact that MCMC may be sensitive to t
 
 When only dams are known the chain still mixes well and the chain converges very rapidly despite the absurd starting configuration (see Figure \ref{E2con-fig}).  However, we can simulate genotypes down a pedigree when both dams and sire are known.  We will analyse the data using two chains, one initialised at the true genotype configuration, and one initialised at a random but legal configuration.
 
-%%<<echo=true, fig=FALSE>>=
-%%ped<-matrix(NA,150,3)
-%%ped[,1]<-1:150   
-%%ped[,2][101:150]<-1:50
-%%ped[,3][101:150]<-51:100
-%%# 50 unrelated parent-offspring trios
+\begin{Schunk}
+\begin{Sinput}
+> ped <- matrix(NA, 150, 3)
+> ped[, 1] <- 1:150
+> ped[, 2][101:150] <- 1:50
+> ped[, 3][101:150] <- 51:100
+> G <- simgenotypes(A = A, E1 = 0.1, E2 = 0.005, ped = ped, no_dup = 1)
+> sP <- startPed(dam = ped[, 2], sire = ped[, 3], G = G$G)
+> GdP <- GdataPed(G = G$Gobs, id = G$id)
+> model.DS1 <- MCMCped(GdP = GdP, sP = sP, tP = tP, verbose = FALSE)
+> stG <- simgenotypes(A = A, E1 = 0.1, E2 = 0.005, ped = ped, no_dup = 1)
+> sP <- startPed(dam = ped[, 2], sire = ped[, 3], G = stG$G)
+> model.DS2 <- MCMCped(GdP = GdP, sP = sP, tP = tP, verbose = FALSE)
+> post.max <- max(c(model.DS1$E2, model.DS2$E2))
+> plot(c(model.DS1$E2), type = "l", col = "blue", ylim = c(0, post.max))
+> lines(c(model.DS2$E2), type = "l", col = "red")
+\end{Sinput}
+\end{Schunk}
 
-%%G<-simgenotypes(A=A,E1=0.1,E2=0.005,ped=ped,no_dup=1)
-%%sP<-startPed(dam=ped[,2], sire=ped[,3], G=G$G)
-
-%%#specify that the dams and sires are known, 
-%%#and use the true G as the starting configuration
-
-%%GdP<-GdataPed(G=G$Gobs, id=G$id)
-%%model.DS1<-MCMCped(GdP=GdP,sP=sP,tP=tP,verbose=FALSE) 
-
-%%stG<-simgenotypes(A=A,E1=0.1,E2=0.005,ped=ped,no_dup=1)
-%%sP<-startPed(dam=ped[,2], sire=ped[,3], G=stG$G)
-
-%%#use a random G as the starting configuration
- 
-%%model.DS2<-MCMCped(GdP=GdP,sP=sP,tP=tP,verbose=FALSE) 
-
-%%post.max<-max(c(model.DS1$E2, model.DS2$E2))
-%%plot(c(model.DS1$E2),type="l",col="blue",ylim=c(0,post.max))
-%%lines(c(model.DS2$E2),type="l", col="red")
-%%@
-
-%%<<label=model.DSconfig, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(c(model.DS1$E2), type="l", col="blue",ylim=c(0,post.max))
-%%lines(c(model.DS2$E2), type="l", col="red")
-%%@
 
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.DSconfig>>
-%%@
+\includegraphics{Tutorial-050}
 \end{center}
 \caption{Samples from the posterior distribution of stochastic error rate estimated from the data set \texttt{Gobs}. The two chains were initialised at the true genotype configuration (blue), and a random congiguartion (red).} 
 \label{E2DS-fig}
@@ -772,34 +893,48 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}\textrm{\texttt{size}}_{i} + \beta_{
 
 A pedigree is simulated with $\beta_{1}$ and $\beta_{2}$ set to -1 and 1, respectively.
 
-%%<<echo=true>>=
-%%sex<-c(rep("Female", 50), rep("Male", 100))
-%%offspring<-c(rep(0, 100), rep(1, 50))
-%%size<-rnorm(150,10)
-%%data.MM<-as.data.frame(list(id=1:150, sex=sex,
-%%offspring=offspring, size=size))
-%%res1<-expression(varPed(x="offspring", restrict=0))
-%%var1<-expression(varPed(x="size", gender="Male"))
-%%var2<-expression(varPed(x="size", gender="Female"))
-%%
-%%PdP<-PdataPed(formula=list(res1, var1, var2), data=data.MM)
-%%
-%%simped<-simpedigree(PdP, beta=c(1, -1))
-%%
-%%G<-simgenotypes(A=A, E1=0.005, E2=0.005, ped=simped$ped, no_dup=1)
-%%GdP<-GdataPed(G=G$Gobs, id=G$id)
-%%
-%%model_pedMM999<-MCMCped(PdP=PdP, GdP=GdP, verbose=FALSE)
-%%model_pedMM2<-MCMCped(PdP=PdP, GdP=GdP, mm.tol=2, verbose=FALSE) 
-%%model_pedMM1<-MCMCped(PdP=PdP, GdP=GdP, mm.tol=1, verbose=FALSE)
-%%# identical models but the 2nd and 3rd models 
-%%# exclude parents with 3 or more, or 2 or more,
-%%# mismatches, repectively
-%%
-%%summary(model_pedMM999$beta)[[1]][,1:2][1:2,]
-%%summary(model_pedMM2$beta)[[1]][,1:2][1:2,]
-%%summary(model_pedMM1$beta)[[1]][,1:2][1:2,]
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> sex <- c(rep("Female", 50), rep("Male", 100))
+> offspring <- c(rep(0, 100), rep(1, 50))
+> size <- rnorm(150, 10)
+> data.MM <- as.data.frame(list(id = 1:150, sex = sex, offspring = offspring, 
++     size = size))
+> res1 <- expression(varPed(x = "offspring", restrict = 0))
+> var1 <- expression(varPed(x = "size", gender = "Male"))
+> var2 <- expression(varPed(x = "size", gender = "Female"))
+> PdP <- PdataPed(formula = list(res1, var1, var2), data = data.MM)
+> simped <- simpedigree(PdP, beta = c(1, -1))
+> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, 
++     no_dup = 1)
+> GdP <- GdataPed(G = G$Gobs, id = G$id)
+> model_pedMM999 <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE)
+> model_pedMM2 <- MCMCped(PdP = PdP, GdP = GdP, mm.tol = 2, verbose = FALSE)
+> model_pedMM1 <- MCMCped(PdP = PdP, GdP = GdP, mm.tol = 1, verbose = FALSE)
+> summary(model_pedMM999$beta)[[1]][, 1:2][1:2, ]
+\end{Sinput}
+\begin{Soutput}
+             Mean        SD
+size.D  0.9487343 0.1564830
+size.S -0.8567577 0.1290054
+\end{Soutput}
+\begin{Sinput}
+> summary(model_pedMM2$beta)[[1]][, 1:2][1:2, ]
+\end{Sinput}
+\begin{Soutput}
+             Mean        SD
+size.D  0.9666110 0.1616535
+size.S -0.8644591 0.1225466
+\end{Soutput}
+\begin{Sinput}
+> summary(model_pedMM1$beta)[[1]][, 1:2][1:2, ]
+\end{Sinput}
+\begin{Soutput}
+             Mean        SD
+size.D  0.9585069 0.1660709
+size.S -0.8569236 0.1225317
+\end{Soutput}
+\end{Schunk}
 
 The posterior distributions of $\beta$ are almost identical, despite excluding parents with several mismatches. However, the saving in computer time was large: the first model took almost 15 minutes to fit where the last model took under 3. 
 
@@ -807,22 +942,54 @@ The posterior distributions of $\beta$ are almost identical, despite excluding p
 
  If we knew the pedigree we may be inclined to fit a generalised linear model with a Possion error distribution and log link to the data set \texttt{data.MM}.  We can analyse the relationship between female body size and fecundity by counting the number of offspring per female, and using the standard \texttt{glm} function in R 
 
-%%<<echo=true>>=
-%%counts<-rep(0,50)
-%%noff<-table(simped$ped[,2]) 
-%%counts[as.numeric(names(noff))]<-counts[as.numeric(names(noff))]+noff 
-%%# number of offspring per mother
-%%model.Pd<-glm(counts~size[1:50], family="poisson")
-%%summary(model.Pd)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> counts <- rep(0, 50)
+> noff <- table(simped$ped[, 2])
+> counts[as.numeric(names(noff))] <- counts[as.numeric(names(noff))] + 
++     noff
+> model.Pd <- glm(counts ~ size[1:50], family = "poisson")
+> summary(model.Pd)
+\end{Sinput}
+\begin{Soutput}
+Call:
+glm(formula = counts ~ size[1:50], family = "poisson")
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.7051  -0.8373  -0.6440   0.4065   1.9651  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  -9.7396     1.6199  -6.012 1.83e-09 ***
+size[1:50]    0.9308     0.1477   6.304 2.91e-10 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 86.281  on 49  degrees of freedom
+Residual deviance: 42.987  on 48  degrees of freedom
+AIC: 108.86
+
+Number of Fisher Scoring iterations: 5
+\end{Soutput}
+\end{Schunk}
 
 The slopes are virtually the same,  but the standard errors are a little larger for the \texttt{MCMCped} model, reflecting uncertainity in the pedigree.  However, because size is such a good predictor of parentage, and the genotype data are relatively informative, the pedigree is resolved quite well.
 
-%%<<echo=true>>=
-%%table(simped$ped[,2:3][101:150,]==modeP(model_pedMM999$P)[,2:3])
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> table(simped$ped[, 2:3][101:150, ] == modeP(model_pedMM999$P)[, 
++     2:3])
+\end{Sinput}
+\begin{Soutput}
+FALSE  TRUE 
+   12    88 
+\end{Soutput}
+\end{Schunk}
 
-The modal parenatge assignments are close to the true pedigree, with \Sexpr{as.numeric(table(simped$ped[,2:3][101:150,]==modeP(model_pedMM999$P)[,2:3])[2])}\% of assignments correct. One important difference arises because \texttt{MCMCped} uses a mutinomial log-linear model rather than the Poisson log-linear model used above.  The models are very similar except the multinomial model conditions on the number of counts (offspring) whereas the Possion model does not. Consequently the number of parameters in a multinomial model (excluding the count total) is one less than the equivalent Poisson model. In the above example an intercept term is not calculated becuase it can be derived directly from the number of parental combinations and the number of offspring which we have conditioned on \citep{McCullagh.1989}.  
+The modal parenatge assignments are close to the true pedigree, with 88\% of assignments correct. One important difference arises because \texttt{MCMCped} uses a mutinomial log-linear model rather than the Poisson log-linear model used above.  The models are very similar except the multinomial model conditions on the number of counts (offspring) whereas the Possion model does not. Consequently the number of parameters in a multinomial model (excluding the count total) is one less than the equivalent Poisson model. In the above example an intercept term is not calculated becuase it can be derived directly from the number of parental combinations and the number of offspring which we have conditioned on \citep{McCullagh.1989}.  
 
 \subsection{Interactions and Reparameterisation}
 
@@ -836,39 +1003,45 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}\delta_{i}+\beta_{1}\delta_{j}+\beta
 The $\delta$ variables take on the values 1 if the individual is young, and zero if not.  Notice that although there are six terms in Equation \ref{int-eq} there only 3 parameters to be estimated because the variables are assumed to have consistent effects on both maternity and paternity.   
 
 
-%%<<echo=true>>=
-%%age<-gl(2, 1,150, label=c("old", "young"))
-%%data_INT<-cbind(data.MM, age)
-%%
-%%res1<-expression(varPed(x="offspring", restrict=0))
-%%var1<-expression(varPed(x="size"))
-%%var2<-expression(varPed(x="age"))
-%%
-%%PdP<-PdataPed(formula=list(res1, var1, var2, list(var1, var2)), data=data_INT)
-%%simped<-simpedigree(PdP, beta=c(0.5, 10, -1))
-%%
-%%G<-simgenotypes(A=A, E1=0.005, E2=0.005, ped=simped$ped, no_dup=1)
-%%GdP<-GdataPed(G=G$Gobs, id=G$id)
-%%model.INT<-MCMCped(PdP=PdP, GdP=GdP, mm.tol=1, verbose=FALSE)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> age <- gl(2, 1, 150, label = c("old", "young"))
+> data_INT <- cbind(data.MM, age)
+> res1 <- expression(varPed(x = "offspring", restrict = 0))
+> var1 <- expression(varPed(x = "size"))
+> var2 <- expression(varPed(x = "age"))
+> PdP <- PdataPed(formula = list(res1, var1, var2, list(var1, var2)), 
++     data = data_INT)
+> simped <- simpedigree(PdP, beta = c(0.5, 10, -1))
+> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, 
++     no_dup = 1)
+> GdP <- GdataPed(G = G$Gobs, id = G$id)
+> model.INT <- MCMCped(PdP = PdP, GdP = GdP, mm.tol = 1, verbose = FALSE)
+\end{Sinput}
+\end{Schunk}
 
 Markov chains do not mix well when the posterior distribution of the parameters are not independent. Indeed, the autocorrelation approaches 1 despite a thinning interval of 10 (See Figure \ref{INT-fig}).
 
-%%<<echo=true, fig=FALSE>>=
-%%plot(model.INT$beta)
-%%autocorr(model.INT$beta)[,,3]
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> plot(model.INT$beta)
+> autocorr(model.INT$beta)[, , 3]
+\end{Sinput}
+\begin{Soutput}
+               size   age.young size.age.young
+Lag 0  -0.679447739 -0.99182549    1.000000000
+Lag 1  -0.168695476 -0.27650174    0.276980894
+Lag 5  -0.008297778 -0.04498004    0.049770485
+Lag 10  0.045420532  0.01070933   -0.005485801
+Lag 50 -0.008027279 -0.02455821    0.022886000
+\end{Soutput}
+\end{Schunk}
 
 
-%%<<label=model.INT, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.INT$beta)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.INT>>
-%%@
+\includegraphics{Tutorial-057}
 \end{center}
 \caption{The marginal posterior distributions for the three elements of \texttt{beta} from \texttt{model.INT}.  The intercpet for young individuals \texttt{age.young} is evaluated at a \texttt{size} of 0, which lies well outside the distribution of \texttt{size} observed in the population.}
 \label{INT-fig}
@@ -876,23 +1049,29 @@ Markov chains do not mix well when the posterior distribution of the parameters 
 
 The dependency between slopes and intercpets in regression models is well know and we can alleviate the problem by simply centering the covariate, \texttt{size}.  The intercept is now evaluated at the population mean for size (10) rather than at a size of zero
 
-%%<<echo=true,fig=FALSE>>=
-%%data_INT[,"size"]<-size-10
-%%PdP<-PdataPed(formula=list(res1, var1, var2, list(var1, var2)), data=data_INT)
-%%model.INT.cntr<-MCMCped(PdP=PdP, GdP=GdP, mm.tol=1,  verbose=FALSE)
-%%plot(model.INT.cntr$beta)
-%%autocorr(model.INT.cntr$beta)[,,3]
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> data_INT[, "size"] <- size - 10
+> PdP <- PdataPed(formula = list(res1, var1, var2, list(var1, var2)), 
++     data = data_INT)
+> model.INT.cntr <- MCMCped(PdP = PdP, GdP = GdP, mm.tol = 1, verbose = FALSE)
+> plot(model.INT.cntr$beta)
+> autocorr(model.INT.cntr$beta)[, , 3]
+\end{Sinput}
+\begin{Soutput}
+                size    age.young size.age.young
+Lag 0  -0.6833482238 -0.034066030     1.00000000
+Lag 1  -0.1562431963 -0.009102893     0.28964502
+Lag 5   0.0003164919 -0.005746424    -0.03614487
+Lag 10  0.0372870968  0.021355725    -0.05675842
+Lag 50 -0.0512534320 -0.053455951     0.02039196
+\end{Soutput}
+\end{Schunk}
 
-%%<<label=model.INT.cntr, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.INT.cntr$beta)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.INT.cntr>>
-%%@
+\includegraphics{Tutorial-060}
 \end{center}
 \caption{The marginal posterior distributions for the three elements of \texttt{beta} from \texttt{model.INT}, but with the intercpet for young individuals \texttt{age.young} evaluated at the average \texttt{size} of 10.  }
 \label{INT.cntr-fig}
@@ -900,21 +1079,18 @@ The dependency between slopes and intercpets in regression models is well know a
 
 Despite having similiar Metropolis-Hastings acceptance rates the second chain mixes much better, and the parameters have a better biological interpretation: at the average size no differences in the ability to reproduce exists between young and old individuals;  the posterior distribution of \texttt{age.young} is centered around zero (Figure \ref{INT.cntr-fig}).  However, as old individuals get larger their ability to reproduce increases (\texttt{size} is positive - the true underlying slope is 0.5), but young indivdiuals have a significantly shallower slope (\texttt{size.age.young} is less than zero).  The contrasts are set up so that \texttt{size.age.young} is is the differnce between the slopes of young and old inidviduals.  Inference from posterior samples is very flexible.  If we wish to see whether the slope is so shallow it is in fact likely to be negative we can create the posterior distribution for the young slope
 
-%%<<echo=true,fig=FALSE>>=
-%%young.slope<-mcmc(model.INT.cntr$beta[,1]+model.INT.cntr$beta[,3])
-%%plot(young.slope)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> young.slope <- mcmc(model.INT.cntr$beta[, 1] + model.INT.cntr$beta[, 
++     3])
+> plot(young.slope)
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=ys, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%names(young.slope)<-"young.slope"
-%%plot(young.slope)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<ys>>
-%%@
+\includegraphics{Tutorial-063}
 \end{center}
 \caption{The marginal posterior distribution for the slope of young individuals from model \texttt{model.INT.cntr}.}
 \label{ys-fig}
@@ -922,15 +1098,43 @@ Despite having similiar Metropolis-Hastings acceptance rates the second chain mi
 
 There is good evidence that the slope for young individuals is negative (Figure \ref{ys-fig}).  In fact the pedigree was simulated so that the slopes would be of the same magnitude (0.5), but with different signs. In this instance the sexes followed the same rules with regard to reproduction, and we can fit a single GLM across the sexes
 
-%%<<echo=true>>=
-%%counts<-rep(0,100)
-%%noff<-table(c(simped$ped[,2], simped$ped[,3]))
-%%counts[as.numeric(names(noff))]<-counts[as.numeric(names(noff))]+noff
-%%par_age<-age[1:100]
-%%par_size<-size[1:100]-10
-%%model.Pint<-glm(counts~par_age*par_size, family="poisson")
-%%summary(model.Pint)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> counts <- rep(0, 100)
+> noff <- table(c(simped$ped[, 2], simped$ped[, 3]))
+> counts[as.numeric(names(noff))] <- counts[as.numeric(names(noff))] + 
++     noff
+> par_age <- age[1:100]
+> par_size <- size[1:100] - 10
+> model.Pint <- glm(counts ~ par_age * par_size, family = "poisson")
+> summary(model.Pint)
+\end{Sinput}
+\begin{Soutput}
+Call:
+glm(formula = counts ~ par_age * par_size, family = "poisson")
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-1.85658  -1.16297  -0.07152   0.61389   2.45469  
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)            -0.1857     0.1636  -1.136 0.256104    
+par_ageyoung            0.1478     0.2223   0.665 0.506146    
+par_size                0.3676     0.1359   2.705 0.006838 ** 
+par_ageyoung:par_size  -0.6878     0.1856  -3.705 0.000211 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 112.684  on 99  degrees of freedom
+Residual deviance:  98.845  on 96  degrees of freedom
+AIC: 254.14
+
+Number of Fisher Scoring iterations: 5
+\end{Soutput}
+\end{Schunk}
 
 A Poisson GLM indicates the same thing: young and old indivdiuals do not appear to behave differently at the average body size.  However, the slope for old individuals is significantly positive, and the slope for young individuals differs significantly from the slope of old indivdiuals. Testing whether young individuals have a negative slope would involve setting different contrasts. 
 
@@ -966,55 +1170,47 @@ By default MasterBayes estimates $\beta$, although $\beta_{o}$ can be estimated 
 
 Consider a study site with 50 territories, each of which contains a pair of adults.  We will assume that the mother of all offspring on a given territory is the territorial female, but some offspring may be sired by males from another territory.  Let's imagine that we have sampled all the individuals on half the territories, and would like to know a) the extra-pair paternity rate, and b) the number of unsampled territories, which in this case is 25. We will start by simulating a pedigree with an extra-pair paternity rate of 20\%.
 
-%%<<echo=TRUE>>=
-%%sex<-c(rep("Male", 50), rep("Female", 125))
-%%terr<-as.factor(c(1:50, 26:50, rep(26:50, each=4)))
-%%offspring<-c(rep(0,75), rep(1, 100))
-
-%%data_EPP<-as.data.frame(list(id=1:175, sex=sex,
-%% offspring=offspring, terr=terr))
-
-%%res1<-expression(varPed(x="terr",gender="Female",relational="OFFSPRING", restrict="=="))  
-%%var1<-expression(varPed(x="terr",gender="Male",relational="OFFSPRING"))
-%%res2<-expression(varPed(x="offspring",restrict=0)) 
-  
-%%PdP<-PdataPed(formula=list(res1,var1,res2),data=data_EPP)
-
-%%EPP<-0.8/(0.8+(0.2/49))
-
-%%simped<-simpedigree(PdP, beta=logit(EPP))
-
-%%G<-simgenotypes(A=A,E1=0.01,E2=0.01,ped=simped$ped,no_dup=1)
-%%GdP<-GdataPed(G=G$Gobs,id=G$id)
-
-%%# remove unsampled males 
-
-%%rm_males<-1:25
-
-%%data_EPP_miss<-data_EPP[-rm_males,]
-%%GdP_miss<-GdataPed(G=lapply(G$Gobs, function(x){x[-rm_males]}), id=G$id[-rm_males])
-
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> sex <- c(rep("Male", 50), rep("Female", 125))
+> terr <- as.factor(c(1:50, 26:50, rep(26:50, each = 4)))
+> offspring <- c(rep(0, 75), rep(1, 100))
+> data_EPP <- as.data.frame(list(id = 1:175, sex = sex, offspring = offspring, 
++     terr = terr))
+> res1 <- expression(varPed(x = "terr", gender = "Female", relational = "OFFSPRING", 
++     restrict = "=="))
+> var1 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING"))
+> res2 <- expression(varPed(x = "offspring", restrict = 0))
+> PdP <- PdataPed(formula = list(res1, var1, res2), data = data_EPP)
+> EPP <- 0.8/(0.8 + (0.2/49))
+> simped <- simpedigree(PdP, beta = logit(EPP))
+> G <- simgenotypes(A = A, E1 = 0.01, E2 = 0.01, ped = simped$ped, 
++     no_dup = 1)
+> GdP <- GdataPed(G = G$Gobs, id = G$id)
+> rm_males <- 1:25
+> data_EPP_miss <- data_EPP[-rm_males, ]
+> GdP_miss <- GdataPed(G = lapply(G$Gobs, function(x) {
++     x[-rm_males]
++ }), id = G$id[-rm_males])
+\end{Sinput}
+\end{Schunk}
 
 Notice the argument \texttt{merge=FALSE} is passed to \texttt{varPed} for \texttt{var1} indicating that we are estimating $\beta$,  not the within-pair paternity rate which in this case is $\beta_{o}=0.8$. Also, we are treating the unsampled males as if they came from the same statistical population as the sampled males (\texttt{USvar=NULL}), although we know that the logical variable indicating whether offspring and males are on the same territory should be \texttt{FALSE} for unsampled males.
   
-%%<<echo=TRUE, fig=FALSE>>=
-%%PdP_miss<-PdataPed(formula=list(res1, var1, res2),
-%% data=data_EPP_miss, USsire=TRUE)
-%%model.miss<-MCMCped(PdP=PdP_miss, GdP=GdP_miss, verbose=FALSE)
-%%plot(model.miss$beta)
-%%plot(model.miss$USsire)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> PdP_miss <- PdataPed(formula = list(res1, var1, res2), data = data_EPP_miss, 
++     USsire = TRUE)
+> model.miss <- MCMCped(PdP = PdP_miss, GdP = GdP_miss, verbose = FALSE)
+> plot(model.miss$beta)
+> plot(model.miss$USsire)
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=model.miss, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.miss$beta)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.miss>>
-%%@
+\includegraphics{Tutorial-068}
 \end{center}
 \caption{The marginal posterior distribution of $\beta$ from \texttt{model.miss}.  This is the log odds ratio of a male scoring paternity if it had been on the offspring's territory compared to if it had been on a different territory. The pedigree is sampled assuming that the phenotypes of unsampled males are unknown.}
 \label{EPP1-fig}
@@ -1023,15 +1219,10 @@ Notice the argument \texttt{merge=FALSE} is passed to \texttt{varPed} for \textt
 
 The estimate of $\beta$ seems reasonable given that \texttt{logit(EPP)=5.28} (Figure \ref{EPP1-fig}), but the number of unsampled males is much smaller than we anticipated (Figure \ref{EPP1US-fig}).  This is beacuse we left \texttt{USvar=NULL}, and approximated the summed linear predictors of unsampled males from the linear predictors of sampled males (see Section \ref{us-sec}).  In fact the probability that an unsampled male gains paternity over a sampled male are not equal, since unsampled males are always extra-pair fathers but sampled males may be within-pair fathers.\\  
 
-%%<<label=model.missUS, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.miss$USsire)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.missUS>>
-%%@
+\includegraphics{Tutorial-070}
 \end{center}
 \caption{The marginal posterior distribution of the number of unsampled males from \texttt{model.miss}, when the pedigree is sampled assuming that the phenotypes of unsampled males are unknown. The actual number is 25!}
 \label{EPP1US-fig}
@@ -1039,27 +1230,20 @@ The estimate of $\beta$ seems reasonable given that \texttt{logit(EPP)=5.28} (Fi
 
 When \texttt{USvar=NULL}, the records of unsampled fathers do not enter into the likelihood equation for $\beta$, and so $\beta$ is valid.  However, our primary interest was in the within-pair paternity rate, $\beta_{o}$, and we can use equation \ref{eq_thetao} to obtain the posterior
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%theta<-inv.logit(model.miss$beta)
-%%NW<-1
-%%NE<-24
+\begin{Schunk}
+\begin{Sinput}
+> theta <- inv.logit(model.miss$beta)
+> NW <- 1
+> NE <- 24
+> theta_o <- (NW * theta)/(NW * theta + NE * (1 - theta))
+> plot(mcmc(theta_o))
+\end{Sinput}
+\end{Schunk}
 
-%%# unsampled males are presumed to be present in 
-%%# the same ratios so do not enter into the equation
-
-%%theta_o<-(NW*theta)/(NW*theta+NE*(1-theta))
-%%plot(mcmc(theta_o))
-%%@
-
-%%<<label=model.missTest, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(mcmc(theta_o))
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.missTest>>
-%%@
+\includegraphics{Tutorial-073}
 \end{center}
 \caption{The marginal posterior distribution of $\beta_{o}$ derived from \texttt{model.miss}.  $\beta_{o}$ should be the level of within pair paternity in the population (80\%) but we can see that this value has a small posterior probability.  This may be down to sampling error alone, but in fact the estimate is consistently biased upwards because the pedigree is sampled assuming that the phenotypes of unsampled males are unknown.}
 \label{EPP1Test-fig}
@@ -1068,26 +1252,22 @@ When \texttt{USvar=NULL}, the records of unsampled fathers do not enter into the
 
 Given the mode of the posterior of $\beta$ is very close to 5.28 (Figure \ref{EPP1-fig}), it seems surprising that the mode of the within-pair paternity rate is not 0.8 (Figure \ref{EPP1Test-fig}). We can go one step better and specify that the phenotypes of the unsampled males are known 
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%var2<-expression(varPed(x="terr", gender="Male", 
-%%relational="OFFSPRING", USvar=FALSE))
-%%PdP_miss2<-PdataPed(formula=list(res1, var2, res2),
-%% data=data_EPP_miss, USsire=TRUE)
-%%model.miss2<-MCMCped(PdP=PdP_miss2, GdP=GdP_miss,
-%% verbose=FALSE)
-%%plot(model.miss2$beta)
-%%plot(model.miss2$USsire)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> var2 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING", 
++     USvar = FALSE))
+> PdP_miss2 <- PdataPed(formula = list(res1, var2, res2), data = data_EPP_miss, 
++     USsire = TRUE)
+> model.miss2 <- MCMCped(PdP = PdP_miss2, GdP = GdP_miss, verbose = FALSE)
+> plot(model.miss2$beta)
+> plot(model.miss2$USsire)
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=model.miss2, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.miss2$beta)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.miss2>>
-%%@
+\includegraphics{Tutorial-076}
 \end{center}
 \caption{The marginal posterior distribution of $\beta$ derived from \texttt{model.miss2}. As in Figure \ref{EPP1-fig} this is the log odds ratio of a male scoring paternity if it had been on the offspring's territory compared to if it had been on a different territory. However, in this model the pedigree is sampled assuming that the unsampled males have to be extra-pair, and these males contribute to the likelihood of $\beta$.}
 \label{model.miss2-fig}
@@ -1095,39 +1275,31 @@ Given the mode of the posterior of $\beta$ is very close to 5.28 (Figure \ref{EP
 
 Once again $\beta$ is estimated correctly (Figure \ref{model.miss2-fig}), but this time the number of unsampled males is estimated correctly, although considerable uncertainty remains (Figure \ref{model.miss2US-fig}).  In part this is due to the moderate levels of genotyping error.\\
 
-%%<<label=model.miss2US, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.miss2$USsire)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.miss2US>>
-%%@
+\includegraphics{Tutorial-078}
 \end{center}
-\caption{The marginal posterior distribution of the number of unsampled males from \texttt{model.miss2}.  the true number is 25.}
+\caption{The marginal posterior distribution of the number of unsampled males from \texttt{model.miss2}.  The true number is 25.}
 \label{model.miss2US-fig}
 \end{figure}
 
 We can derive the posterior distribution for within-pair paternity by combining the posterior distribution of $\beta$ with the number of unsampled males, which we have assumed are extra-territorial males.
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%theta<-inv.logit(model.miss2$beta)
-%%NW<-1
-%%NE<-24+model.miss2$USsire
-%%theta_o<-(NW*theta)/(NW*theta+NE*(1-theta))
-%%plot(mcmc(theta_o))
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> theta <- inv.logit(model.miss2$beta)
+> NW <- 1
+> NE <- 24 + model.miss2$USsire
+> theta_o <- (NW * theta)/(NW * theta + NE * (1 - theta))
+> plot(mcmc(theta_o))
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=EPP2Test, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(mcmc(theta_o))
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<EPP2Test>>
-%%@
+\includegraphics{Tutorial-081}
 \end{center}
 \caption{The marginal posterior distribution of within-pair paternity estimated from the posterior distributions of $\beta$ and the number of unsampled males from \texttt{model.miss2}.}
 \label{EPP2Test-fig}
@@ -1135,26 +1307,22 @@ We can derive the posterior distribution for within-pair paternity by combining 
 
 The estimate of within-pair paternity from \texttt{model.miss2} is plotted in Figure \ref{EPP2Test-fig}.  Alternativley we can fit within-pair paternity explicitly using the argument \texttt{merge}. 
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%var3<-expression(varPed(x="terr", gender="Male", 
-%%relational="OFFSPRING", USvar=FALSE, merge=TRUE))
-%%PdP_miss3<-PdataPed(formula=list(res1, var3, res2), 
-%%data=data_EPP_miss, USsire=TRUE)
-%%model.miss3<-MCMCped(PdP=PdP_miss3, GdP=GdP_miss, 
-%%verbose=FALSE)
-%%theta_o<-inv.logit(model.miss3$beta)
-%%plot(mcmc(theta_o))
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> var3 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING", 
++     USvar = FALSE, merge = TRUE))
+> PdP_miss3 <- PdataPed(formula = list(res1, var3, res2), data = data_EPP_miss, 
++     USsire = TRUE)
+> model.miss3 <- MCMCped(PdP = PdP_miss3, GdP = GdP_miss, verbose = FALSE)
+> theta_o <- inv.logit(model.miss3$beta)
+> plot(mcmc(theta_o))
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=EPPmerge, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(mcmc(theta_o))
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<EPPmerge>>
-%%@
+\includegraphics{Tutorial-084}
 \end{center}
 \caption{The marginal posterior distribution of within-pair paternity estimated directly in \texttt{model.miss3}. The posterior distribution is exactly equivalent to that shown in Figure \ref{EPP2Test-fig}.}
 \label{EPPmerge-fig}
@@ -1174,45 +1342,37 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}\delta_{i,j})
 
 $\delta_{i,j}$ takes on the value one when the mating type of female $i$ matches the mating type of male $j$, and $\beta_{1}$ in this example is log(3).
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%id<-1:50
-%%sex<-rep(c("Male", "Female"),each=10, length=50)
-%%offspring<-c(rep(0,20),rep(1,30))
-%%MT<-gl(2,1,50, labels=c("+", "-"))
+\begin{Schunk}
+\begin{Sinput}
+> id <- 1:50
+> sex <- rep(c("Male", "Female"), each = 10, length = 50)
+> offspring <- c(rep(0, 20), rep(1, 30))
+> MT <- gl(2, 1, 50, labels = c("+", "-"))
+> test.data <- data.frame(id, offspring, MT, sex)
+> res1 <- expression(varPed("offspring", restrict = 0))
+> var2 <- expression(varPed(c("MT"), gender = "Female", relational = "MATE"))
+> PdP <- PdataPed(formula = list(res1, var2), data = test.data)
+> simped <- simpedigree(PdP, beta = logit(0.75))
+> table(MT[as.numeric(simped$ped[, 2])] == MT[as.numeric(simped$ped[, 
++     3])])
+\end{Sinput}
+\begin{Soutput}
+FALSE  TRUE 
+    9    21 
+\end{Soutput}
+\begin{Sinput}
+> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, 
++     no_dup = 1)
+> GdP <- GdataPed(G = G$Gobs, id = G$id)
+> model.ass.mat <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE)
+> plot(mcmc(inv.logit(model.ass.mat$beta)))
+\end{Sinput}
+\end{Schunk}
 
-%%test.data<-data.frame(id, offspring, MT, sex)
-
-%%res1<-expression(varPed("offspring", restrict=0))
-%%var2<-expression(varPed(c("MT"), gender="Female", 
-%%  relational="MATE"))
-
-%%PdP<-PdataPed(formula=list(res1, var2), data=test.data)
-
-%%simped<-simpedigree(PdP, beta=logit(0.75))
-
-%%table(MT[as.numeric(simped$ped[,2])]==MT[as.numeric(simped$ped[,3])])
-
-%%# offspring produced by +/- unions should make up (on average) a
-%%# quarter of the total offspring, and offspring produced by +/+
-%%# and -/- unions should make up the remaining 75\%%.  Note this is
-%%# only because the frequency of + and - mating types are equal
-
-%%G<-simgenotypes(A=A, E1=0.005, E2=0.005, ped=simped$ped, no_dup=1)
-%%GdP<-GdataPed(G=G$Gobs, id=G$id)
-
-%%model.ass.mat<-MCMCped(PdP=PdP, GdP=GdP, verbose=FALSE)
-%%plot(mcmc(inv.logit(model.ass.mat$beta)))
-%%@
-
-%%<<label=model.ass.mat, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(mcmc(inv.logit(model.ass.mat$beta)))
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<model.ass.mat>>
-%%@
+\includegraphics{Tutorial-087}
 \end{center}
 \caption{The posterior distribution of $\textrm{logit}^{-1}(\beta)$.  In this instance the frequencies of the two mating types are exactly 0.5 both within sexes, and between the sexes, and this is the expected proportion of offspring resulting from the union of +/+ and -/- parents.}
 \label{model.ass.mat}
@@ -1225,60 +1385,40 @@ Mating types may well be inherited, and if we had data on the mating types of of
 
 MasterBayes is able to work with longitudinal data, allowing the possibility of reconstructing multigenerational pedigrees.  To work with longitudinal data a time variable needs to be passed to \texttt{PdataPed}.  It is VERY important that inidviduals with offspring records do not appear as potential parents of offspring with records in the same cohort, or a previous cohort \footnote{In later versions of MasterBayes ($>2.1$) the argument \texttt{checkP=TRUE} can be passed to \texttt{MCMCped}.  This relaxes the restriction that potential parents do not appear in the set of potential offspring, and so can be used to estimate pedigrees when cohort or age data do not exist.  In such cases the probability that indiviual $i$ is the offspring of individual $j$ may have a similar posterior probability to the reverse scenario where indiviual $j$ is the offspring of individual $i$.  The new function \texttt{post.pairs} will calculate posterior probabilities for 2 indiviuals falling into a certain relationship (e.g. parent-offspring or offspring-parent) when the joint posterior distribution of pedigrees are stored (i.e. \texttt{write\_postP="TRUE"} is passed to \texttt{MCMCped}).}   The argument \texttt{restrict} can be passed to \texttt{varPed} to ensure this does not happen. By not doing this you are allowing for the possibility that an individual can be both the parent and an offspring of another.\\  
 
-%%<<echo=TRUE, fig=FALSE>>=
-
-%%id<-1:50
-%%year<-rep(1:4,each=50)
-
-%%for(yr in 1:3){
-%%id<-c(id, sample(id[year==yr], 25))
-%%id<-c(id, max(id)+1:25)
-%%}
-
-%%# A founding population of 50 individuals is set up.
-%%# Each year 25 adults pass through to the next year
-%%# adn 25 die.  The 25 deaths are replaced by 25 
-%%# offspring
-
-%%sex<-rep(c("Male", "Female"), max(id))[id]
-
-%%off.within.cohort<-c(rep(0,25), rep(1,25))
-%%offspring<-c(rep(0,50), rep(off.within.cohort,3)) 
-
-%%lat<-runif(200)
-%%long<-runif(200)
-
-%%data.ped<-data.frame(id,sex,offspring,lat,long,year)
-
-%%res1<-expression(varPed(x="offspring", restrict=0))
-%%res2<-expression(varPed(x="year", relational="OFFSPRING", restrict="=="))
-
-%%#parents must be recorded in the year the offspring was born
-%%#but must not be born in that year
-
-%%var1<-expression(varPed(x=c("lat", "long"), lag=c(0,0), relational="OFFSPRING"))
-%%# both maternity and paternity is a function of distance beween parents
-%%# and offspring in the year the offspring was born.
-
-%%PdP<-PdataPed(formula=list(res1, res2, var1), data=data.ped, timevar=year)
-
-%%P<-simpedigree(PdP, beta=-1)$ped
-%%G<-simgenotypes(A=A, ped=P)
-%%GdP<-GdataPed(G=G$Gobs, id=G$Gid)
-%%model.ped<-MCMCped(PdP,GdP,mm.tol=1,verbose=FALSE)
-%%plot(model.ped$beta)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> id <- 1:50
+> year <- rep(1:4, each = 50)
+> for (yr in 1:3) {
++     id <- c(id, sample(id[year == yr], 25))
++     id <- c(id, max(id) + 1:25)
++ }
+> sex <- rep(c("Male", "Female"), max(id))[id]
+> off.within.cohort <- c(rep(0, 25), rep(1, 25))
+> offspring <- c(rep(0, 50), rep(off.within.cohort, 3))
+> lat <- runif(200)
+> long <- runif(200)
+> data.ped <- data.frame(id, sex, offspring, lat, long, year)
+> res1 <- expression(varPed(x = "offspring", restrict = 0))
+> res2 <- expression(varPed(x = "year", relational = "OFFSPRING", 
++     restrict = "=="))
+> var1 <- expression(varPed(x = c("lat", "long"), lag = c(0, 0), 
++     relational = "OFFSPRING"))
+> PdP <- PdataPed(formula = list(res1, res2, var1), data = data.ped, 
++     timevar = year)
+> P <- simpedigree(PdP, beta = -1)$ped
+> G <- simgenotypes(A = A, ped = P)
+> GdP <- GdataPed(G = G$Gobs, id = G$Gid)
+> model.ped <- MCMCped(PdP, GdP, mm.tol = 1, verbose = FALSE)
+> plot(model.ped$beta)
+\end{Sinput}
+\end{Schunk}
 
 
-%%<<label=MGped, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.ped$beta)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<MGped>>
-%%@
+\includegraphics{Tutorial-090}
 \end{center}
 \caption{The posterior distribution of \texttt{beta}, the rate at which the probability of parentage drops with distance from the offspring.  This parameter was estimated from a multigenerational pedigree where longitudinal data had been collected.  In this toy example, the model was consistent with the data, but for multigenerational problems appropriate models are hard to construct and caution needs to be exercised.}
 \label{MGped}
@@ -1291,31 +1431,26 @@ Several problems currently exist with reconstructing multigenerational pedigrees
 
 An extreme form of inbreeding is selfing in hermaphrodites.  MasterBayes is able to work with hermaphrodite systems by not passing a \texttt{sex} vector to \texttt{PdataPed}.  Currently, MasterBayes can be forced to model selfing in hermaphrodites although it is inefficent (the following example took 5 minutes depsite a mismatch tolerance of 1).  More efficient methods will be developed in the future, but a small example will highlight the logic behind the approach, and some of its pitfalls.
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%id<-as.factor(1:100)
-%%offspring<-c(rep(0,25), rep(1,75))
-%%Herm<-data.frame(id, offspring)
-%%res1<-expression(varPed(x="offspring", restrict=0))
-%%var1<-expression(varPed(x="id", relational="MATE"))
-%%PdP<-PdataPed(formula=list(res1, var1), data=Herm)
-%%P<-simpedigree(PdP, beta=logit(0.9))$ped
-%%G<-simgenotypes(A=A, ped=P)
-%%GdP<-GdataPed(G=G$Gobs, id=G$Gid)
-%%model.herm<-MCMCped(PdP,GdP,mm.tol=1,verbose=FALSE)
-%%plot(inv.logit(model.herm$beta))
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> id <- as.factor(1:100)
+> offspring <- c(rep(0, 25), rep(1, 75))
+> Herm <- data.frame(id, offspring)
+> res1 <- expression(varPed(x = "offspring", restrict = 0))
+> var1 <- expression(varPed(x = "id", relational = "MATE"))
+> PdP <- PdataPed(formula = list(res1, var1), data = Herm)
+> P <- simpedigree(PdP, beta = logit(0.9))$ped
+> G <- simgenotypes(A = A, ped = P)
+> GdP <- GdataPed(G = G$Gobs, id = G$Gid)
+> model.herm <- MCMCped(PdP, GdP, mm.tol = 1, verbose = FALSE)
+> plot(inv.logit(model.herm$beta))
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=Herm, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%impb<-mcmc(inv.logit(model.herm$beta))
-%%names(impb)<-"inv.logit.beta"
-%%plot(impb)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<Herm>>
-%%@
+\includegraphics{Tutorial-093}
 \end{center}
 \caption{The posterior distribution of $\textrm{logit}^{-1}\beta$: the probability that an individual mates with itself compared to another random individual in a hermaphrodite system.}
 \label{Herm-fig}
@@ -1331,34 +1466,28 @@ Monoecy in plants is a common phenomenon; each flower is unisexual but flowers o
 
   To illustrate, we will simulate data from a monoecious population in which the proportion of male flowers on each individual varies substantially. The number of offspring produced by each individual is independent of the proportion of male flowers, but individuals with proportionally more male flowers produce more offspring through pollination.  We will start with a very strong relationship between 'paternity' and the number of male flowers.
  
-%%<<echo=TRUE, fig=FALSE>>=
-%%id<-as.factor(1:100)
-%%offspring<-c(rep(0,25), rep(1,75))
-%%Prop.male.flowers<-rbeta(100, 10,10)
+\begin{Schunk}
+\begin{Sinput}
+> id <- as.factor(1:100)
+> offspring <- c(rep(0, 25), rep(1, 75))
+> Prop.male.flowers <- rbeta(100, 10, 10)
+> SeedPollen <- data.frame(id, offspring, Prop.male.flowers)
+> res1 <- expression(varPed(x = "offspring", restrict = 0))
+> var1 <- expression(varPed(x = "Prop.male.flowers", gender = "Male"))
+> var2 <- expression(varPed(x = "Prop.male.flowers", gender = "Female"))
+> PdP <- PdataPed(formula = list(res1, var1, var2), data = SeedPollen)
+> P <- simpedigree(PdP, beta = c(-7.5, 7.5))$ped
+> G <- simgenotypes(A = A, ped = P)
+> GdP <- GdataPed(G = G$Gobs, id = G$Gid)
+> model.mon <- MCMCped(PdP, GdP, mm.tol = 1, verbose = FALSE)
+> plot(model.mon$beta)
+\end{Sinput}
+\end{Schunk}
 
-%%SeedPollen<-data.frame(id, offspring, Prop.male.flowers)
-%%res1<-expression(varPed(x="offspring", restrict=0))
-%%var1<-expression(varPed(x="Prop.male.flowers", gender="Male"))
-%%var2<-expression(varPed(x="Prop.male.flowers", gender="Female"))
-
-
-%%PdP<-PdataPed(formula=list(res1, var1, var2), data=SeedPollen)
-%%P<-simpedigree(PdP, beta=c(-7.5,7.5))$ped
-%%G<-simgenotypes(A=A, ped=P)
-%%GdP<-GdataPed(G=G$Gobs, id=G$Gid)
-%%model.mon<-MCMCped(PdP,GdP,mm.tol=1,verbose=FALSE)
-%%plot(model.mon$beta)
-%%@
-
-%%<<label=mon1, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.mon$beta)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<mon1>>
-%%@
+\includegraphics{Tutorial-096}
 \end{center}
 \caption{The posterior distribution of $\beta$: the parameters of the log-linear relationship between the number of male flowers on a monoecious plant and the probability of producing offspring from female and male flowers, respectively. The relationships are very strong and the chain gets stuck in a region of parameter space of high probability.  A mirror image of this distribution exists outside of the parameter space sampled.}
 \label{mon1-fig}
@@ -1367,23 +1496,20 @@ Monoecy in plants is a common phenomenon; each flower is unisexual but flowers o
 
 Figure \ref{mon1-fig} looks reasonable but what happens if we simulate some data where the proportion of male flowers is not such a good predictor of 'paternity/maternity'?  
 
-%%<<echo=TRUE, fig=FALSE>>=
-%%P<-simpedigree(PdP, beta=c(-4,4))$ped
-%%G<-simgenotypes(A=A, ped=P)
-%%GdP<-GdataPed(G=G$Gobs, id=G$Gid)
-%%model.mon2<-MCMCped(PdP,GdP,mm.tol=1,verbose=FALSE)
-%%plot(model.mon2$beta)
-%%@
+\begin{Schunk}
+\begin{Sinput}
+> P <- simpedigree(PdP, beta = c(-4, 4))$ped
+> G <- simgenotypes(A = A, ped = P)
+> GdP <- GdataPed(G = G$Gobs, id = G$Gid)
+> model.mon2 <- MCMCped(PdP, GdP, mm.tol = 1, verbose = FALSE)
+> plot(model.mon2$beta)
+\end{Sinput}
+\end{Schunk}
 
-%%<<label=mon2, echo=FALSE, fig=TRUE, include=FALSE>>=
-%%plot(model.mon2$beta)
-%%@
 
 \begin{figure}[!h]
 \begin{center}
-%%<<echo=FALSE, fig=TRUE>>=
-%%<<mon2>>
-%%@
+\includegraphics{Tutorial-099}
 \end{center}
 \caption{The posterior distribution of $\beta$: the parameters of the log-linear relationship between the number of male flowers on a monoecious plant and the probability of producing offspring from female and male flowers, respectively. The relationships are not so strong as in Figure \ref{mon1-fig}, and the chain is able to sample from the full posterior, albeit with a lot of autocorrelation.}
 \label{mon2-fig}
@@ -1391,6 +1517,7 @@ Figure \ref{mon1-fig} looks reasonable but what happens if we simulate some data
 
 We see that the posterior distribution is actually bimodal (Figure \ref{mon2-fig})! We can be fairly confident that the proportion of male flowers indicates the probability of polination versus seed production, but we have no way of saying what the sign of the relationship is: whether the proportion of male flowers is positively correlated with pollination and negatively correlated with seed production or \emph{vica versa}.  We could probably make an informed guess, but with more amiguous varables it may not be possible to do so.  If any one has any idea on how to set up a sensible prior for this type of model, please email me.  
 
+\newpage
 \appendix
 \section{A Lightning Tour of Model Specification}
 \label{models-app}
@@ -1455,7 +1582,14 @@ p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i,t-1}-\textr
 \texttt{lag\_relational=c(-1,-1))}
 
 \begin{equation}
-p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(\textrm{\texttt{x}}_{i,t}+\textrm{\texttt{x}}_{j,t-1})...)
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{i,t}-\textrm{\texttt{x}}_{j,t-1}|)...)
+\end{equation}\\
+
+\texttt{varPed(x, gender="Male", lag=c(0,0), relational="OFFSPRING",}\\
+\texttt{lag\_relational=c(-1,-1))}
+
+\begin{equation}
+p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}(|\textrm{\texttt{x}}_{j,t}-\textrm{\texttt{x}}_{o,t-1}|)...)
 \end{equation}\\
 
 For a categorical variable with two levels (\texttt{A} and \texttt{B}) the model specified by \texttt{varPed(x, gender="Female")} takes on the form

@@ -2,7 +2,7 @@
 \docType{package}
 \alias{MasterBayes}
 \title{Maximum Likelihood and Markov chain Monte Carlo methods for Pedigree Reconstruction, Analysis and Simulation.}
-\description{The primary aim of MasterBayes is to use MCMC techniques to integrate over uncertainity in pedigree configurations estimated from molecular markers and phenotypic data.  Emphasis is put on the marginal distribution of parameters that relate the phenotypic data to the pedigree.  All simulation is done in compiled C++ using the Scythe Statistical Library. More detailed information can be found in \code{vignette("MasterBayes.Tutorial")}.}
+\description{The primary aim of MasterBayes is to use MCMC techniques to integrate over uncertainity in pedigree configurations estimated from molecular markers and phenotypic data.  Emphasis is put on the marginal distribution of parameters that relate the phenotypic data to the pedigree.  All simulation is done in compiled C++ using the Scythe Statistical Library. More detailed information can be found in \code{vignette("Tutorial", "MasterBayes")}.}
 \details{
 
 The motivation behind the package is to approximate the following probability distribution using Markov chain Monte Carlo techniques:
