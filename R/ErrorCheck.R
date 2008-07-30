@@ -169,7 +169,7 @@
       stop("some dams are not in PdP")
     }
     if(is.null(PdP$sex)==FALSE){
-      if("Male"%in%PdP$sex[match(na.omit(sP$dam), unique_id)]){
+      if("Male"%in%PdP$sex[match(na.omit(sP$dam), PdP$id)]){
        stop("some starting dams are recorded as males")
       }            
     }
@@ -189,7 +189,7 @@
       stop("some sire are not in PdP")
     }
     if(length(PdP$sex)!=0){
-      if("Female"%in%PdP$sex[match(na.omit(sP$sire), unique_id)]){
+      if("Female"%in%PdP$sex[match(na.omit(sP$sire), PdP$id)]){
        stop("some starting sires are recorded as females")
       }           
     }

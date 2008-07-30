@@ -432,25 +432,23 @@ for(off in 1:sum(PdP$offspring==1)){
         if(dam.sire){
           int.tmp<-matrix(NA,nrow(t1$Dam$X), ncol(t1$Dam$X)*ncol(t2$Sire$X))
           colnames(int.tmp)<-rep("G", ncol(int.tmp))
-          colnames(int.tmp)[col]<-paste(t1$Dam$var_name[v1], t2$Sire$var_name[v2], sep=".")
-          for(v1 in 1:ncol(t1$Dam$X)){
+           for(v1 in 1:ncol(t1$Dam$X)){
             for(v2 in 1:ncol(t2$Sire$X)){
               col<-col+1
               nsires<-length(X.list$X[[off]]$sire.id)
               ndams<-length(X.list$X[[off]]$dam.id)
               int.tmp[,col]<-rep(t1$Dam$X[,v1], each=nsires)*rep(t2$Sire$X[,v2], ndams)
-              colnames(int.tmp)[col]<-paste(colnames(t1$Dam$X)[v1], colnames(t2$Sire$X)[v2], sep=".")
+              colnames(int.tmp)[col]<-paste(t1$Sire$var_name[v1], t2$Sire$var_name[v2], sep=".")
             }
           }
         }else{
           int.tmp<-matrix(NA,nrow(t1$DamSire$X), ncol(t1$DamSire$X)*ncol(t2$DamSire$X))
           colnames(int.tmp)<-rep("G", ncol(int.tmp))
-          colnames(int.tmp)[col]<-paste(t1$DamSire$var_name[v1], t2$DamSire$var_name[v2], sep=".")
           for(v1 in 1:ncol(t1$DamSire$X)){
             for(v2 in 1:ncol(t2$DamSire$X)){
               col<-col+1
               int.tmp[,col]<-t1$DamSire$X[,v1]*t2$DamSire$X[,v2]
-              colnames(int.tmp)[col]<-paste(colnames(t1$DamSire$X)[v1], colnames(t2$DamSire$X)[v2], sep=".")
+              colnames(int.tmp)[col]<-paste(t1$DamSire$var_name[v1], t2$DamSire$var_name[v2], sep=".")
             }
           }
         }
@@ -587,7 +585,7 @@ for(off in 1:sum(PdP$offspring==1)){
       if(nvar[2]>0){
         nrowX=dim(X.list$X[[off]]$XDs)[1]
         ncolX=dim(X.list$X[[off]]$XDs)[2]
-         base<-X.list$X[[off]]$XDs[1,]
+        base<-X.list$X[[off]]$XDs[1,]
         X.list$X[[off]]$XDs<-X.list$X[[off]]$XDs-matrix(rep(base,each=nrowX), nrowX, ncolX) 
         col2scale<-which(X.list$X[[off]]$vtDs=="numeric")
         if(length(col2scale)>0){
@@ -627,7 +625,6 @@ for(off in 1:sum(PdP$offspring==1)){
           center.val<-colMeans(as.matrix(X.list$X[[off]]$XDSus[,col2scale]), na.rm=T)
           X.list$X[[off]]$XDSus[,col2scale]<-scale(X.list$X[[off]]$XDSus[,col2scale], center=center.val, scale=FALSE)
         } 
-
       }
       if(nvar[6]>0){
         nrowX=dim(X.list$X[[off]]$XDSs)[1]

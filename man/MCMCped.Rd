@@ -8,7 +8,7 @@
 MCMCped(PdP=PdataPed(), GdP=GdataPed(), sP=startPed(), tP=tunePed(), 
    pP=priorPed(), mm.tol=999, nitt = 13000, thin = 10,  burnin = 
    3000, write_postG = FALSE, write_postA=FALSE, write_postP = 
-   "MARGINAL", checkP = FALSE, jointP = TRUE, verbose=TRUE, ...)
+   "MARGINAL", checkP = FALSE, jointP = TRUE, DSapprox=FALSE, verbose=TRUE, ...)
 }
 
 \arguments{
@@ -26,6 +26,7 @@ MCMCped(PdP=PdataPed(), GdP=GdataPed(), sP=startPed(), tP=tunePed(),
   \item{write_postP}{if \code{"MARGINAL"} the marginal distribution of parents is stored. If \code{"JOINT"} the joint distribution of parents (the pedigree) is stored.}
   \item{checkP}{if \code{TRUE} the pedigree is checked for legality, and illegal pedigrees rejected. If \code{FALSE} it is assumed that any potential parent would produce a legal pedigree, i.e one without circuits, in the terminology of graph theory.}
   \item{jointP}{if \code{TRUE} both parents are sampled simultaneously, if \code{FALSE} each parent is sampled conditional on the other. \code{TRUE} should mix faster, but \code{FALSE} should iterate faster, especially when \code{relational="MATE"} is passed to \code{\link{varPed}}}
+  \item{DSapprox}{if \code{TRUE} the likelihood for models in which a \code{relational="MATE"} variable is passed is approximated.  This can be much more efficient because the denominator of the multinomial is the summed linear pedictors for combinations in which i=m or j=m where m referes to the "MATE" at the current iteration.}
   \item{verbose}{if \code{TRUE} posterior samples and the Metropolis Hastings accpetance rates of \code{beta}, \code{USdam}, \code{USsire}, \code{E1}, \code{E2} are printed to the screen every 1000 iterations.}
   \item{...}{further arguments to be passed}
 }

@@ -190,6 +190,8 @@ if(length(restrict)==0){
       facnum<-facnum[which(facnum=="integer")]<-"numeric"
     }        
 
+    if(any(facnum!="factor" & facnum!="numeric")){stop("variables must be numeric or factors")}
+
     predict_ped=NULL
 
     off_time<-time_var[off_record]
@@ -220,15 +222,15 @@ if(length(restrict)==0){
         }
 
         time_for_P<-which((time_tmp>=(lag[1]+off_time) & time_tmp<=(lag[2]+off_time)) | is.na(time_tmp))
-
+  
         # OFFSPRING RELATIONAL - NUMERIC
 
         if((relational=="OFFSPRING" | relational=="OFFSPRINGV") & "numeric"%in%facnum){
           var_tmp<-as.matrix(as.matrix(var_tmp)[time_for_P,])
-          if(is.null(dim(var_tmp))){
+          id_tmp<-id_tmp[time_for_P]
+           if(is.null(dim(var_tmp))){
             var_tmp<-t(as.matrix(var_tmp)) 
           }
-          id_tmp<-id_tmp[time_for_P]
           dup_off_var<-rep(1, length(var_tmp[,1]))%*%t(off_var)
           if(relational=="OFFSPRING"){
             predict_ped<-rowSums((var_tmp-dup_off_var)^2)^0.5
@@ -240,7 +242,12 @@ if(length(restrict)==0){
           }
           namex<-namevar
           predict_ped<-tapply(predict_ped, id_tmp, mean, na.rm=T)
-          id_tmp<-names(predict_ped)
+          if("Male"%in%gender){
+            predict_ped<-predict_ped[match(keepSire,names(predict_ped))]
+          }
+          if("Female"%in%gender){
+            predict_ped<-predict_ped[match(keepDam,names(predict_ped))]
+          }
           predict_ped<-matrix(predict_ped, length(predict_ped),1)
         }
 
@@ -256,9 +263,14 @@ if(length(restrict)==0){
           }else{
             var_tmp[NAvec]<-NA
           }    
-          predict_ped<-tapply(var_tmp, id_tmp, mean)>0
+          predict_ped<-tapply(var_tmp, id_tmp, mean, na.rm=T)>0
           namex<-paste(namevar, c(TRUE, FALSE), sep=".")
-          id_tmp<-names(predict_ped)
+          if("Male"%in%gender){
+            predict_ped<-predict_ped[match(keepSire,names(predict_ped))]
+          }
+          if("Female"%in%gender){
+            predict_ped<-predict_ped[match(keepDam,names(predict_ped))]
+          }
           predict_ped<-matrix(predict_ped, length(predict_ped),1)      
         }
 
@@ -273,6 +285,12 @@ if(length(restrict)==0){
           if(length(USvar)>0){
             predict_ped[which(is.na(predict_ped)==T)]<-USvar                # Fills missing values if specified in USvar
           }
+          if("Male"%in%gender){
+            predict_ped<-predict_ped[match(keepSire,names(predict_ped))]
+          }
+          if("Female"%in%gender){
+            predict_ped<-predict_ped[match(keepDam,names(predict_ped))]
+          }
           predict_ped<-matrix(predict_ped, length(predict_ped),1)
           namex<-namevar
         }
@@ -282,17 +300,28 @@ if(length(restrict)==0){
         if(relational==FALSE & "factor"%in%facnum){
           var_tmp<-var_tmp[time_for_P]
           id_tmp<-id_tmp[time_for_P]
-           NAvec<-which(is.na(var_tmp)==TRUE)
+          if(any(tapply(var_tmp, id_tmp, function(x){sum(duplicated(x)==FALSE)>1}))){
+            stop(paste(namevar, "varies over time and is a factor"))
+          }
+          var_tmp<-unlist(tapply(var_tmp, id_tmp, function(x){x[1]}, simplify=FALSE))
+          NAvec<-which(is.na(var_tmp)==TRUE)
           if(length(USvar)>0){
             var_tmp[NAvec]<-USvar                # Fills missing values if specified in USvar
           }else{
             var_tmp[NAvec]<-levels(var_tmp)[1]
           }
           predict_ped<-as.matrix(model.matrix(~var_tmp)[,-1])
-          namex<-paste(namevar, levels(var_tmp)[-1], sep=".")
+          rownames(predict_ped)<-names(var_tmp)
           if(length(USvar)==0){
             predict_ped[NAvec,]<-NA
           }
+          if("Male"%in%gender){
+            predict_ped<-as.matrix(predict_ped[match(keepSire,rownames(predict_ped)),])
+          }
+          if("Female"%in%gender){
+            predict_ped<-as.matrix(predict_ped[match(keepDam,rownames(predict_ped)),])
+          }
+          namex<-paste(namevar, levels(var_tmp)[-1], sep=".")
           colnames(predict_ped)<-levels(var_tmp)[-1]
         }
 
@@ -335,7 +364,7 @@ if(length(restrict)==0){
       var_tmpM<-subset(x, id%in%keepSire==TRUE)
       time_tmpM<-subset(time_var, id%in%keepSire==TRUE)
       id_tmpM<-subset(id, id%in%keepSire==TRUE)
- 
+
       if(sex_specific==FALSE){gender="Female"}
 
       if(gender=="Female"){
@@ -348,13 +377,13 @@ if(length(restrict)==0){
 
       timePM<-c((time_tmpM>=(lagM[1]+off_time) & time_tmpM<=(lagM[2]+off_time)) | is.na(time_tmpM))
       timePF<-c((time_tmpF>=(lagF[1]+off_time) & time_tmpF<=(lagF[2]+off_time)) | is.na(time_tmpF))
- 
+
       var_tmpM<-as.matrix(subset(var_tmpM, timePM))
       var_tmpF<-as.matrix(subset(var_tmpF, timePF))
 
       id_tmpM<-subset(id_tmpM, timePM)
       id_tmpF<-subset(id_tmpF, timePF)
- 
+
       distmat<-matrix(0, nrow=length(id_tmpM), ncol=length(id_tmpF))
       id<-paste(rep(id_tmpF, each=length(id_tmpM)), rep(id_tmpM, length(id_tmpF)))
 
@@ -374,30 +403,27 @@ if(length(restrict)==0){
               distmat<-distmat+(outer(c(var_tmpM[,d]), c(var_tmpF[,d]), "-"))
             }
           }
-          predict_ped<-tapply(distmat, id, mean, na.rm=T)
+          predict_ped<-tapply(distmat, id, mean, na.rm=T)          
         }
-
-        predict_ped<-predict_ped[match(unique(id),names(predict_ped))]
-
+        predict_ped<-predict_ped[match(paste(rep(keepDam, each=length(keepSire)), rep(keepSire, length(keepDam))), names(predict_ped))]
         if(length(USvar)>0){
           predict_ped[which(is.na(predict_ped)==T)]<-USvar                # Fills missing values if specified in USvar
         }
         namex<-namevar
-        predict_ped[1]<-0
       }
-         
+
 
       if("factor"%in%facnum){
         distmat<-outer(c(var_tmpM), c(var_tmpF), "==")
         predict_ped<-tapply(distmat, id, mean, na.rm=T)>0
-        predict_ped<-predict_ped[match(unique(id),names(predict_ped))]
+        predict_ped<-predict_ped[match(paste(rep(keepDam, each=length(keepSire)), rep(keepSire, length(keepDam))), names(predict_ped))]
         NAvec<-which(is.na(predict_ped)==TRUE)
         if(length(USvar)>0){
           predict_ped[NAvec]<-USvar                # Fills missing values if specified in USvar
         }else{
           predict_ped[NAvec]<-NA
         }
-        namex<-paste(namevar, unique(predict_ped), sep=".")
+        namex<-paste(namevar, c(TRUE, FALSE), sep=".")
       }
 
       predict_ped<-matrix(predict_ped, length(predict_ped),1)
