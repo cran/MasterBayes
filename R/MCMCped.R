@@ -13,6 +13,7 @@ function(PdP=PdataPed(),
          write_postP="MARGINAL",
          checkP = FALSE,
          jointP = TRUE,
+         DSapprox = FALSE,
          verbose=TRUE,
          ...
 ){
@@ -193,7 +194,7 @@ function(PdP=PdataPed(),
    pPUSmu<-c(pP$USdam$mu, pP$USsire$mu)
    pPUSsigma<-c(pP$USdam$sigma, pP$USsire$sigma)
 
-   if(FALSE%in%(as.integer(pPUSmu)%in%999)){    
+   if(FALSE%in%(as.integer(pPUSmu)%in%999) & TRUE%in%(as.integer(pPUSmu)%in%999)){    
      pPUSsigma<-pPUSsigma[-which(as.integer(pPUSmu)==999)]
      pPUSmu<-pPUSmu[-which(as.integer(pPUSmu)==999)]
    }
@@ -215,10 +216,27 @@ function(PdP=PdataPed(),
 
   mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%GdP$marker.type*c(1:3))
 
-estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"), checkP, jointP)
-store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
+  rel.mate<-unlist(lapply(PdP$formula, function(x){length(grep("relational.*MATE",x))==TRUE}))  # another hack - relational=MATE variables
 
-Merge4C<-function(X.list){
+  DSapprox<-as.numeric(DSapprox)
+
+  if(any(rel.mate)){
+    if(DSapprox==1){
+      if(length(grep(PdP$formula[[match(TRUE, rel.mate)]], "Female"))>0){
+        DSapprox<-2   # mate=male
+      }else{
+        DSapprox<-1   # mate=female
+      }
+    }
+  }else{
+    DSapprox<-0    # no mate variables 
+  }
+
+  estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"), checkP, jointP,DSapprox)
+
+  store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
+
+ Merge4C<-function(X.list){
  Merge<-matrix(unlist(lapply(X.list$X, function(x){x$mergeN})), length(X.list$X[[1]]$mergeN), length(X.list$X))
  Mmat<-list()
  for(i in 1:(length(X.list$X[[1]]$mergeN)/2)){

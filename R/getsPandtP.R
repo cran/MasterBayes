@@ -68,7 +68,9 @@
     }
 
     ped<-matrix(NA, length(sP$id), 3)
+
     ped[,1]<-sP$id
+
     if(is.null(sP$dam)==FALSE){
       ped[,2]<-match(sP$dam, unique_id)
     }
@@ -129,7 +131,12 @@
 
   if(is.null(GdP$G)==FALSE & CERVUS==FALSE){
     if(sPGgiven==TRUE){
-      if(legalG(sP$G, sP$A, ped, marker.type=GdP$marker.type)$valid=="FALSE"){
+      if(is.null(PdP$timevar)){
+        time_born=NULL
+      }else{
+        time_born = PdP$timevar[which(PdP$offspring==1)][match(ped[,1], PdP$id)] 
+      }
+      if(legalG(sP$G, sP$A, ped, time_born=time_born, marker.type=GdP$marker.type)$valid=="FALSE"){
         warning("sP$G does not have postive probability given possible starting pedigree")
         stop()
       }

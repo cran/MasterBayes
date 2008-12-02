@@ -86,9 +86,15 @@ The denominator of the multinomial likelihood is the summed linear predictors of
 
 and the likelihood of \eqn{\beta}{b} is 
 
-\deqn{Pr(x|\bf{\beta})  = \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{i}}_{i=1}\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{i,j})}\right]}{Pr(x| b) = prod(no)(exp(eta(d,s))/sum(ni*nj)(exp(eta(i,j))))}  
+\deqn{Pr(x| \bm{\beta})  = \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{i}}_{i=1}\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{i,j})}\right]}{Pr(x| b) = prod(no)(exp(eta(d,s))/sum(ni*nj)(exp(eta(i,j))))}  
 
 where \eqn{n_{o}}{no}, \eqn{n^{(o)}_{i}}{ni} and \eqn{n^{(o)}_{j}}{nj} are the number of offspring, the number of potential mothers for offspring \eqn{o}{o}, and the number of potential fathers for offspring \eqn{o}{o}, respectively.  \eqn{d}{d} and \eqn{s}{s} are the actual parents of offspring \eqn{o}{o}. The set of possible parents  in the denominator of the multinomial likelihood are those that are not excluded using the argument \code{restrict}. However, if the argument \code{keep=TRUE} is used then the denominator of the likelihood will include excluded parents depsite the fact that \eqn{d\neq i}{d!=i} and \eqn{s\neq j}{s!=j}.
+
+In recent versions \code{DSapprox=TRUE} can be passed to \code{MCMCped} which approximates the likelihood of \eqn{\beta}{b} when a variable specifies the distance between mates (i.e \code{relational="MATE"}). This approximation reduces the computational burden by fixing \eqn{i=d}{i=d} or \eqn{i=s}{i=s} in the denominator of the multinomial likelihood. The parent defined as the "MATE" is fixed, so that a \code{varPed} expression with gender="Male" has the approximated likelihood:
+
+\deqn{Pr(x, i=d| \bm{\beta})  = \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{d,j})}\right]}{Pr(x, i=d| b) = prod(no)(exp(eta(d,s))/sum(nj)(exp(eta(d,j))))}  
+
+ 
 }
 \value{
   list containing the design matrix for variable \code{x}, the identity of retained parents and the gender of the parents
@@ -96,7 +102,7 @@ where \eqn{n_{o}}{no}, \eqn{n^{(o)}_{i}}{ni} and \eqn{n^{(o)}_{j}}{nj} are the n
 \note{
 Versions >=2.1 accept different arguments for \code{restrict} than earlier versions.  When \code{relational="OFFSPRING"}, earlier versions accepted \code{restrict=TRUE} and \code{restrict=FALSE}, but these have now been replaced with \code{restrict="=="} and \code{restrict="!="}, respectively.  In addition, \code{restrict} now also accepts \code{">"}, \code{">="}, \code{"<"} and \code{"<="} with parental values on the LHS and offspring values on the RHS.
 
-Also, versions >=2.1 also accept \code{"OFFSPRINGV"} and \code{"MATEV"} for \code{realtional} in addition to \code{"OFFSPRING"} and \code{"MATE"}.  \code{"V"} specifies that the signed vector should be used rather than the Euclidean distance.
+Also, versions >=2.1 also accept \code{"OFFSPRINGV"} and \code{"MATEV"} for \code{relational} in addition to \code{"OFFSPRING"} and \code{"MATE"}.  \code{"V"} specifies that the signed vector should be used rather than the Euclidean distance.
   }
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}

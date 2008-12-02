@@ -27,7 +27,7 @@ Assuming that the set of possible pedigrees have equal prior probability, and th
 
 where \eqn{\bf{X}^{i}_{j}}{X i,j} denotes the \eqn{j^{th}}{jth} row of offspring \eqn{i}{i}'s design matrix formed from the phenotypic data \eqn{\bf{y}}{y}. Each row of the design matrix corresponds to a parental combination. \eqn{n_{o}}{no} and \eqn{n_{p}}{np} denote the number of offspring and the number of potential parental combinations, respectively. \eqn{p_{i}}{p_i} denotes the actual parents of indivdiual \eqn{i}{i} (Smouse, 1999).
 
-This likelihood is evaluated over the probability distribution of the pedigree, {\bf P}:
+This likelihood is evaluated over the probability distribution of the pedigree, \bf{P}:
 
 \deqn{p(\bf{P} | \bf{G}, \bf{y}, \bf{\beta}).}{p(P|G,y,beta).}
 

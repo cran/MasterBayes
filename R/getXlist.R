@@ -70,7 +70,7 @@ getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...){
       }
     }
   }
-
+ 
 for(off in 1:sum(PdP$offspring==1)){
 
   PdP$off_record<-which(PdP$offspring==1)[off]
@@ -118,7 +118,6 @@ for(off in 1:sum(PdP$offspring==1)){
     }
   }
 
-  nint_par<-0
   nbeta<-sum(nvar)
   X.list$X[[off]]$dam.id<-PdP$keepDam
   X.list$X[[off]]$sire.id<-PdP$keepSire
@@ -277,86 +276,91 @@ for(off in 1:sum(PdP$offspring==1)){
     for(i in 1:length(interactions)){ 
 
       form.comb<-match(PdP$formula[[interactions[i]]], PdP$formula[main_effects])
-
       t1<-predictors[[form.comb[1]]]
       t2<-predictors[[form.comb[2]]]
 
       if(off==1){
-        dam.dam=FALSE
-        sire.sire=FALSE
-        dam.sire=FALSE
-        damsire.damsire=FALSE
+
+        if(i==1){
+          par_type=c()
+          dam.dam=rep(FALSE, length(interactions))
+          sire.sire=rep(FALSE, length(interactions))
+          dam.sire=rep(FALSE, length(interactions))
+          damsire.damsire=rep(FALSE, length(interactions))
+          effect=rep(0, length(interactions))
+        }
 
         if(is.null(t1$Dam$X)==FALSE & is.null(t1$Sire$X)==FALSE){
           if(is.null(t2$Dam$X)==FALSE & is.null(t2$Sire$X)==FALSE){
-            dam.dam=TRUE
-            sire.sire=TRUE
+            dam.dam[i]=TRUE
+            sire.sire[i]=TRUE
           }else{
             stop("interactions between a genderless variable and a sex-specific variable not possible")
           }
         }     
 
         if(is.null(t1$Dam$X)==FALSE & is.null(t2$Dam$X)==FALSE){
-          dam.dam=TRUE
+          dam.dam[i]=TRUE
           if(TRUE%in%(is.na(t1$Dam$X)) | TRUE%in%(is.na(t2$Dam$X))){
-            effect<-1
-            par_type<-c(par_type, rep(effect, ncol(t1$Dam$X)*ncol(t2$Dam$X)))
+            effect[i]<-1
+            par_type<-c(par_type, rep(effect[i], ncol(t1$Dam$X)*ncol(t2$Dam$X)))
           }else{
-            effect<-2
-            par_type<-c(par_type, rep(effect, ncol(t1$Dam$X)*ncol(t2$Dam$X)))
+            effect[i]<-2
+            par_type<-c(par_type, rep(effect[i], ncol(t1$Dam$X)*ncol(t2$Dam$X)))
           }
         }
+        
         if(is.null(t1$Sire$X)==FALSE & is.null(t2$Sire$X)==FALSE){
-          sire.sire=TRUE
+          sire.sire[i]=TRUE
           if(TRUE%in%(is.na(t1$Sire$X)) | TRUE%in%(is.na(t2$Sire$X))){
-            effect<-3
-            par_type<-c(par_type, rep(effect, ncol(t1$Sire$X)*ncol(t2$Sire$X)))
+            effect[i]<-3
+            par_type<-c(par_type, rep(effect[i], ncol(t1$Sire$X)*ncol(t2$Sire$X)))
           }else{
-            effect<-4
-            par_type<-c(par_type, rep(effect, ncol(t1$Sire$X)*ncol(t2$Sire$X)))
+            effect[i]<-4
+            par_type<-c(par_type, rep(effect[i], ncol(t1$Sire$X)*ncol(t2$Sire$X)))
           }
         }
+
         if(is.null(t1$Dam$X)==FALSE & is.null(t2$Sire$X)==FALSE){
           if(is.null(t2$Dam$X) & is.null(t1$Sire$X)){
-            dam.sire=TRUE
+            dam.sire[i]=TRUE
             if(TRUE%in%(is.na(t1$Dam$X)) | TRUE%in%(is.na(t2$Sire$X))){
-              effect<-5
-              par_type<-c(par_type, rep(effect, ncol(t1$Dam$X)*ncol(t2$Sire$X)))
+              effect[i]<-5
+              par_type<-c(par_type, rep(effect[i], ncol(t1$Dam$X)*ncol(t2$Sire$X)))
             }else{
-              effect<-6
-              par_type<-c(par_type, rep(effect, ncol(t1$Dam$X)*ncol(t2$Sire$X)))
+              effect[i]<-6
+              par_type<-c(par_type, rep(effect[i], ncol(t1$Dam$X)*ncol(t2$Sire$X)))
             }
           }
         }
 
         if(is.null(t2$Dam$X)==FALSE & is.null(t1$Sire$X)==FALSE){
           if(is.null(t1$Dam$X) & is.null(t2$Sire$X)){
-            dam.sire=TRUE
+            dam.sire[i]=TRUE
             if(TRUE%in%(is.na(t1$Sire$X)) | TRUE%in%(is.na(t2$Dam$X))){
-              effect<-5
-              par_type<-c(par_type, rep(effect, ncol(t1$Sire$X)*ncol(t2$Dam$X)))
+              effect[i]<-5
+              par_type<-c(par_type, rep(effect[i], ncol(t1$Sire$X)*ncol(t2$Dam$X)))
             }else{
-              effect<-6
-              par_type<-c(par_type, rep(effect, ncol(t1$Sire$X)*ncol(t2$Dam$X)))
+              effect[i]<-6
+              par_type<-c(par_type, rep(effect[i], ncol(t1$Sire$X)*ncol(t2$Dam$X)))
             }
-            rev(form.comb)
           }
         }
 
         if(is.null(t1$DamSire$X)==FALSE & is.null(t2$DamSire$X)==FALSE){
-          damsire.damsire=TRUE
+          damsire.damsire[i]=TRUE
             if(TRUE%in%(is.na(t1$DamSire$X)) | TRUE%in%(is.na(t2$DamSire$X))){
-              effect<-5
-              par_type<-c(par_type, rep(effect, ncol(t1$DamSire$X)*ncol(t2$DamSire$X)))
+              effect[i]<-5
+              par_type<-c(par_type, rep(effect[i], ncol(t1$DamSire$X)*ncol(t2$DamSire$X)))
             }else{
-              effect<-6
-              par_type<-c(par_type, rep(effect, ncol(t1$DamSire$X)*ncol(t2$DamSire$X)))
+              effect[i]<-6
+              par_type<-c(par_type, rep(effect[i], ncol(t1$DamSire$X)*ncol(t2$DamSire$X)))
             }
         }
       }
 
       col<-0 
-      if(dam.dam){
+      if(dam.dam[i]){
         int.tmp<-matrix(NA,nrow(t1$Dam$X), ncol(t1$Dam$X)*ncol(t2$Dam$X))
         colnames(int.tmp)<-rep("G", ncol(int.tmp))
         for(v1 in 1:ncol(t1$Dam$X)){
@@ -366,7 +370,7 @@ for(off in 1:sum(PdP$offspring==1)){
             colnames(int.tmp)[col]<-paste(t1$Dam$var_name[v1], t2$Dam$var_name[v2], sep=".")
          }
         }
-        if(effect==1){
+        if(effect[i]==1){
           for(c in 1:ncol(int.tmp)){
             nvar[1]<-nvar[1]+1       
             X.list$X[[off]]$XDus<-as.matrix(cbind(X.list$X[[off]]$XDus, int.tmp[,c]))
@@ -392,7 +396,7 @@ for(off in 1:sum(PdP$offspring==1)){
       }
 
       col<-0 
-      if(sire.sire){
+      if(sire.sire[i]){
         int.tmp<-matrix(NA,nrow(t1$Sire$X), ncol(t1$Sire$X)*ncol(t2$Sire$X))
         colnames(int.tmp)<-rep("G", ncol(int.tmp))
         for(v1 in 1:ncol(t1$Sire$X)){
@@ -402,7 +406,7 @@ for(off in 1:sum(PdP$offspring==1)){
             colnames(int.tmp)[col]<-paste(t1$Sire$var_name[v1], t2$Sire$var_name[v2], sep=".")
           }
         }
-        if(effect==3){
+        if(effect[i]==3){
           for(c in 1:ncol(int.tmp)){
             nvar[3]<-nvar[3]+1       
             X.list$X[[off]]$XSus<-as.matrix(cbind(X.list$X[[off]]$XSus, int.tmp[,c]))
@@ -428,40 +432,38 @@ for(off in 1:sum(PdP$offspring==1)){
       }
 
       col<-0 
-      if(dam.sire | damsire.damsire){
-        if(dam.sire){
+      if(dam.sire[i] | damsire.damsire[i]){
+        if(dam.sire[i]){
           int.tmp<-matrix(NA,nrow(t1$Dam$X), ncol(t1$Dam$X)*ncol(t2$Sire$X))
           colnames(int.tmp)<-rep("G", ncol(int.tmp))
-          colnames(int.tmp)[col]<-paste(t1$Dam$var_name[v1], t2$Sire$var_name[v2], sep=".")
-          for(v1 in 1:ncol(t1$Dam$X)){
+           for(v1 in 1:ncol(t1$Dam$X)){
             for(v2 in 1:ncol(t2$Sire$X)){
               col<-col+1
               nsires<-length(X.list$X[[off]]$sire.id)
               ndams<-length(X.list$X[[off]]$dam.id)
               int.tmp[,col]<-rep(t1$Dam$X[,v1], each=nsires)*rep(t2$Sire$X[,v2], ndams)
-              colnames(int.tmp)[col]<-paste(colnames(t1$Dam$X)[v1], colnames(t2$Sire$X)[v2], sep=".")
+              colnames(int.tmp)[col]<-paste(t1$Sire$var_name[v1], t2$Sire$var_name[v2], sep=".")
             }
           }
         }else{
           int.tmp<-matrix(NA,nrow(t1$DamSire$X), ncol(t1$DamSire$X)*ncol(t2$DamSire$X))
           colnames(int.tmp)<-rep("G", ncol(int.tmp))
-          colnames(int.tmp)[col]<-paste(t1$DamSire$var_name[v1], t2$DamSire$var_name[v2], sep=".")
           for(v1 in 1:ncol(t1$DamSire$X)){
             for(v2 in 1:ncol(t2$DamSire$X)){
               col<-col+1
               int.tmp[,col]<-t1$DamSire$X[,v1]*t2$DamSire$X[,v2]
-              colnames(int.tmp)[col]<-paste(colnames(t1$DamSire$X)[v1], colnames(t2$DamSire$X)[v2], sep=".")
+              colnames(int.tmp)[col]<-paste(t1$DamSire$var_name[v1], t2$DamSire$var_name[v2], sep=".")
             }
           }
         }
-        if(effect==5){
+        if(effect[i]==5){
           if(ncol(X.list$X[[off]]$XDSus)==0){
             X.list$X[[off]]$XDSus<-matrix(0, length(X.list$X[[off]]$sire.id)*length(X.list$X[[off]]$dam.id), 0)
           }
           for(c in 1:ncol(int.tmp)){
             nvar[5]<-nvar[5]+1       
             X.list$X[[off]]$XDSus<-as.matrix(cbind(X.list$X[[off]]$XDSus, int.tmp[,c]))
-            if(dam.sire){
+            if(dam.sire[i]){
               if(t1$Dam$var_type == "factor" & t2$Sire$var_type == "factor"){
                 X.list$X[[off]]$vtDSus<-c(X.list$X[[off]]$vtDSus, "factor")
               }else{
@@ -483,7 +485,7 @@ for(off in 1:sum(PdP$offspring==1)){
           for(c in 1:ncol(int.tmp)){
             nvar[6]<-nvar[6]+1       
             X.list$X[[off]]$XDSs<-as.matrix(cbind(X.list$X[[off]]$XDSs, int.tmp[,c]))
-            if(dam.sire){
+            if(dam.sire[i]){
               if(t1$Dam$var_type == "factor" & t2$Sire$var_type == "factor"){
                 X.list$X[[off]]$vtDSs<-c(X.list$X[[off]]$vtDSs, "factor")
               }else{
@@ -504,8 +506,8 @@ for(off in 1:sum(PdP$offspring==1)){
   }
 }
 
-  if(length(main_effects>0)){
-    for(i in 1:length(main_effects)){
+  if(tmain_effects>0){
+    for(i in 1:tmain_effects){
       if(is.null(predictors[[i]]$Sire$X)==FALSE){
         npar<-ncol(predictors[[i]]$Sire$X)
         if(TRUE%in%is.na(predictors[[i]]$Sire$X)){
@@ -587,7 +589,7 @@ for(off in 1:sum(PdP$offspring==1)){
       if(nvar[2]>0){
         nrowX=dim(X.list$X[[off]]$XDs)[1]
         ncolX=dim(X.list$X[[off]]$XDs)[2]
-         base<-X.list$X[[off]]$XDs[1,]
+        base<-X.list$X[[off]]$XDs[1,]
         X.list$X[[off]]$XDs<-X.list$X[[off]]$XDs-matrix(rep(base,each=nrowX), nrowX, ncolX) 
         col2scale<-which(X.list$X[[off]]$vtDs=="numeric")
         if(length(col2scale)>0){
@@ -627,7 +629,6 @@ for(off in 1:sum(PdP$offspring==1)){
           center.val<-colMeans(as.matrix(X.list$X[[off]]$XDSus[,col2scale]), na.rm=T)
           X.list$X[[off]]$XDSus[,col2scale]<-scale(X.list$X[[off]]$XDSus[,col2scale], center=center.val, scale=FALSE)
         } 
-
       }
       if(nvar[6]>0){
         nrowX=dim(X.list$X[[off]]$XDSs)[1]

@@ -21,7 +21,7 @@ genotype.list(G, marker.type="MS", ...)
 
   data(WarblerG)
 
-  G<-genotype.list(WarblerG)
+  G<-genotype.list(WarblerG[,-1])
   summary(G[[1]])
 
 }

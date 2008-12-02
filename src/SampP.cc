@@ -170,7 +170,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
            if(npar[2]!=0){
              Spred_tmp = X_design_betaSus[i]*betaSus;
              if(npar[3]!=0){
-               Spred_tmp +=  X_design_betaSs[i]*betaSs;
+               Spred_tmp =  Spred_tmp + X_design_betaSs[i]*betaSs;
              }
            }else{
              if(npar[3]!=0){
@@ -229,19 +229,19 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
 /****************/
 
            if(damsireV){
-             DSpred_tmp -= (maxc(DSpred_tmp)[0]-100.0);
+             DSpred_tmp = DSpred_tmp - (maxc(DSpred_tmp)[0]-100.0);
              if(mother_complete==FALSE || father_complete==FALSE){
                DSpred = exp(DSpred_tmp);
              }
            }else{
              if(damV){
-               Dpred_tmp -= (maxc(Dpred_tmp)[0]-100.0);
+               Dpred_tmp = Dpred_tmp - (maxc(Dpred_tmp)[0]-100.0);
                if(mother_complete==FALSE){
                  Dpred = exp(Dpred_tmp);
                }
              }
              if(sireV){
-               Spred_tmp -= (maxc(Spred_tmp)[0]-100.0);
+               Spred_tmp = Spred_tmp - (maxc(Spred_tmp)[0]-100.0);
                if(father_complete==FALSE){
                  Spred = exp(Spred_tmp);
                }
@@ -372,7 +372,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
 
            if(damsireV){
              if(mother_complete && father_complete){
-               DSpreds += DSpred_tmp;
+               DSpreds =  DSpreds + DSpred_tmp;
              }else{
                for(d=0; d<ndam[i]; d++){
                  for(s=0; s<nsire[i]; s++){            
@@ -410,7 +410,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
            }  
 
            if(damsireV || sireV ||  damV){ 
-             DSpreds -= (maxc(DSpreds)[0]-650.0);
+             DSpreds = DSpreds - (maxc(DSpreds)[0]-650.0);
              DSpreds = exp(DSpreds);
            }
 
