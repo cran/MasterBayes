@@ -17,7 +17,7 @@
 
   #################################### order pedigree and data #############################################
 
-  oped<-order.ped(ped, time_born=NULL)
+  oped<-orderPed(ped, time_born=NULL)
 
   rearrange_data<-match(oped[,1], ped[,1])
 

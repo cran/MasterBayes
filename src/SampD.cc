@@ -97,7 +97,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
               }
 
               if(npar[0]!=0 || (npar[4]!=0 && sire[offid[i]]<nind && DSuu[0]==1)){ 
-                Dpred_tmp -= (maxc(Dpred_tmp)[0]-100.0);
+                Dpred_tmp = Dpred_tmp - (maxc(Dpred_tmp)[0]-100.0);
                 Dpred = exp(Dpred_tmp);
                 mean_vec = meanc(Dpred)[0];
                 n = double(ntdam[i]-1);
@@ -156,7 +156,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
                 }
               }else{
                 if((npar[0]+npar[1]+(npar[4]*int(sire[offid[i]]<nind))+npar[5])>0){ 
-                   Dpreds -= (maxc(Dpreds)[0]-100.0);
+                   Dpreds = Dpreds - (maxc(Dpreds)[0]-100.0);
                    Dpreds = exp(Dpreds);
                    for(d=0; d<ndam[i]; d++){
                      Dpreds[d] *= X_design_GD[i][d]; 

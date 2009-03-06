@@ -123,7 +123,7 @@
       sP$beta<-MLEestimates$beta
     }else{
       if(length(sP$beta)>1){
-        sP$beta<-sP$beta[X.list$par_order]
+        sP$beta<-sP$beta[X.list$beta_map]
       }
     }
   }
@@ -173,7 +173,7 @@
         tP$beta<-rep(sqrt(10),length(sP$beta))
       }else{
         if(length(tP$beta)>1){
-          tP$beta<-tP$beta[X.list$par_order]*rep(sqrt(10),length(sP$beta))
+          tP$beta<-tP$beta[X.list$beta_map]*rep(sqrt(10),length(sP$beta))
         }else{
           tP$beta<-tP$beta*rep(sqrt(10),length(sP$beta))
         }

@@ -35,7 +35,7 @@ export(
 #  ErrorCheck,
 #  getsPandtP,
   legalG,
-  order.ped,
+  orderPed,
   extractA,
   post.pairs,
   autocorrP 

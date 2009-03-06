@@ -204,7 +204,7 @@
     }
   }
 
-  if(sP$estG==TRUE & Ppresent==TRUE){
+  if(Gpresent==TRUE & Ppresent==TRUE){
     if(FALSE%in%(GdP$id%in%PdP$id)){
       stop("genotype data exists for individuals not in PdataPed object")
     }

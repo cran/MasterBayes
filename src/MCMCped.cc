@@ -568,7 +568,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                 if(est_pbeta){
                   llB_1 += lmvnormM(beta_1,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
                 }
-              }
+               }
               if(estUS==TRUE){
                 llUS_1 = LLN_P(offidP, noff, nind, ntdamP, ntsireP, dam, sire, nusd, usdamcat, nuss, ussirecat, us_1, ratio_1);
                 if(est_pus){
@@ -711,12 +711,12 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
               llB_0 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN, DSapprox);
 
+
               if(est_pbeta){
                 llB_0 += lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
               }
 
  	      m_ll = std::min(1.0, llB_0-llB_1); 
-                  
 	      if(m_ll<log(runif(0.0,1.0))){
                llB_0 = llB_1;
 	       beta_0 = beta_1;		
@@ -761,8 +761,8 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
              }
 
 	     m_ll = std::min(1.0, llUS_0-llUS_1); 
-                  
-	      if(m_ll<log(runif(0.0,1.0))){
+
+      if(m_ll<log(runif(0.0,1.0))){
                 llUS_0 = llUS_1;
 	        us_0 = us_1;	
                 acceptUS--;

@@ -1,9 +1,9 @@
-\name{order.ped}
-\alias{order.ped}
+\name{orderPed}
+\alias{orderPed}
 \title{Orders a Pedigree}
 \description{Orders a pedigree so parents come before offspring}
 \usage{
-order.ped(ped, time_born=NULL, ...)
+orderPed(ped, time_born=NULL, ...)
 }
 \arguments{
   \item{ped}{pedigree with id, dam and sire in ech column}
@@ -13,6 +13,7 @@ order.ped(ped, time_born=NULL, ...)
 \value{
   an ordered pedigree pedigree with id, dam and sire in each column
 }
+\note{This function has changed name from \code{order.ped} in earler versions <2.42. \code{order.ped} did not always (rarely) ordered the pedigree correctly.  This new function uses the \code{kindepth} function from the \code{kinship} package}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
@@ -23,6 +24,6 @@ pedigree[,3][5:8]<-c(3,3,4,4)
 
 pedigree<-pedigree[sample(1:8),]
 
-pedigree2<-order.ped(pedigree)
+pedigree2<-orderPed(pedigree)
 }
 \keyword{manip}

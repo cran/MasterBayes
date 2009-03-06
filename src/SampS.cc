@@ -96,7 +96,7 @@ void sampS(int *offid, int noff, Matrix<double> X_design_GS [], int *npar, int *
                 }
               }
               if(npar[2]!=0 || (npar[4]!=0 && dam[offid[i]]<nind && DSuu[1]==1)){ 
-                Spred_tmp -= (maxc(Spred_tmp)[0]-100.0);
+                Spred_tmp = Spred_tmp - (maxc(Spred_tmp)[0]-100.0);
                 Spred = exp(Spred_tmp);
                 mean_vec = meanc(Spred)[0];
                 n = double(ntsire[i]-1);
@@ -155,7 +155,7 @@ void sampS(int *offid, int noff, Matrix<double> X_design_GS [], int *npar, int *
                 }
               }else{
                 if((npar[2]+npar[3]+(npar[4]*int(dam[offid[i]]<nind))+npar[5])>0){ 
-                  Spreds -= (maxc(Spreds)[0]-650.0);
+                  Spreds = Spreds - (maxc(Spreds)[0]-650.0);
                   Spreds = exp(Spreds);
                   for(d=0; d<nsire[i]; d++){
                     Spreds[d] *= X_design_GS[i][d]; 

@@ -8,7 +8,7 @@ getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...){
 
   null_mat<-t(as.matrix(as.numeric(NULL)))
 
-  X.list<-list(id=NULL, par_order=NULL, beta_map=NULL, merge=c(), mergeUS=c(), X=lapply(PdP$id[which(PdP$offspring==1)], function(x){x=list(dam.id=NULL,   sire.id=NULL, mergeN=matrix(NA,2,0), XDus=null_mat, vtDus=NULL, XDs=null_mat, vtDs=NULL, XSus=null_mat, vtSus=NULL, XSs=null_mat, vtSs=NULL, XDSus=null_mat, vtDSus=NULL,XDSs=null_mat, vtDSs=NULL, G=NULL)}))   
+  X.list<-list(id=NULL,beta_map=NULL, merge=c(), mergeUS=c(), X=lapply(PdP$id[which(PdP$offspring==1)], function(x){x=list(dam.id=NULL,   sire.id=NULL, mergeN=matrix(NA,2,0), XDus=null_mat, vtDus=NULL, XDs=null_mat, vtDs=NULL, XSus=null_mat, vtSus=NULL, XSs=null_mat, vtSs=NULL, XDSus=null_mat, vtDSus=NULL,XDSs=null_mat, vtDSs=NULL, G=NULL)}))   
 
   unique_id<-as.character(unique(PdP$id))
 
@@ -505,38 +505,6 @@ for(off in 1:sum(PdP$offspring==1)){
     }
   }
 }
-
-  if(tmain_effects>0){
-    for(i in 1:tmain_effects){
-      if(is.null(predictors[[i]]$Sire$X)==FALSE){
-        npar<-ncol(predictors[[i]]$Sire$X)
-        if(TRUE%in%is.na(predictors[[i]]$Sire$X)){
-          effect<-3
-        }else{
-          effect<-4
-        }
-      }
-      if(is.null(predictors[[i]]$Dam$X)==FALSE){
-        npar<-ncol(predictors[[i]]$Dam$X)
-        if(TRUE%in%is.na(predictors[[i]]$Dam$X)){
-          effect<-1
-        }else{
-          effect<-2
-        }
-      }
-      if(is.null(predictors[[i]]$DamSire$X)==FALSE){
-        npar<-ncol(predictors[[i]]$DamSire$X)
-        if(TRUE%in%is.na(predictors[[i]]$DamSire$X)){
-          effect<-5
-        }else{
-          effect<-6
-        }
-      }
-      X.list$par_order<-c(X.list$par_order, rep(effect, npar))
-    }
-    X.list$par_order<-c(X.list$par_order, par_type)
-    X.list$par_order<-rank(X.list$par_order, ties.method="first")
-  }
 
   if(sum(nvar)>0){
     beta_map<-1:sum(nvar)

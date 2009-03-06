@@ -200,8 +200,8 @@ function(PdP=PdataPed(),
    }
 
    if(pP$beta$mu[1]!=999 & length(pP$beta$mu)>1){
-     pP$beta$mu<-pP$beta$mu[X.list[[2]]]
-     pP$beta$sigma<-pP$beta$sigma[,X.list[[2]]][X.list[[2]],]
+     pP$beta$mu<-pP$beta$mu[X.list$beta_map]
+     pP$beta$sigma<-pP$beta$sigma[,X.list$beta_map][X.list$beta_map,]
    }
 
 # get linked parameters

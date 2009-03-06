@@ -133,13 +133,8 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                     if((d2==o1 && s1==o2) || (d2==o2 && s1==o1)){TacP +=0.25;}
                     if((d2==o1 && s2==o2) || (d2==o2 && s2==o1)){TacP +=0.25;}
 
-//                    if(dam_poss==sire_poss){
-//                      X_design_G[i][records_off] *= pow(1.0-E_cervus, 2.0)*(TacP-pG)+pG;
-//                    }else{
-                      TacP *= pow(1.0-E_cervus,3.0);
-                      X_design_G[i][records_off] *=  ((E_cervus*pow(1.0-E_cervus,2.0)*(sslfl+dslfl+pG))+TacP+(pG*pow(E_cervus,2.0)*(4.0-(3.0*E_cervus))));
-//                      X_design_G[i][records_off] *=  ((E_cervus*pow(1.0-E_cervus,2.0)*(sslfl+dslfl+pG))+TacP+(pG*pow(E_cervus,2.0)*(3.0-(2.0*E_cervus))));
-//                    }
+                    TacP *= pow(1.0-E_cervus,3.0);
+                    X_design_G[i][records_off] *=  ((E_cervus*pow(1.0-E_cervus,2.0)*(sslfl+dslfl+pG))+TacP+(pG*pow(E_cervus,2.0)*(3.0-(2.0*E_cervus))));
                   }
                }
              }
