@@ -222,7 +222,7 @@ function(PdP=PdataPed(),
 
   if(any(rel.mate)){
     if(DSapprox==1){
-      if(length(grep(PdP$formula[[match(TRUE, rel.mate)]], "Female"))>0){
+      if(length(grep("Female", PdP$formula[[match(TRUE, rel.mate)]]))>0){
         DSapprox<-2   # mate=male
       }else{
         DSapprox<-1   # mate=female

@@ -1,11 +1,11 @@
-%PDF-1.1
+%PDF-1.4
 %Å‚Å„ÅœÅ”\r
 1 0 obj
 <<
-/CreationDate (D:20080904151110)
-/ModDate (D:20080904151110)
+/CreationDate (D:20090401124829)
+/ModDate (D:20090401124829)
 /Title (R Graphics Output)
-/Producer (R 2.7.1)
+/Producer (R 2.8.1)
 /Creator (R)
 >>
 endobj
@@ -17,23 +17,15 @@ endobj
 endobj
 5 0 obj
 <<
-/Type /Font
-/Subtype /Type1
-/Name /F1
-/BaseFont /ZapfDingbats
+/Type /Page
+/Parent 3 0 R
+/Contents 6 0 R
+/Resources 4 0 R
 >>
 endobj
 6 0 obj
 <<
-/Type /Page
-/Parent 3 0 R
-/Contents 7 0 R
-/Resources 4 0 R
->>
-endobj
-7 0 obj
-<<
-/Length 8 0 R
+/Length 7 0 R
 >>
 stream
 q
@@ -14466,25 +14458,39 @@ b
 BT
 0.000 0.000 0.000 rg
 /F2 1 Tf 12.00 0.00 -0.00 12.00 57.54 258.90 Tm (P) Tj
+ET
+BT
 /F2 1 Tf 12.00 0.00 -0.00 12.00 65.54 258.90 Tm (r) Tj
+ET
+BT
 /F6 1 Tf 12.00 0.00 -0.00 12.00 102.14 151.80 Tm (b) Tj
+ET
+BT
 /F6 1 Tf 12.00 0.00 -0.00 12.00 102.14 151.80 Tm (b) Tj
+ET
+BT
 /F2 1 Tf 8.00 0.00 -0.00 8.00 108.73 149.61 Tm (1) Tj
+ET
+BT
 /F6 1 Tf 12.00 0.00 -0.00 12.00 274.61 119.72 Tm (b) Tj
+ET
+BT
 /F6 1 Tf 12.00 0.00 -0.00 12.00 274.61 119.72 Tm (b) Tj
+ET
+BT
 /F2 1 Tf 8.00 0.00 -0.00 8.00 281.20 117.52 Tm (2) Tj
 ET
 Q
 endstream
 endobj
-8 0 obj
-228768
+7 0 obj
+228810
 endobj
 3 0 obj
 <<
 /Type /Pages
 /Kids [
-6 0 R
+5 0 R
 ]
 /Count 1
 /MediaBox [0 0 432 432]
@@ -14493,11 +14499,11 @@ endobj
 4 0 obj
 <<
 /ProcSet [/PDF /Text]
-/Font << /F1 5 0 R /F2 10 0 R /F6 11 0 R >>
+/Font <</F2 9 0 R /F6 10 0 R >>
 /ExtGState << >>
 >>
 endobj
-9 0 obj
+8 0 obj
 <<
 /Type /Encoding
 /BaseEncoding /WinAnsiEncoding
@@ -14506,39 +14512,38 @@ endobj
 /dieresis /.notdef /ring /cedilla /.notdef /hungarumlaut /ogonek /caron /space]
 >>
 endobj
-10 0 obj <<
+9 0 obj <<
 /Type /Font
 /Subtype /Type1
 /Name /F2
 /BaseFont /Helvetica
-/Encoding 9 0 R
+/Encoding 8 0 R
 >> endobj
-11 0 obj <<
+10 0 obj <<
 /Type /Font
 /Subtype /Type1
 /Name /F6
 /BaseFont /Symbol
 >> endobj
 xref
-0 12
+0 11
 0000000000 65535 f 
 0000000021 00000 n 
 0000000163 00000 n 
-0000229218 00000 n 
-0000229301 00000 n 
+0000229177 00000 n 
+0000229260 00000 n 
 0000000212 00000 n 
-0000000295 00000 n 
-0000000375 00000 n 
-0000229196 00000 n 
-0000229405 00000 n 
-0000229662 00000 n 
-0000229759 00000 n 
+0000000292 00000 n 
+0000229155 00000 n 
+0000229352 00000 n 
+0000229609 00000 n 
+0000229705 00000 n 
 trailer
 <<
-/Size 12
+/Size 11
 /Info 1 0 R
 /Root 2 0 R
 >>
 startxref
-229837
+229783
 %%EOF

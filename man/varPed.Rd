@@ -90,11 +90,14 @@ and the likelihood of \eqn{\beta}{b} is
 
 where \eqn{n_{o}}{no}, \eqn{n^{(o)}_{i}}{ni} and \eqn{n^{(o)}_{j}}{nj} are the number of offspring, the number of potential mothers for offspring \eqn{o}{o}, and the number of potential fathers for offspring \eqn{o}{o}, respectively.  \eqn{d}{d} and \eqn{s}{s} are the actual parents of offspring \eqn{o}{o}. The set of possible parents  in the denominator of the multinomial likelihood are those that are not excluded using the argument \code{restrict}. However, if the argument \code{keep=TRUE} is used then the denominator of the likelihood will include excluded parents depsite the fact that \eqn{d\neq i}{d!=i} and \eqn{s\neq j}{s!=j}.
 
-In recent versions \code{DSapprox=TRUE} can be passed to \code{MCMCped} which approximates the likelihood of \eqn{\beta}{b} when a variable specifies the distance between mates (i.e \code{relational="MATE"}). This approximation reduces the computational burden by fixing \eqn{i=d}{i=d} or \eqn{i=s}{i=s} in the denominator of the multinomial likelihood. The parent defined as the "MATE" is fixed, so that a \code{varPed} expression with gender="Male" has the approximated likelihood:
+In version 2.31-2.42 \code{DSapprox=TRUE} can be passed to \code{MCMCped} which approximates the likelihood of \eqn{\beta}{b} when a variable specifies the distance between mates (i.e \code{relational="MATE"}). This approximation reduces the computational burden by fixing \eqn{i=d}{i=d} or \eqn{j=s}{j=s} in the denominator of the multinomial likelihood. The parent defined as the \code{"MATE"} is fixed, so that a \code{varPed} expression with \code{gender="Male"} has the approximated likelihood:
 
-\deqn{Pr(x, i=d| \bm{\beta})  = \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{d,j})}\right]}{Pr(x, i=d| b) = prod(no)(exp(eta(d,s))/sum(nj)(exp(eta(d,j))))}  
+\deqn{Pr(x | \bm{\beta})  \approx \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{d,j})}\right]}{Pr(x| b) = prod(no)(exp(eta(d,s))/sum(nj)(exp(eta(d,j))))}  
 
- 
+For certain types of problem this approximation does not work well.  In version 2.43 and after, another approximation is used which seems to work better:
+
+\deqn{Pr(x | \bm{\beta})  \approx \prod^{n_{o}}_{o}\left[\frac{\textrm{exp}(\eta^{(o)}_{d,s})}{\sum^{n^{(o)}_{i}}_{i=1}\textrm{exp}(\eta^{(o)}_{i,s})+\sum^{n^{(o)}_{j}}_{j=1}\textrm{exp}(\eta^{(o)}_{d,j})-\textrm{exp}(\eta^{(o)}_{d,s})}\right]}{Pr(x| b) = prod(no)(exp(eta(d,s))/(sum(nj)(exp(eta(d,j))+sum(ni)(exp(eta(i,s))-exp(eta(d,s)))))}  
+
 }
 \value{
   list containing the design matrix for variable \code{x}, the identity of retained parents and the gender of the parents

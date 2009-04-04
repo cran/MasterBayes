@@ -22,7 +22,7 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         int which_vec = 0;
         int offhom_sizeS;
         int cat_tmp[maxrep];      // categories to which those genotypes belong
-        double Ppart[100];        // Probability vector for true genotypes
+        double Ppart[maxall*maxall];        // Probability vector for true genotypes
         int a1;                   // observed allele 1
         int a2;                   // observed allele 2
         int sample_cat;           // category for observed genotype
@@ -54,12 +54,12 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
                                  // if there is only a single allele in the selfed offspring IBL[0] is the allele
                                  // and IBL[1] is the number of IBL[0] alleles in the selfed offspring.  If there 
                                  // are 2 alleles then IBL[1] is the second allele and the genotype of the indiviual is known.
-
+/*
         int oldG1;         // some variables that are used for bug checking
         int oldG2;
         bool problem;
         int j;
-
+*/
         for(o=0; o < nind; o++){
            no_off[o] = 0;
         }
@@ -107,8 +107,8 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
 
 if(id[i+q]!=ind){                 // the last record for that individual
 
-               oldG1 = G[ind][l*2];          // some variables that are used for bug checking
-               oldG2 = G[ind][(l*2)+1];
+//               oldG1 = G[ind][l*2];          // some variables that are used for bug checking
+//               oldG2 = G[ind][(l*2)+1];
 
 // get dam genotype //                
                 if(dam[ind]<nind){                 
@@ -1406,10 +1406,11 @@ case 4: // has offspring but no parents, or one parent //
 /****************************************************************/
 /*  Some bug-checking code for detecting problems with sampG    */
 /*  remember to uncomment the declared variables at the start   */
-/* and also the old geneotypes before sampling on lines 109-110 */
+/*  and also the old geneotypes before sampling on lines 110 -  */
+/*  111 and their declarations on line 58-61                    */
 /****************************************************************/
 
-
+/*
        problem= FALSE;
 
        if(no_off[ind]>0){
@@ -1511,7 +1512,7 @@ case 4: // has offspring but no parents, or one parent //
            cout << "No Offspring exist" << endl;
          }
        }
- 
+*/ 
           ind++;         
           n = 0; 
           misstype = 0;
