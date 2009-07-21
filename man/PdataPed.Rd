@@ -9,7 +9,7 @@
 \usage{
 PdataPed(formula, data=NULL, id=data$id, sex=data$sex,
    offspring=data$offspring, timevar=data$timevar, 
-   USdam=FALSE, USsire=FALSE, ...)
+   USdam=FALSE, USsire=FALSE)
 }
 \arguments{
   \item{formula}{list of model predictors of the form \code{expression(\link{varPed}(...))}}

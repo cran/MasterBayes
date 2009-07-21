@@ -1,13 +1,13 @@
-"getsPandtP"<-function(sP, tP, PdP, GdP, X.list, nbeta, unique_id, checkP, ...){
+"getsPandtP"<-function(sP, tP, PdP, GdP, X.list, nbeta, unique_id, checkP){
 
   if(sP$estP==TRUE & sP$estG==FALSE & length(sP$G)==0){CERVUS<-TRUE}else{CERVUS<-FALSE} 
-  # use the cervus approximation for genotyping error
+  # use an approximation for genotyping error
 
   if(is.null(sP$id)){
     sP$id<-X.list$id
   }
 
-  if(sP$estA == TRUE | sP$estG==TRUE | CERVUS==TRUE){ 
+  if(sP$estA == TRUE | sP$estG==TRUE | CERVUS==TRUE | is.null(sP$G)==FALSE){ 
     if(length(sP$A)==0){           
       if(length(sP$G)!=0){        
         sP$A<-extractA(sP$G)
@@ -35,7 +35,11 @@
       sP$E1[which(sP$E1==0)]<-1e-5
     }
   }
-  
+  if(GdP$marker.type=="MSC"){
+     sP$estE1<-FALSE
+     sP$E1<-rep(0, length(sP$E1))
+  }
+
   if(is.null(sP$E2)){       
     if(is.null(GdP$categories)){    
       sP$E2<-0.005
@@ -67,22 +71,11 @@
       sP$G<-lapply(GdP$G, function(x){x[-duplicated(GdP$id)==FALSE]}) 
     }
 
-    ped<-matrix(NA, length(sP$id), 3)
-
-    ped[,1]<-sP$id
-
-    if(is.null(sP$dam)==FALSE){
-      ped[,2]<-match(sP$dam, unique_id)
-    }
-    if(is.null(sP$sire)==FALSE){
-      ped[,3]<-match(sP$sire, unique_id)
-    }
-
     if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
       if(sP$estUSsire=="USdam"){
-        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire="USdam", ped=ped)
+        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire="USdam", ped=sP$ped)
       }else{
-        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=ped)
+        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=sP$ped)
       }
     }
 
@@ -107,17 +100,25 @@
     sP$USsire<-MLENus$nUS[(nusd+1):(nusd+nuss)]
   }
 
-  if(sP$estP==TRUE){  
-   ped<-MLE.ped(X.list, ped=ped, USdam=PdP$USdam, nUSdam=sP$USdam, USsire=PdP$USsire, nUSsire=sP$USsire, checkP=checkP)
+ if(is.null(sP$ped)==FALSE){
+    sP$ped[,1]<-match(sP$ped[,1], unique_id)
+    sP$ped[,2]<-match(sP$ped[,2], unique_id)
+    sP$ped[,3]<-match(sP$ped[,3], unique_id)
+    sP$ped<-sP$ped[order(as.numeric(sP$ped[,1])),]
+  }else{
+    if(sP$estP==TRUE){  
+       sP$ped<-MLE.ped(X.list, ped=NULL, USdam=PdP$USdam, nUSdam=sP$USdam, USsire=PdP$USsire, nUSsire=sP$USsire, checkP=checkP)$P   
+    }else{
+       sP$ped<-matrix(NA, length(sP$id), 3)
+       sP$ped[,1]<-match(sP$id, unique_id)
+    }
   }
 
-  sP$dam<-ped[,2]
-  sP$sire<-ped[,3]
-  
   if(sP$estbeta==TRUE){
-    MLEestimates<-MLE.beta(X.list, ped=ped, beta=sP$beta, nUSdam=sP$USdam, nUSsire=sP$USsire)
+    MLEestimates<-MLE.beta(X.list, ped=sP$ped, beta=sP$beta, nUSdam=sP$USdam, nUSsire=sP$USsire)
   }
-
+  
+ 
   if(sP$estbeta==TRUE){
     if(is.null(sP$beta)){
       sP$beta<-MLEestimates$beta
@@ -134,15 +135,15 @@
       if(is.null(PdP$timevar)){
         time_born=NULL
       }else{
-        time_born = PdP$timevar[which(PdP$offspring==1)][match(ped[,1], PdP$id)] 
+        time_born = PdP$timevar[which(PdP$offspring==1)][match(sP$ped[,1], PdP$id)] 
       }
-      if(legalG(sP$G, sP$A, ped, time_born=time_born, marker.type=GdP$marker.type)$valid=="FALSE"){
+      if(legalG(sP$G, sP$A, sP$ped, time_born=time_born, marker.type=GdP$marker.type)$valid=="FALSE"){
         warning("sP$G does not have postive probability given possible starting pedigree")
         stop()
       }
     }else{   
       if(is.null(GdP$G)==FALSE){   
-        sP$G<-legalG(sP$G, sP$A, ped, marker.type=GdP$marker.type)$G
+        sP$G<-legalG(sP$G, sP$A, sP$ped, marker.type=GdP$marker.type)$G
       }  
     }
   }

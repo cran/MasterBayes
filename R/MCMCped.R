@@ -14,8 +14,7 @@ function(PdP=PdataPed(),
          checkP = FALSE,
          jointP = TRUE,
          DSapprox = FALSE,
-         verbose=TRUE,
-         ...
+         verbose=TRUE
 ){
 
     if(is.null(PdP$id)==FALSE){                    # if phenotypic data exists then use id's from PdP as reference
@@ -36,7 +35,7 @@ function(PdP=PdataPed(),
 ############################### re-arrange genetic data to match phenotype data ####################################
  
     if(is.null(GdP$G)==FALSE){        
-      if(is.null(sP$A)==FALSE & GdP$marker.type=="MS"){
+      if(is.null(sP$A)==FALSE & (GdP$marker.type=="MSC" || GdP$marker.type=="MSW")){
         for(i in 1:length(GdP$G)){
           sP$A[[i]]<-sP$A[[i]][order(sP$A[[i]], decreasing=T)]
           GdP$G[[i]]<-genotype(GdP$G[[i]], alleles=names(sP$A[[i]]), reorder="no")
@@ -165,8 +164,8 @@ function(PdP=PdataPed(),
    X_design_betaDSus[which(is.na(X_design_betaDSus)==TRUE)]<-0
    }
 
-   if(sP$estG==TRUE){            # if geneotype data is present convert to c++ format
-     GdP$G<-GtoC(GdP$G, biallelic=(GdP$marker.type!="MS"))
+   if(sP$estG==TRUE || sP$estE1==TRUE || sP$estE2==TRUE || sP$estA==TRUE){            # if geneotype data is present convert to c++ format
+     GdP$G<-GtoC(GdP$G, biallelic=(GdP$marker.type!="MSC" & GdP$marker.type!="MSW"))
    }else{
      GdP$G<-0  
      GdP$id<-0
@@ -174,7 +173,7 @@ function(PdP=PdataPed(),
    }
 
    if(length(sP$G)!=0){              # if sP$G is specified then convert to c++ format
-       sP$G<-GtoC(sP$G, biallelic=(GdP$marker.type!="MS"))
+       sP$G<-GtoC(sP$G, biallelic=(GdP$marker.type!="MSC" & GdP$marker.type!="MSW"))
     }else{
       sP$estG<-0  
       sP$estA<-0
@@ -182,8 +181,8 @@ function(PdP=PdataPed(),
       sP$estE2<-0
    }
     	
-   sP$dam[which(is.na(sP$dam)==T)]<-nind+1
-   sP$sire[which(is.na(sP$sire)==T)]<-nind+1+nusd
+   sP$ped[,2][which(is.na(sP$ped[,2])==TRUE)]<-nind+1
+   sP$ped[,3][which(is.na(sP$ped[,3])==TRUE)]<-nind+1+nusd
    tPus<-NULL
 
    if(((nusd+nuss)*(sP$estUSdam+(sP$estUSsire==TRUE | sP$estUSsire=="USdam")))>0){
@@ -214,7 +213,7 @@ function(PdP=PdataPed(),
     beta_map<--999
   }  
 
-  mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%GdP$marker.type*c(1:3))
+  mtype.numeric<-sum(c("MSC", "AFLP", "MSW", "SNP")%in%GdP$marker.type*c(1:4))
 
   rel.mate<-unlist(lapply(PdP$formula, function(x){length(grep("relational.*MATE",x))==TRUE}))  # another hack - relational=MATE variables
 
@@ -300,8 +299,8 @@ output<-.C("MCMCped",
 	as.double(c(sP$beta)),	             # starting vector of beta
 	as.double(c(sP$USdam, sP$USsire)),   # starting vector of US numbers
         as.integer(sP$G),                    # starting true genotypes  
-	as.integer(as.numeric(sP$dam)-1),    # starting vector of dams
-	as.integer(as.numeric(sP$sire)-1),   # starting vector of sires
+	as.integer(as.numeric(sP$ped[,2])-1),    # starting vector of dams
+	as.integer(as.numeric(sP$ped[,3])-1),   # starting vector of sires
 	as.double(post$A),	                # posterior distribution of allele frequencies
 	as.double(post$E1),	                # posterior distribution of E1
 	as.double(post$E2),	                # posterior distribution of E2

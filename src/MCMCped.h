@@ -22,6 +22,10 @@
 #include "SampG.h"
 #endif
 
+#ifndef _SAMPGC_H
+#include "SampGC.h"
+#endif
+
 #ifndef _SAMPDOMG_H
 #include "SampDomG.h"
 #endif

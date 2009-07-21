@@ -5,13 +5,12 @@
   Given a \code{\link{PdataPed}} object simulates a pedigree according to the linear model defined by \code{formula} and user specified parameter values for the given model.
 }
 \usage{
-simpedigree(PdP, beta=NULL, nUS=NULL, ...)
+simpedigree(PdP, beta=NULL, nUS=NULL)
 }
 \arguments{
  \item{PdP}{a \code{\link{PdataPed}} object}
  \item{beta}{parameter vector for the model defined by the \code{formula} argument in \code{\link{PdataPed}}} 
  \item{nUS}{vector for the size of the unsampled population(s) defined in the \code{USdam} and \code{USsire} arguments passed to \code{\link{PdataPed}}.  Parmeters for the unsampled female population come before the male population.}
- \item{...}{further arguments to be passed}
 }
 \value{
    \item{ped}{pedigree in 3 columns: id, dam, sire. Base individuals have NA as parents}

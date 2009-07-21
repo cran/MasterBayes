@@ -4,13 +4,12 @@
 \description{Calculates the number of mismatches between  parental and offspring genotypes, assuming the genotypes of spouses are unknown. Primarily intended to be used inside the function \code{\link{getXlist}} where potential parents can be excluded based on the number of mismatches. Dominant markers do not produce mismatches.
 }
 \usage{
-mismatches(X.list, G, mm.tol=999, ...)
+mismatches(X.list, G, mm.tol=999)
 }
 \arguments{
    \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}}
    \item{G}{list of genotype objects, the rows of which must refer to the id vector \code{X.list$id}}
    \item{mm.tol}{maximum number of mismatches that are tolerated before exclusion}
-   \item{...}{further arguments to be passed}
 }
 \value{
     list of design matrices of the form \code{X.list}, but containing the number of mismatches between parents and offspring.  Potential parents that exceed the number of mismatches specified by \code{mm.tol} are removed from the vectors of potential parents: \code{restdam.id} and \code{restsire.id}.  

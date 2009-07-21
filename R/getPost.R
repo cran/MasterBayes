@@ -1,4 +1,4 @@
-"getPost"<-function(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id, marker.type="MS", ...){
+"getPost"<-function(post, sP, X.list, nitt, thin, burnin, write_postG, write_postP, write_postA, unique_id, marker.type="MSW"){
 
 ########### extract posterior samples from C++ ######################################################################
 
@@ -64,7 +64,7 @@
       start<-end+1
       end<-end+(ngen[loc]*nind)
       post_GP[[loc]]<-matrix(post$G[start:end], nind, ngen[loc])
-      if(marker.type=="MS"){
+      if(marker.type=="MSC" || marker.type=="MSW"){
         gnames<-outer(names(sP$A[[loc]]), names(sP$A[[loc]]), paste, sep="/")
         colnames(post_GP[[loc]])<-c(t(gnames)[lower.tri(gnames, diag=TRUE)])
       }else{
@@ -119,6 +119,7 @@
   if(length(post$beta)==0 & sP$estbeta==TRUE){
     post$beta<-rep(0, ceiling((nitt-burnin)/thin)*length(sP$beta))
   }
+
   if(length(post$A)==0 & sP$estA==TRUE & write_postA==TRUE){
     post$A<-rep(0, ceiling((nitt-burnin)/thin)*length(unlist(sP$A)))
   }

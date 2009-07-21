@@ -1,4 +1,4 @@
-"MLE.beta"<-function(X.list, ped, beta=NULL, nUSdam=NULL, nUSsire=NULL,...){
+"MLE.beta"<-function(X.list, ped, beta=NULL, nUSdam=NULL, nUSsire=NULL){
 
   off_records<-match(as.character(X.list$id[as.numeric(names(X.list$X))]), as.character(ped[,1]))
   dam<-match(ped[,2][off_records], X.list$id)
@@ -116,7 +116,7 @@
       }
     }
 
-    optim.out <- optim(beta, beta.loglik, method = "BFGS",control = list(fnscale = -1), hessian = TRUE, X=X, dam_pos=dam_pos, sire_pos=sire_pos, par_pos=par_pos, beta_map=X.list$beta_map, merge=X.list$merge, mergeN=mergeN, nUs=nUS)
+    optim.out <- optim(beta, beta.loglik, method = "BFGS",control = list(fnscale = -1), hessian = TRUE, X=X, dam_pos=dam_pos, sire_pos=sire_pos, par_pos=par_pos, beta_map=X.list$beta_map, merge=X.list$merge, mergeN=mergeN, nUS=nUS)
  
     C <- solve(-1 * optim.out$hessian)
     B.start <- optim.out$par

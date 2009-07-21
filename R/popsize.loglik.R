@@ -1,4 +1,4 @@
-"popsize.loglik"<-function(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE, ...){
+"popsize.loglik"<-function(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE){
 
 # Nielsen's likelihood function for N: only exact when the genetic likelihoods are calculated in the absence 
 # of genotyping error.  fillX_G(E=0). Alsdo works when females are unsampled.

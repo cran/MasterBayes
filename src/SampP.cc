@@ -319,7 +319,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
                DSpred_tmp[((ndam[i]-1)*ntsire[i])+(nsire[i]-1)] = log(tot_mean/(ndam[i]+nsire[i]));
              }
            }else{
-             if(sireV && father_complete==FALSE){ 
+             if(sireV && father_complete==FALSE){                  
                mean_vec = meanc(Spred)[0];
                n = double(ntsire[i]-1);
                mean_vec -= Spred[nsire[i]-1]/(n+1.0);

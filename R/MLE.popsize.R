@@ -1,4 +1,4 @@
-"MLE.popsize"<-function(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, ...){
+"MLE.popsize"<-function(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL){
  
   if(length(USdam)==1){
     if(USdam==TRUE){

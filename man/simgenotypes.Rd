@@ -2,20 +2,19 @@
 \alias{simgenotypes}
 \title{Genotype and Genotyping Error Simulation}
 \description{
-Simulates genotypes given a pedigree and allele frequencies.  Option exists to simulate observed genotypes given Wangs's (2004) model of genotyping error for codominat markers or an asymmetric allele based model for dominant markers (Hadfield, 2007).
+Simulates genotypes given a pedigree and allele frequencies.  Option exists to simulate observed genotypes given Wangs's (2004) or CERVUS's model (Marshall 1998) of genotyping error for codominat markers or an asymmetric allele based model for dominant markers (Hadfield, 2009).
 }
 \usage{
-simgenotypes(A, E1 = 0, E2 = 0, pedigree, no_dup = 1, prop.missing=0, marker.type="MS", ...)
+simgenotypes(A, E1 = 0, E2 = 0, ped, no_dup = 1, prop.missing=0, marker.type="MSW")
 }
 \arguments{
   \item{A}{list of allele frequencies at each locus}
-  \item{E1}{Allelic Dropout Rate for codominat markers. Probability of mis-scoring a dominant allele as recessive for dominant markers}
-  \item{E2}{Stochastic Error Rate for codominat markers. Probability of mis-scoring a recessive allele as dominant for dominant markers}
-  \item{pedigree}{pedigree in 3 columns: id, dam, sire. Base individuals have NA as parents. All parents must be in id, and each indivdiual must either have both parents in id, or both parents as base.}
+  \item{E1}{if Wang's (2004) model of genotyping error for co-dominant markers is used this is the probability of an allele dropping out. If CERVUS's (Kalinowski, 2006; Marshall, 1998) model of genotyping error for co-dominant markers is used this parameter is not used. If Hadfield's (2009) model of genotyping error for dominant markers is used this is the probability of a dominant allele being scored as a recessive allele.}
+  \item{E2}{if Wang's (2004) or CERVUS's (Kalinowski, 2006; Marshall, 1998) model of genotyping error for co-dominant markers are used this is the probability of an allele being miss-scored. In the CERVUS model errors are not independent for the two alleles within a genotype and so if a genotyping error has occurred at one allele then a genotyping error occurs at the other allele with probability one. Accordingly, \code{E2}(2-\code{E2}) is the per-genotype rate defined in CERVUS. If Hadfield's (2009) model of genotyping error for dominant markers is used this is the probability of a recessive allele being scored as a dominant allele.}
+  \item{ped}{pedigree in 3 columns: id, dam, sire. Base individuals have NA as parents. All parents must be in id.}
   \item{no_dup}{integer: number of times genotypes are to be observed}
   \item{prop.missing}{proportion of observed genotypes that are missing}
-  \item{marker.type}{"MS" or "AFLP" for codominant or dominant markers respectively}
-  \item{...}{Further arguments to be passed}
+  \item{marker.type}{\code{"MSW"} or \code{"MSC"} for co-dominant markers with Wang's (2004) model of genotyping error or CERVUS's model of genotyping error (Kalinowski, 2006; Marshall, 1998) or \code{"AFLP"} for dominant markers (Hadfield, 2009).}
 }
 \value{
   \item{G}{list of genotype objects; true genotypes for each locus}
@@ -24,8 +23,9 @@ simgenotypes(A, E1 = 0, E2 = 0, pedigree, no_dup = 1, prop.missing=0, marker.typ
   \item{id}{vector of \code{id} names indexing \code{Gobs}}
 }
 \references{
-Wang J.L. 2004 Genetics 166 4 1963-1979
-Hadfield J.D. 2007 \emph{in prep}
+Marshall, T. C. \emph{et al} (1998) Molecular Ecology 7 5 639-655
+Kalinowski S.T. \emph{et al} (2007) Molecular Ecology 16 5 1099-1106
+Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 }
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{genotype}}
@@ -33,7 +33,7 @@ Hadfield J.D. 2007 \emph{in prep}
 pedigree<-cbind(1:10, rep(NA,10), rep(NA, 10))
 
 gen_data<-simgenotypes(A=list(loc_1=c(0.5, 0.2, 0.1, 0.075, 0.025)), 
- E1=0.1, E2=0.1, pedigree=pedigree, no_dup=1)
+ E1=0.1, E2=0.1, ped=pedigree, no_dup=1)
 
 summary(gen_data$G[[1]])
 summary(gen_data$Gobs[[1]])

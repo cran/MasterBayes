@@ -1,4 +1,4 @@
-"ErrorCheck"<-function(sP, tP, pP, PdP, GdP, unique_id, nbeta, nlinked, ...){
+"ErrorCheck"<-function(sP, tP, pP, PdP, GdP, unique_id, nbeta, nlinked){
 
   if(is.null(PdP$data)){Ppresent<-FALSE}else{Ppresent<-TRUE}
   if(is.null(GdP$G)){Gpresent<-FALSE}else{Gpresent<-TRUE}
@@ -38,7 +38,7 @@
     sP$estP<-FALSE
   }
 
-  if(sP$estG==FALSE){
+  if(sP$estG==FALSE & is.null(sP$G)){
     sP$estE1<-FALSE
     sP$estE2<-FALSE
     sP$estA<-FALSE
@@ -155,45 +155,34 @@
     } 
   }
 
-  if(is.null(sP$dam)==FALSE){
-    if(length(sP$dam)!=length(unique_id)){
-      if(length(sP$dam)==sum(PdP$offspring)){
-        dam<-rep(NA, length(unique_id))
-        dam[as.numeric(PdP$id[which(PdP$offspring==1)])]<-sP$dam
-        sP$dam<-dam
+  if(is.null(sP$ped)==FALSE){
+    if(FALSE%in%(unique_id%in%sP$ped[,1])){
+      if(FALSE%in%(unique_id[PdP$id[which(PdP$offspring==1)]]%in%sP$ped[,1])){
+        stop("sP$ped must have rows for all offspring or all indiviuals")
       }else{
-        stop("starting dam vector is not equal to the number of indivdiuals in PdP or the number of offspring records")
+        base<-setdiff(unique_id, sP$ped[,1]) 
+        sP$ped<-rbind(cbind(as.character(base), rep(NA,length(base)), rep(NA,length(base))),  sP$ped)      
       }
     }
-    if(FALSE%in%(na.omit(sP$dam)%in%unique_id)){
-      stop("some dams are not in PdP")
+    if(FALSE%in%(sP$ped[,1]%in%unique_id)){
+      stop("some individuals in the id column of sP$ped are not in PdP")
+    }
+    if(FALSE%in%(na.omit(sP$ped[,2])%in%unique_id)){
+      stop("some dams in sP$ped are not in PdP")
+    }
+    if(FALSE%in%(na.omit(sP$ped[,3])%in%unique_id)){
+      stop("some sires in sP$ped are not in PdP")
     }
     if(is.null(PdP$sex)==FALSE){
-      if("Male"%in%PdP$sex[match(match(na.omit(sP$dam), unique_id), PdP$id)]){
+      if("Male"%in%PdP$sex[match(match(na.omit(sP$ped[,2]), unique_id), PdP$id)]){
        stop("some starting dams are recorded as males")
-      }            
+      }
+      if("Female"%in%PdP$sex[match(match(na.omit(sP$ped[,3]), unique_id), PdP$id)]){
+       stop("some starting sires are recorded as females")
+      }                 
     }
   }
 
-  if(is.null(sP$sire)==FALSE){
-    if(length(sP$sire)!=length(unique_id)){
-      if(length(sP$sire)==sum(PdP$offspring)){
-       sire<-rep(NA, length(unique_id))
-       sire[as.numeric(PdP$id[which(PdP$offspring==1)])]<-sP$sire
-       sP$sire<-sire
-      }else{
-        stop("starting sire vector is not equal to the number of indivdiuals in PdP or the number of offspring records")
-      }
-    }
-    if(FALSE%in%(na.omit(sP$sire)%in%unique_id)){
-      stop("some sire are not in PdP")
-    }
-    if(length(PdP$sex)!=0){
-      if("Female"%in%PdP$sex[match(match(na.omit(sP$sire), unique_id), PdP$id)]){
-       stop("some starting sires are recorded as females")
-      }           
-    }
-  }
 
 ###################################################################################################################
 ######################## checking whether things to be estimated can be ########################################### ###################################################################################################################
@@ -214,10 +203,10 @@
   }
 
   if(sP$estbeta==TRUE){
-    if(sP$estP==FALSE & (sum(nbeta[1:2])>0 | sum(nbeta[5:6])>0) & is.null(sP$dam)){
+    if(sP$estP==FALSE & (sum(nbeta[1:2])>0 | sum(nbeta[5:6])>0) & is.null(sP$ped)){
       stop("beta cannot be estimated because dams are not given or cannot be estimated")
     }
-    if(sP$estP==FALSE & (sum(nbeta[3:4])>0 | sum(nbeta[5:6])>0) & is.null(sP$sire)){
+    if(sP$estP==FALSE & (sum(nbeta[3:4])>0 | sum(nbeta[5:6])>0) & is.null(sP$ped)){
       stop("beta cannot be estimated because sire are not given or cannot be estimated")
     }
   }
@@ -227,13 +216,13 @@
     }
 
   if(sP$estE1==TRUE){
-    if(sP$estP==FALSE & is.null(sP$dam) & is.null(sP$sire) & length(GdP$id)==length(unique(GdP$id)) & pP$E1[1]==999){
+    if(sP$estP==FALSE & is.null(sP$ped) & length(GdP$id)==length(unique(GdP$id)) & pP$E1[1]==999){
       stop("E1 cannot be estimated because pedigree cannot be estimated and duplicate samples do not exist")
     }
   }
 
   if(sP$estE2==TRUE){
-    if(sP$estP==FALSE & is.null(sP$dam) & is.null(sP$sire) & length(GdP$id)==length(unique(GdP$id)) & pP$E1[1]==999){
+    if(sP$estP==FALSE & is.null(sP$ped) & length(GdP$id)==length(unique(GdP$id)) & pP$E1[1]==999){
       stop("E2 cannot be estimated because pedigree cannot be estimated and duplicate samples do not exist")
     }
   }

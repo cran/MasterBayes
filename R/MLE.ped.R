@@ -1,4 +1,4 @@
-MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSsire=NULL, threshold=0, checkP=FALSE, ...){
+MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSsire=NULL, threshold=0, checkP=FALSE){
 
          if(is.null(ped)){
            ped<-matrix(NA, length(X.list$id), 3)
@@ -7,6 +7,10 @@ MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSs
            ped<-match(ped, X.list$id)
            ped<-matrix(ped, length(X.list$id), 3)                    
          }
+
+         posterior.prob<-rep(1, length(X.list$id))
+         acceptdam<-rep(TRUE, length(X.list$id))
+         acceptsire<-rep(TRUE, length(X.list$id))
 
          if(FALSE%in%is.na(ped[,2])){
            getd<-FALSE
@@ -54,8 +58,7 @@ MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSs
          nrestsire<-unlist(lapply(X.list$X, function(x){length(x$restsire.id)}))
 
          if(length(X.list$X[[1]]$G)==0){
-           warning("X.list$X is missing genetic likelihoods")
-           stop()
+           stop("X.list$X is missing genetic likelihoods")
          }
 
 
@@ -100,44 +103,51 @@ MLE.ped<-function(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, nUSs
              MLpar<-which.max(t(X))[1]
              MLdam<-ceiling(MLpar/nsire[i])
              MLsire<-MLpar-((ceiling(MLpar/nsire[i])-1)*nsire[i])
-             if((t(X)[MLpar]/sum(X))<threshold){
-               MLdam<-NA
-               MLsire<-NA
-             }
+             posterior.prob[pos_in_id]<-t(X)[MLpar]/sum(X)
            }else{
              if(gets==FALSE){
                MLsire<-match(ped[,3][pos_in_id], X.list$id[X.list$X[[i]]$sire.id])
                if(is.na(MLsire)==TRUE & nbetaS>0){MLsire<-nsire[i]}  
                if(getd==TRUE){   
                  MLdam<-which.max(X[,MLsire])
-                 if(MLdam==length(X.list$X[[i]]$dam.id) & nbetaD>0){MLdam<-NA}  
-                 if((X[,MLsire][MLdam]/sum(X[,MLsire]))<threshold){MLdam<-NA}  
+                 posterior.prob[pos_in_id]<-X[,MLsire][MLdam]/sum(X[,MLsire])
                }  
              }
              if(getd==FALSE){
                MLdam<-match(ped[,2][pos_in_id], X.list$id[X.list$X[[i]]$dam.id])
                if(is.na(MLdam)==TRUE & nbetaD>0){MLdam<-ndam[i]}
-               if(gets==TRUE){        
+               if(gets==TRUE){ 
+                 posterior.prob[pos_in_id]<-X[,MLdam][MLsire]/sum(X[,MLdam])       
                  MLsire<-which.max(X[,MLdam])
-                 if(MLsire==length(X.list$X[[i]]$sire.id) & nbetaS>0){MLsire<-NA}
-                 if((X[,MLdam][MLsire]/sum(X[,MLdam]))<threshold){MLsire<-NA}  
-
                }
              }
            }
-           if((MLdam==nrestdam[i] & nbetaD>0) | is.na(MLdam)==TRUE){
-             ped[,2][pos_in_id]<-NA
-           }else{
-             ped[,2][pos_in_id]<-X.list$X[[i]]$dam.id[MLdam]
+           if(getd){
+             if(posterior.prob[pos_in_id]<threshold){
+               acceptdam[pos_in_id]<-FALSE
+             }else{
+               if(MLdam==length(X.list$X[[i]]$dam.id) & nbetaD>0){
+                 ped[,2][pos_in_id]<-NA
+               }else{
+                 ped[,2][pos_in_id]<-X.list$X[[i]]$dam.id[MLdam]
+               } 
+             }
            }
-           if((MLsire==nrestsire[i] & nbetaS>0) | is.na(MLsire)==TRUE){
-             ped[,3][pos_in_id]<-NA
-           }else{ 
-             ped[,3][pos_in_id]<-X.list$X[[i]]$sire.id[MLsire]
+           if(gets){
+             if(posterior.prob[pos_in_id]<threshold){
+               acceptsire[pos_in_id]<-FALSE
+             }else{
+               if(MLsire==length(X.list$X[[i]]$sire.id) & nbetaS>0){
+                 ped[,3][pos_in_id]<-NA
+               }else{
+                 ped[,3][pos_in_id]<-X.list$X[[i]]$sire.id[MLsire]
+               } 
+             }
            }
          }
          ped<-as.character(X.list$id[ped])
          ped<-matrix(ped, length(X.list$id), 3)
-
-ped
+         ped[,2][which(acceptdam==FALSE)]<-NA
+         ped[,3][which(acceptsire==FALSE)]<-NA
+         return(list(P=ped, prob=posterior.prob))
 }   

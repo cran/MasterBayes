@@ -1,16 +1,15 @@
 \name{autocorrP}
 \alias{autocorrP}
 \title{Autocorrelation Function for Parenatge Assignment}
-\description{Function for assesing mixing of the Markov chain with respect to parentage assignment.}
+\description{Function for assessing mixing of the Markov chain with respect to parentage assignment.}
 \usage{
-autocorrP(postP, ...)
+autocorrP(postP)
 }
 \arguments{
   \item{postP}{JOINT posterior distribution of parentage}
-  \item{...}{further arguments to be passed}
 }
 \details{
-For each offspring the proportion of transitions is calculated at lags 1, 2, 5, 10, 50 and 100 (i.e. the proportion of times that the parentage assignment at time t is different from the parentage assignement at time t+lag).  The difference between these proportions and the proportion at lag 1 is then calculated, and the mean over offspring given.  Samples are independent when this difference is non-decreasing with increasing lag. When the parentage assignemnets in each MCMC iteration are independent these autocorrelation metrics should be randomly distributed about zero.
+For each offspring the proportion of transitions is calculated at lags 1, 2, 5, 10, 50 and 100 (i.e. the proportion of times that the parentage assignment at time t is different from the parentage assignment at time t+lag).  The difference between these proportions and the proportion at lag 1 is then calculated, and the mean over offspring given.  When the parentage assignments in successive MCMC iterations are independent these autocorrelation metrics should be randomly distributed about zero and should not decrease with increasing lag.
 }
 \value{
    matrix
@@ -30,7 +29,7 @@ var1<-expression(varPed(c("lat", "long"), gender="Male",
 
 res1<-expression(varPed("offspring", restrict=0))
 
-# indivdiuals from the offspring generation are excluded as parents
+# individuals from the offspring generation are excluded as parents
 
 res2<-expression(varPed("terr", gender="Female", relational="OFFSPRING", 
   restrict="=="))

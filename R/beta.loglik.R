@@ -1,4 +1,4 @@
-"beta.loglik"<-function(X, dam_pos=NULL, sire_pos=NULL, par_pos=NULL, beta=NULL, beta_map=NULL, merge=NULL, mergeN=NULL, nUS=c(0,0), ...){
+"beta.loglik"<-function(X, dam_pos=NULL, sire_pos=NULL, par_pos=NULL, beta=NULL, beta_map=NULL, merge=NULL, mergeN=NULL, nUS=c(0,0)){
 
    ndamcol<-0
    nsirecol<-0

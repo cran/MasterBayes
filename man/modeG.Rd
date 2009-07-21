@@ -3,12 +3,11 @@
 \title{Posterior Mode of Genotypes}
 \description{Finds the mode of the posterior marginal distribution of genotypes}
 \usage{
-modeG(postG, threshold=0, ...)
+modeG(postG, threshold=0)
 }
 \arguments{
   \item{postG}{posterior distribution of genotypes from an \code{\link{MCMCped}} model with argument \code{write_postG=TRUE}}
   \item{threshold}{threshold probability under which ML genotypes are replaced by NA}
-  \item{...}{further arguments to be passed}
 }
 
 \value{

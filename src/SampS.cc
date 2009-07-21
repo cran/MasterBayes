@@ -149,7 +149,7 @@ void sampS(int *offid, int noff, Matrix<double> X_design_GS [], int *npar, int *
                 }
               }
 
-              if((npar[2]!=0 || (npar[4]!=0 && dam[offid[i]]<nind)) && npar[3]==0 && npar[5]==0 & DSuu[1]==1){ 
+              if((npar[2]!=0 || (npar[4]!=0 && dam[offid[i]]<nind)) && npar[3]==0 && npar[5]==0 && DSuu[1]==1){ 
                 for(d=0; d<nsire[i]; d++){
                   Spreds[d] *= X_design_GS[i][d]; 
                 }

@@ -32,6 +32,7 @@ void calcX_G(Matrix<double> X_design_G [], int *offid, int noff , int *ndam, int
      switch(mtype){
  
      case 1:
+     case 3:
 
        for(l = 0; l<nloci ; l++){             // iterates through loci  
 
@@ -203,10 +204,10 @@ void calcX_G(Matrix<double> X_design_G [], int *offid, int noff , int *ndam, int
                       TacP += p;
                     }
                   }else{
-                    if(o1==0 & d1<2){
+                    if(o1==0 && d1<2){
                       TacP=p;
                     }
-                    if(o1==2 & d1>0){
+                    if(o1==2 && d1>0){
                       TacP=q;
                     }
                   }
@@ -228,10 +229,10 @@ void calcX_G(Matrix<double> X_design_G [], int *offid, int noff , int *ndam, int
                       TacP += p;
                     }
                   }else{
-                    if(o1==0 & s1<2){
+                    if(o1==0 && s1<2){
                       TacP=p;
                     }
-                    if(o1==2 & s1>0){
+                    if(o1==2 && s1>0){
                       TacP=q;
                     }
                   }
@@ -256,9 +257,6 @@ void calcX_G(Matrix<double> X_design_G [], int *offid, int noff , int *ndam, int
             }  
           }
         }
-        break;
-        
-        case 3:
         break;
         }
 }

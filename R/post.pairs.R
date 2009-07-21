@@ -1,4 +1,4 @@
-"post.pairs"<-function(postP, threshold=0, rel="PO", ...){
+"post.pairs"<-function(postP, threshold=0, rel="PO"){
 
   if(is.list(postP)){
     stop("P must be samples from the JOINT posterior of parentage")

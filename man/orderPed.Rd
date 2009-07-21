@@ -3,12 +3,11 @@
 \title{Orders a Pedigree}
 \description{Orders a pedigree so parents come before offspring}
 \usage{
-orderPed(ped, time_born=NULL, ...)
+orderPed(ped, time_born=NULL)
 }
 \arguments{
   \item{ped}{pedigree with id, dam and sire in ech column}
   \item{time_born}{an optional vector of birth dates by which the pedigree can be ordered)} 
-  \item{...}{further arguments to be passed}
 }
 \value{
   an ordered pedigree pedigree with id, dam and sire in each column

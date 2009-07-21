@@ -94,7 +94,7 @@ int 	nind = nindoffP[0],
         acceptUS = 1000,
         acceptE1 = 1000,
         acceptE2 = 1000,
-        tall,
+        tall=0,
         i,
         l,
         cnt,
@@ -142,7 +142,7 @@ double  *pA,
         *pLE_mat,
         **LE_mat;
 
-  pG = new(nothrow) int [(1+int(mtype==1))*nind*nloci];
+  pG = new(nothrow) int [(1+int(mtype==1 || mtype==3))*nind*nloci];
   if(pG==NULL){
     Rprintf("NO MEMORY for G\n");
     exit(1);
@@ -154,7 +154,7 @@ double  *pA,
     exit(1);
   }
 
-  pGobs = new(nothrow) int [(1+int(mtype==1))*nsamp*nloci];
+  pGobs = new(nothrow) int [(1+int(mtype==1 || mtype==3))*nsamp*nloci];
   if(pGobs==NULL){
     Rprintf("NO MEMORY for Gobs\n");
     exit(1);
@@ -178,7 +178,7 @@ double  *pA,
     exit(1);
   }
 
-  pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1)+2*int(mtype==2))*nloci];
+  pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2))*nloci];
   if(pE_mat==NULL){
     Rprintf("NO MEMORY for E_mat\n");
     exit(1);
@@ -190,7 +190,7 @@ double  *pA,
     exit(1);
   }
 
-  pLE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1)+2*int(mtype==2))*nloci];
+  pLE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2))*nloci];
   if(pLE_mat==NULL){
     Rprintf("NO MEMORY for LE_mat\n");
     exit(1);
@@ -205,13 +205,13 @@ double  *pA,
   cnt = 0;
   for (i=0; i<nind; ++i){
     G[i] = &pG[cnt];
-    cnt  += ((1+int(mtype==1))*nloci);
+    cnt  += ((1+int(mtype==1 || mtype==3))*nloci);
   }
 
   cnt = 0;
   for (i=0; i<nsamp; ++i){
     Gobs[i] = &pGobs[cnt];
-    cnt  += ((1+int(mtype==1))*nloci);
+    cnt  += ((1+int(mtype==1 || mtype==3))*nloci);
   }
 
   cnt = 0;
@@ -223,13 +223,13 @@ double  *pA,
   cnt = 0;
   for (i=0; i<nloci; ++i){
     E_mat[i] = &pE_mat[cnt];
-    cnt  += (ncat*(4+3*int(mtype==1)+2*int(mtype==2)));
+    cnt  += (ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2)));
   }
 
   cnt = 0;
   for (i=0; i<nloci; ++i){
     LE_mat[i] = &pLE_mat[cnt];
-    cnt  += (ncat*(4+3*int(mtype==1)+2*int(mtype==2)));
+    cnt  += (ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2)));
   }
 
   if(writeG==true){
@@ -282,14 +282,14 @@ double  *pA,
                nus = nusd+nuss,
                DSuu[2];  // when DS exists and is formed by mate relational npar[4] may be greater than 0
                          // but ambiguity exists as to whether both sexes are unsampled, or one, and if one
-                         // - which one  DSuu[0] is 1 if missing Dam data exists,2 if missing Sire data
+                         // - which one  DSuu[0] is 1 if missing Dam data exists, DSuu[1] is 1 if missing Sire data
                          // exists hack hack hack
-               if(npar[0]>1 || (npar[4]>0 && nusd>0)){
+               if(npar[0]>0 || (npar[4]>0 && nusd>0)){
                  DSuu[0] =1;
                }else{
                  DSuu[0] =0;
                }
-               if(npar[2]>1 || (npar[4]>0 && nuss>0)){
+               if(npar[2]>0 || (npar[4]>0 && nuss>0)){
                  DSuu[1] =1;
                }else{
                  DSuu[1] =0;
@@ -328,13 +328,13 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                X_design_betaSs [noff],
                X_design_betaDSs [noff];
 
-        double llB_0,
-               llB_1,
-               llE_0,
-               llE_1,
-               llUS_0,
-               llUS_1,
-               log_det;  
+        double llB_0 = 0.0,
+               llB_1 = 0.0,
+               llE_0 = 0.0,
+               llE_1 = 0.0,
+               llUS_0 = 0.0,
+               llUS_1 = 0.0,
+               log_det = 0.0;  
 
 /************************/    
 /* MH tuning parameters */
@@ -416,7 +416,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
           read_A(st_AP, nloci, A, nall);
         }
 
-        if(nsamp!=0 & estG==TRUE){
+        if(nsamp!=0 && (estG==TRUE || estE1==TRUE || estE2==TRUE || estA==TRUE)){
           read_G(GobsP, nsamp, nloci, Gobs, mtype);
         }   
  
@@ -460,9 +460,8 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
           }
         }else{
           if(estP==TRUE){
-           double E_cervus = E2_0[0]*(2-E2_0[0]); 
            Error_Mat(E1_0, E2_0, E_mat, ncat, nall, nloci, false, perlocus, mtype);
-           calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_cervus, E_mat, mtype);         
+           calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A,E_mat, mtype, nall);         
            if(jointP==FALSE){
                calcX_GcervusS(X_design_GS, X_design_G, offidP, noff, ndamP, nsireP, Dams, dam);
                calcX_GcervusD(X_design_GD, X_design_G, offidP, noff, ndamP, nsireP, Sires, sire);
@@ -472,7 +471,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 
         if(estE1==TRUE || estE2==TRUE){    
             Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus,mtype); 
-            llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
+            llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype, A);
           if(est_pE1){		
             for(i = 0; i < ncatnloci; i++){  
               llE_0 += dbeta(E1_0[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
@@ -485,7 +484,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
           }
           llE_1 = llE_0;
         }
-         
+      
 	int itt;
 	int write_postE = 0;
         int write_postA = 0; 
@@ -588,12 +587,13 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 
               switch(mtype){ 
                  case 1:  
-                 sampG(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
+                 sampGC(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
                  break;
                  case 2:
                  sampDomG(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
                  break;
                  case 3:
+                 sampG(nsamp,Gobs,G,nall,nloci,id,A,categories,E_mat,maxall,maxrep,dam,sire, nind, estA);
                  break;
               }
 
@@ -607,7 +607,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
               }
 
               if(estE1==TRUE || estE2==TRUE){
-                llE_1 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
+                llE_1 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype, A);
                 if(est_pE1){		
                   for(i = 0; i < ncatnloci; i++){  
                    llE_1 += dbeta(E1_1[i], prior_E1P[i], prior_E1P[i+ncatnloci],1);
@@ -631,7 +631,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 
                 Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus, mtype);
 
-                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
+                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype,A);
 
                 if(est_pE1){		
                   for(i = 0; i < ncatnloci; i++){  
@@ -668,7 +668,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
    
                 Error_Mat(E1_0, E2_0, LE_mat, ncat, nall, nloci, true, perlocus, mtype);
 
-                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype);
+                llE_0 = LLE_G(Gobs, G, nloci,id,nsamp,categories,LE_mat, mtype,A);
  
                 if(est_pE1){		
                   for(i = 0; i < ncatnloci; i++){  
@@ -808,7 +808,7 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
                  }
               }
               if(writeG==true){
-                if(mtype==1){
+                if(mtype==1 || mtype==3){
                   tall_tmp = 0;
                   for(l=0; l<nloci; l++){ 
                     nl = nall[l];

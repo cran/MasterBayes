@@ -1,4 +1,4 @@
-"reordXlist"<-function(X.list, marker.type="MS", ...){
+"reordXlist"<-function(X.list, marker.type="MSW"){
 
     nind<-length(X.list$id)
       

@@ -1,6 +1,6 @@
 #include "LikFunctions.h"
 
-double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories, double **LE_mat, int mtype){
+double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories, double **LE_mat, int mtype, double **A){
 
 	int l;			// itterates through loci
 	int s;	                // itterates through duplicate samples
@@ -16,6 +16,57 @@ double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories
         switch(mtype){
 
           case 1:
+          for(s = 0; s < nsamp; s++){
+
+            ind = id[s];
+            cat = categories[s];
+            for(l = 0; l < nloci; l++){
+                          
+              oa1 = Gobs[s][(l*2)];    
+              oa2 = Gobs[s][(l*2)+1]; 
+          
+              aa1 = G[ind][(l*2)];
+              aa2 = G[ind][(l*2)+1]; 
+
+              if(oa1 != -999){
+                if((oa1==aa1 &&  oa2==aa2) || (oa2==aa1 &&  oa1==aa2)){      
+                  if(oa1==oa2){
+                    LLB +=  log(A[l][oa1]*A[l][oa1]*exp(LE_mat[l][1+cat])+exp(LE_mat[l][cat]));    
+                  }else{
+                    LLB +=   log(2.0*A[l][oa1]*A[l][oa2]*exp(LE_mat[l][1+cat])+exp(LE_mat[l][cat]));    
+                  }
+                }else{
+                  if(oa1==oa2){
+                    LLB +=   log(A[l][oa1]*A[l][oa1]*exp(LE_mat[l][1+cat]));    
+                  }else{
+                    LLB +=   log(2.0*A[l][oa1]*A[l][oa2]*exp(LE_mat[l][1+cat]));    
+                  }
+                }               
+              }     
+            } 
+          }
+          break;
+
+
+          case 2:
+          for(s = 0; s < nsamp; s++){
+
+            ind = id[s];
+            cat = categories[s]*6;
+
+            for(l = 0; l < nloci; l++){
+                          
+              oa1 = Gobs[s][l];    
+              aa1 = G[ind][l];
+              if(oa1 != -999){            
+                LLB += LE_mat[l][oa1*3+aa1+cat];
+              }  
+            }      
+          }
+          break;
+
+          case 3:
+
           for(s = 0; s < nsamp; s++){
 
             ind = id[s];
@@ -53,26 +104,6 @@ double LLE_G(int **Gobs, int **G, int nloci, int *id, int nsamp, int *categories
               }  
             }      
           }
-          break;
-
-          case 2:
-          for(s = 0; s < nsamp; s++){
-
-            ind = id[s];
-            cat = categories[s]*6;
-
-            for(l = 0; l < nloci; l++){
-                          
-              oa1 = Gobs[s][l];    
-              aa1 = G[ind][l];
-              if(oa1 != -999){            
-                LLB += LE_mat[l][oa1*3+aa1+cat];
-              }  
-            }      
-          }
-          break;
-        
-          case 3:
           break;
         }
                                                       
@@ -301,7 +332,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                if(nuss>0){
                 ratio[1][i] = ll_sum/(ratio[1][i]*double(ntsire[i])-1.0); 
                }else{
-                 ratio[1][i] = 1.0;
+                ratio[1][i] = 1.0;
                }
                if(nusd>0){
                  ratio[0][i] = ll_sum/(ratio[0][i]*double(ntdam[i])-1.0);
@@ -344,7 +375,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                }
              }  
            }else{
-             if(sireV || DSapprox!=0){                // S exists
+             if(sireV || (damsireV && DSapprox!=0)){                // S exists
                Spred = Spred - (maxc(Spred)[0] - 500.0);
                Spred = exp(Spred);
                l_par = log(Spred[s]);  
@@ -365,7 +396,7 @@ double LLP_B(int *offid, int noff, int nind, Matrix<double> X_design_betaDus [],
                  }
                }
              }
-             if(damV || DSapprox!=0){  
+             if(damV || (damsireV && DSapprox!=0)){  
                Dpred = Dpred - (maxc(Dpred)[0] - 500.0);
                Dpred = exp(Dpred);
 	       l_par = log(Dpred[d]);            // log(Pr(P|beta, X)) for the parent not normalised          
@@ -420,7 +451,6 @@ double llik = 0.0;
 
 
     for(int i = 0; i < noff; i++){
-
       if(nusd>0){
         if(dam[offid[i]]>=nind){
           llik += log(double(us[usdamcat[i]]));

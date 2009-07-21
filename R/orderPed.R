@@ -1,4 +1,4 @@
-"orderPed"<-function(ped, time_born=NULL, ...){
+"orderPed"<-function(ped, time_born=NULL){
   
   if(length(time_born)!=0){
     reorder<-order(time_born)

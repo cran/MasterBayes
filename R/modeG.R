@@ -1,4 +1,4 @@
-"modeG"<-function(postG, threshold=0, ...){
+"modeG"<-function(postG, threshold=0){
   id<-rownames(postG[[1]])
   G<-as.list(1:length(postG))
   names(G)<-names(postG)

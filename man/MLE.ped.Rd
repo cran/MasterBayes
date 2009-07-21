@@ -6,7 +6,7 @@ Finds the MLE pedigree using the genetic data only.  An approximation is used fo
 }
 \usage{
 MLE.ped(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, 
-   nUSsire=NULL, threshold=0, checkP, ...)
+   nUSsire=NULL, threshold=0, checkP)
 }
 \arguments{
   \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}}
@@ -17,13 +17,13 @@ MLE.ped(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE,
   \item{nUSsire}{numeric vector for number of unsampled males}
   \item{threshold}{threshold probability under which ML parents are replaced by NA}
   \item{checkP}{if \code{TRUE} the pedigree is checked for legality, and illegal pedigrees rejected. If \code{FALSE} it is assumed that any potential parent would produce a legal pedigree, i.e one without circuits, in the terminology of graph theory. Legality is checked}
-  \item{...}{further arguments to be passed}
 }
 \details{
    ML estimation of the pedigree is based on the Mendelian transition probabilities in the presence of genotyping error as outlined in Kalinwoski (2006). The probability that the ML parents are the true parents is simply the Mendelian transition probability for those parents divided by the sum of the transition probabilities for the remaining potential parents, both sampled and unsampled.  If \code{ped} exists and the dam column contains known dam assignemnts and the sire column contains only NA's, then the ML sires will be returned conditional on the dam assignements being true. ML dam estimation with known sires can be performed in the same way.  Individuals whose parents cannot be assigned with the required level of certainty (\code{threshold}), or whose parents belong to the base or unsampled population, have NA in the dam and sire columns. If each indiviual's potential parents are such that an illegal pedigree could be sampled then \code{checkP=TRUE} can be used to ensure legality. This is recommended if the pedigree is to be passed as a starting pedigree to MCMCped. It should be noted that under these circumstances it is possible that multiple pedigrees max exist with the same likelihood and this may not be obvious from  the MLE.ped output since assignments are made conditional on earlier assignement being true.  As an example, if there are two indiviuals both of which could potentially be each others parents then assigning both to be each others parent is illegal (since each indiviual would be its own grandparent). In simple situations, the parent-offspring and offspring-parent assignements have equal probability, but when \code{checkP=TRUE} the first indiviual would have zero probability of being the second individual's parent if the second individual was already assigned as the first individual's parent.
 }
 \value{
- pedigree with id in the first column, and ML estimates for dam and sire in the second and third columns
+   \item{P}{pedigree with id in the first column, and dam and sire in the second and third columns}
+   \item{prob}{probability of the most likely parental combination}
 }
 \references{
 Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31

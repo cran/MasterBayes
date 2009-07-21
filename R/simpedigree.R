@@ -1,4 +1,4 @@
-simpedigree<-function(PdP, beta=NULL, nUS=NULL, ...){
+simpedigree<-function(PdP, beta=NULL, nUS=NULL){
  
   USdam<-PdP$USdam
   USsire<-PdP$USsire

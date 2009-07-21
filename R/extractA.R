@@ -1,4 +1,4 @@
-"extractA"<-function(G,marker.type="MS", ...){
+"extractA"<-function(G,marker.type="MSW"){
 
    if(is.genotype(G[[1]])==FALSE & is.genotypeD(G[[1]])==FALSE){
      if("id"%in%colnames(G)){

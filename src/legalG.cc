@@ -49,7 +49,7 @@ int     *pG,
 double  *pA,
         **A;
  
-pG = new(nothrow) int [(1+int(mtype==1))*nind*nloci];
+pG = new(nothrow) int [(1+int(mtype==1 || mtype==3))*nind*nloci];
 if(pG==NULL)
 {
 Rprintf("NO MEMORY for G\n");
@@ -76,7 +76,7 @@ exit(1);
 
 for (i=0; i<nind; ++i){
 G[i] = &pG[index];
-index  += ((1+int(mtype==1))*nloci);
+index  += ((1+int(mtype==1 || mtype==3))*nloci);
 }
 
 index = 0;
@@ -120,6 +120,7 @@ index  += maxall;
   switch(mtype){
 
     case 1:
+    case 3:
 
     for(i=0; i<nind; ++i){
       for(l=0; l<nloci; ++l){
@@ -414,14 +415,11 @@ index  += maxall;
    
     if(TacP==false){legalP[0]=false;}
     break;
-
-    case 3:
-    break;
   }
 
     int records = 0;           
 
-    if(mtype==1){
+    if(mtype==1 || mtype==3){
       for(l = 0; l < nloci; l++){  
         for(i = 0; i < nind; i++){	                        
           st_GP[records] = G[i][(l*2)];  

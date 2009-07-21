@@ -1,4 +1,4 @@
-\begin{thebibliography}{16}
+\begin{thebibliography}{15}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -32,13 +32,6 @@ P.~C.~D. Johnson and D.~T. Haydon.
 \newblock Software for quantifying and simulating microsatellite genotyping
   error.
 \newblock \emph{Bioinformatics \& Biology Insights}, 1:\penalty0 71--75, 2007.
-
-\bibitem[Kalinowski et~al.(2006)Kalinowski, Taper, and
-  Marshall]{Kalinowski.2006}
-S.T. Kalinowski, M.L. Taper, and T.~C. Marshall.
-\newblock Revising how the computer program {CERVUS} accomodates genotyping
-  error increases success in paternity assignment.
-\newblock \emph{Molecular Ecology}, \emph{in press}, 2006.
 
 \bibitem[Lange(2002)]{Lange.2002}
 K.~Lange.

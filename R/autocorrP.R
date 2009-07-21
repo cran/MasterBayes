@@ -1,4 +1,4 @@
-"autocorrP"<-function(postP, ...){
+"autocorrP"<-function(postP){
 
   nitt<-dim(postP)[2]/2
 

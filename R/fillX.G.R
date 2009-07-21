@@ -1,6 +1,6 @@
-fillX.G<-function(X.list, A, G, E1=0.005, E2=0.005, marker.type="MS", ...){
+fillX.G<-function(X.list, A, G, E1=0.005, E2=0.005, marker.type="MSW"){
 
-       mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%marker.type*c(1:3))
+       mtype.numeric<-sum(c("MSC", "AFLP", "MSW", "SNP")%in%marker.type*c(1:4))
 
        noff<-length(X.list$X)
        ndam<-c(unlist(lapply(X.list$X,function(x){length(x$dam.id)})))	
@@ -15,10 +15,14 @@ fillX.G<-function(X.list, A, G, E1=0.005, E2=0.005, marker.type="MS", ...){
        nind<-length(X.list$id)
 
        if(is.null(E2)){
+         E1<-0.005
+       }
+
+       if(is.null(E2)){
          E2<-0.005
        }
   
-       G<-GtoC(G, marker.type!="MS")
+       G<-GtoC(G, (marker.type!="MSC" & marker.type!="MSW"))
 
        X_design_G<-rep(0, sum(ndam*nsire))
 

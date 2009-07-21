@@ -4,7 +4,7 @@
 \description{Log-likelihood of the number of unsampled individuals given the genotypes of offspring and potential parents
 }
 \usage{
-popsize.loglik(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE, ...)
+popsize.loglik(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE)
 }
 \arguments{
   \item{X}{list for each offspring with elements \code{N} and \code{G}.  \code{N} is a vector conatining the number of parental combinations in each of 4 classes.  \code{G} is a vector conatining the sum of the Mendelian transition probabilities over parental combinations in each class.  The 4 classes are parental combinations where a) both parents are sampled b) only sires are sampled, c) only dams are sampled d) neither parent is sampled.}
@@ -13,7 +13,6 @@ popsize.loglik(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE
   \item{nUS}{vector for the size of the unsampled populations.  Parmeters for the unsampled female populations come before the male populations.}
   \item{ped}{optional pedigree with id, dam and sire in ech column}
   \item{USsiredam}{logical; if \code{TRUE} male and female unsampled populations sizes are constrained to be equal}
-  \item{...}{Further arguments to be passed}
 }
 \value{
   log-likelihood of the number of unsampled individuals given the genotype data.

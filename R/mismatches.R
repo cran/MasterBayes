@@ -1,4 +1,4 @@
-"mismatches"<-function(X.list, G, mm.tol=999, ...){
+"mismatches"<-function(X.list, G, mm.tol=999){
 
      noff<-length(X.list$X)
      ndam<-c(unlist(lapply(X.list$X,function(x){length(x$dam.id)})))	

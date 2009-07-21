@@ -8,7 +8,7 @@
 }
 \arguments{
   \item{object}{genotypeD object}
-  \item{...}{further arguments to be passed}
+  \item{\dots}{other arguments to be passed}
 }
 \value{
   \item{locus}{locus information field (if present)} 

@@ -6,7 +6,7 @@ Finds the MLE for the number of unsampled males and/or females following Nielsen
 }
 \usage{
 MLE.popsize(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL, 
-   ped=NULL, ...)
+   ped=NULL)
 }
 \arguments{
   \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}}
@@ -14,7 +14,6 @@ MLE.popsize(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL,
   \item{USsire}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled males exists. if    \code{USsire} is a character vector it must either have the same length as \code{id} with factor levels representing sub-populations (in time or space) over which the number of unsampled males vary, or alternatively \code{"USdam"}, in which case the unsampled male and female populations are constrained to be equal.}  
   \item{nUS}{optional starting vector for the size of the unsampled population.  Parmeters for the unsampled female population come before the male population.}
   \item{ped}{optional pedigree with id, dam and sire in ech column}
-  \item{...}{further arguments to be passed}
 }
 \value{
  \item{nUS}{vector of MLE's for the size of the unsampled population. Lower bound is 1e-5 for numerical stability.}

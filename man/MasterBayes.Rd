@@ -2,7 +2,7 @@
 \docType{package}
 \alias{MasterBayes}
 \title{Maximum Likelihood and Markov chain Monte Carlo methods for Pedigree Reconstruction, Analysis and Simulation.}
-\description{The primary aim of MasterBayes is to use MCMC techniques to integrate over uncertainity in pedigree configurations estimated from molecular markers and phenotypic data.  Emphasis is put on the marginal distribution of parameters that relate the phenotypic data to the pedigree.  All simulation is done in compiled C++ using the Scythe Statistical Library. More detailed information can be found in \code{vignette("Tutorial", "MasterBayes")}.}
+\description{The primary aim of MasterBayes is to use MCMC techniques to integrate over uncertainty in pedigree configurations estimated from molecular markers and phenotypic data.  Emphasis is put on the marginal distribution of parameters that relate the phenotypic data to the pedigree.  All simulation is done in compiled C++ using the Scythe Statistical Library. More detailed information can be found in \code{vignette("Tutorial", "MasterBayes")}.}
 \details{
 
 The motivation behind the package is to approximate the following probability distribution using Markov chain Monte Carlo techniques:
@@ -25,7 +25,7 @@ Assuming that the set of possible pedigrees have equal prior probability, and th
 
 \deqn{L(\bf{y} | \bf{\beta}, \bf{P}) \propto  \prod^{n_{o}}_{i=1} \frac{e^{\bf{X}^{i}_{p_{i}}\bf{\beta}}}{\sum^{n_{p}}_{j=1}e^{\bf{X}^{i}_{j}\bf{\beta}}}.}{L(y | P, beta) = prod_i^no e^(X_i,p_i beta) / sum_j^np e^(X_i,j beta).}
 
-where \eqn{\bf{X}^{i}_{j}}{X i,j} denotes the \eqn{j^{th}}{jth} row of offspring \eqn{i}{i}'s design matrix formed from the phenotypic data \eqn{\bf{y}}{y}. Each row of the design matrix corresponds to a parental combination. \eqn{n_{o}}{no} and \eqn{n_{p}}{np} denote the number of offspring and the number of potential parental combinations, respectively. \eqn{p_{i}}{p_i} denotes the actual parents of indivdiual \eqn{i}{i} (Smouse, 1999).
+where \eqn{\bf{X}^{i}_{j}}{X i,j} denotes the \eqn{j^{th}}{jth} row of offspring \eqn{i}{i}'s design matrix formed from the phenotypic data \eqn{\bf{y}}{y}. Each row of the design matrix corresponds to a parental combination. \eqn{n_{o}}{no} and \eqn{n_{p}}{np} denote the number of offspring and the number of potential parental combinations, respectively. \eqn{p_{i}}{p_i} denotes the actual parents of individual \eqn{i}{i} (Smouse, 1999).
 
 This likelihood is evaluated over the probability distribution of the pedigree, \eqn{\bf P}{P}:
 
@@ -34,13 +34,13 @@ This likelihood is evaluated over the probability distribution of the pedigree, 
 Most other techniques approximate this distribution as \eqn{p(\bf{P} | \bf{G})}{p(P|G)}, and even then tend to use the mode rather than the complete distribution, leading to inferential problems (See the information boxes in Hadfield et al. 2006).
 
 
-Unfortunately, genotype data are rarely observed with out error and the parents of some offspring may not be sampled.  I model allelic dropout and stochastic genotyping errors according to a model proposed by Wang (2001) when the genetic markers are codominant. When the markers are dominant I model the probabilities of a dominant allele being miscored as a recessive and \emph{vice versa}. Denoting the parameters associated with these two forms of genotyping error as \eqn{\varepsilon_{1}}{E1} and \eqn{\varepsilon_{2}}{E2}, and the vector of parental allele frequencies as \eqn{\omega}{w}, two solutions are implemented.  
+Unfortunately, genotype data are rarely observed with out error and the parents of some offspring may not be sampled.  If the genetic markers are co-dominant then genotyping errors can be handled following either the model of Wang (2004) or CERVUS (Marshall 1998).  When the markers are dominant I model the probabilities of a dominant allele being miss-scored as a recessive and \emph{vice versa}. Denoting the parameters associated with these two forms of genotyping error as \eqn{\varepsilon_{1}}{E1} and \eqn{\varepsilon_{2}}{E2}, and the vector of parental allele frequencies as \eqn{\omega}{w}, two solutions are implemented.  
 
 An exact solution:
 
 \deqn{\int_{\bf{P}} \int_{\bf{G}} \int_{\varepsilon_{1}} \int_{\varepsilon_{2}} \int_{\omega} p(\bf{\beta}, \bf{P}, \bf{G}, \varepsilon_{1}, \varepsilon_{2}. \omega | \bf{G}^{(obs)}, \bf{y})d\bf{P}d\bf{G}d\varepsilon_{1}d\varepsilon_{2}d\omega}{int_P int_G int_E1 int_E2 int_w, p(beta, P, G, E1, E2, w, | G_obs, y)dPdGdE1dE2dw}
 
-where the posterior probability distribution of the error rates, the allele frequnecies and the true unobserved genotypes, \eqn{\bf{G}}{G}, are estimated and integrated out.  The conditional distribution of the true genotypes in the exact form is given by:
+where the posterior probability distribution of the error rates, the allele frequencies and the true unobserved genotypes, \eqn{\bf{G}}{G}, are estimated and integrated out.  The conditional distribution of the true genotypes in the exact form is given by:
 
 \deqn{p(\bf{G}^{obs} | \bf{G}, \varepsilon_{1}, \varepsilon_{2})p(\bf{G} | \bf{P}, \omega)}{p(G_obs | G,E1,E2)p(G | P, w).}
 
@@ -51,9 +51,9 @@ The second solution is an approximation to the above equation, and uses point es
 The approximation can be derived analytically, whereas the exact solution requires the Markov chain to be augmented with the true genotypes of all individuals.  This becomes very computer intensive but the approximation breaks down for dominant markers, or models in which the number of unsampled males and/or females is to be estimated. Unsampled parents are dealt with, and their number estimated using an approximation originally due to Nielsen (2001).  An exact solution to the problem has been proposed by Emery \emph{et.al.} (2001) but becomes impractical as the number of unsampled parents gets large. Nielsen's approximation is based around the Mendelian transition probability when a parental genotype is unknown.  This probability is derived using estimates of the allele frequencies at that locus and the assumption of Hardy-Weinberg equilibrium.  
 
 
-I deal with the fact that unsampled individuals have missing phenotype data by approximating the distribution of the sum of linear predictors across unsampled parents.  This approximation relies on the assumption that the unsampled indivdiuals come from the same statistical popluaion as sampled individuals, and that population sizes are large enough so that the distribution for the sum tends to a normal distribution under the central limit theorem.
+I deal with the fact that unsampled individuals have missing phenotype data by approximating the distribution of the sum of linear predictors across unsampled parents.  This approximation relies on the assumption that the unsampled individuals come from the same statistical population as sampled individuals, and that population sizes are large enough so that the distribution for the sum tends to a normal distribution under the central limit theorem.
 
-Taking \eqn{n}{n} and \eqn{N}{N} as the number of sampled individuals, and the total number of indivdiuals in the population respectively:
+Taking \eqn{n}{n} and \eqn{N}{N} as the number of sampled individuals, and the total number of individuals in the population respectively:
 
 \deqn{p(\sum^{N-n}\bf{\hat{p}}^{(miss)} | \bf{\hat{p}}^{(obs)}) \approx N(\frac{N-n}{n}\sum^{n}\bf{\hat{p}}^{(obs)}, \frac{N(N-n)}{n}S_{obs}^{2})}{p(sum(p_miss) | p_obs) = N(N-n mean(p_obs), (N*(N-n)*S^2)/n)}
 
@@ -65,6 +65,7 @@ Elston, R. C. \& Stewart, J. Human Heredity (1971) 21 523-542
 Emery, A. M. \emph{et.al} Molecular Ecology (2001) 10 1265-1278
 Gelman, A. \emph{et.al} Bayesian Data Analysis \emph{Edition II} (2004) Chapman and Hall
 Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31
+Marshall, T. C. \emph{et al} (1998) Molecular Ecology 7 5 639-655
 Nielsen. R. \emph{et.al} Genetics (2001) 157 4 1673-1682
 Smouse P.E. \emph{et al} (1999) Journal of Evolutionary Biology 12 1069-1077
 Wang J.L. Genetics (2004) 166 4 1963-1979

@@ -1,4 +1,13 @@
-getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999, ...){
+getXlist<-function(PdP, GdP=NULL, A=NULL, E1=0.005, E2=0.005, mm.tol=999){
+
+  if(is.null(GdP$id)==FALSE & is.null(PdP$id)==FALSE){
+    if(FALSE%in%(GdP$id%in%PdP$id)){
+      stop("genotype data exists for individuals not in PdataPed object")
+    }
+    if(FALSE%in%(PdP$id%in%GdP$id)){
+      stop("some individuals in PdataPed object have no genotype data: replace with NA")
+    }
+  }
 
   if(is.null(PdP$id)){
     X.list<-list(id=NULL) 
@@ -512,8 +521,8 @@ for(off in 1:sum(PdP$offspring==1)){
       Dlinked<-c(grep("linked", colnames(X.list$X[[1]]$XDus)), grep("linked", colnames(X.list$X[[1]]$XDs))+nvar[1])
       Dlinked_names<-c(colnames(X.list$X[[1]]$XDus), colnames(X.list$X[[1]]$XDs))[Dlinked]
       Slinked<-match(c(colnames(X.list$X[[1]]$XSus), colnames(X.list$X[[1]]$XSs)), Dlinked_names)
-      Slinked[is.na(Slinked)==FALSE]<-Dlinked
-      Slinked[is.na(Slinked)==TRUE]<-sum(nvar[1:2])+c(1:sum(is.na(Slinked)))
+      Slinked[which(is.na(Slinked)==FALSE)]<-Dlinked
+      Slinked[which(is.na(Slinked)==TRUE)]<-sum(nvar[1:2])+c(1:sum(is.na(Slinked)))
       beta_map[sum(nvar[1:2])+(1:sum(nvar[3:4]))]<-Slinked
     }
     if(sum(nvar[5:6])>0 & sum(nvar[1:4])>0){

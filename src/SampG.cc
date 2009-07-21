@@ -95,7 +95,7 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
                  obs_G[n][1] = Gobs[i][(l*2)+1];    
                  cat_tmp[n] = categories[i]*7;
              
-                 if(n>0 && obs_G[n][0]!=obs_G[0][0] || obs_G[n][1]!=obs_G[0][1]){
+                 if(n>0 && (obs_G[n][0]!=obs_G[0][0] || obs_G[n][1]!=obs_G[0][1])){
                    misstype=1;  // if sampled once, or sampled > 1 but identically then no APPARENT misstypes
                  }
                  n++;      

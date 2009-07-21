@@ -35,8 +35,6 @@ int 	nind = nindP[0],
         mtype = mtypeP[0],
         ncat = 1;
 
-double E_cervus = E2P[0]*(2.0-E2P[0]);
-
 // declare some variable sized arrays
 
 int     *pG,
@@ -46,7 +44,7 @@ double  *pA,
         *pE_mat,
         **E_mat;
  
-pG = new(nothrow) int [(1+int(mtype==1))*nind*nloci];
+pG = new(nothrow) int [(1+int(mtype==1 || mtype==3))*nind*nloci];
 if(pG==NULL)
 {
 Rprintf("NO MEMORY for G\n");
@@ -70,7 +68,7 @@ if(A==NULL)
 Rprintf("NO MEMORY for A\n");
 exit(1);
 }
-pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1)+2*int(mtype==2))*nloci];
+pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2))*nloci];
 if(pE_mat==NULL){
 Rprintf("NO MEMORY for E_mat\n");
 exit(1);
@@ -84,7 +82,7 @@ exit(1);
 
 for (i=0; i<nind; ++i){
 G[i] = &pG[index];
-index  += ((1+int(mtype==1))*nloci);
+index  += ((1+int(mtype==1 || mtype==3))*nloci);
 }
 
 index = 0;
@@ -97,7 +95,7 @@ index  += maxall;
 index = 0;
 for (i=0; i<nloci; ++i){
 E_mat[i] = &pE_mat[index];
-index  += (ncat*(4+3*int(mtype==1)+2*int(mtype==2)));
+index  += (ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2)));
 }
         
         Matrix<double> X_design_G [noff];
@@ -112,8 +110,8 @@ index  += (ncat*(4+3*int(mtype==1)+2*int(mtype==2)));
          read_stP(noff, ndamP, damidP, nsireP, sireidP,Dams,Sires,Dams_vec,Sires_vec); 
 
          Error_Mat(E1P[0], E2P[0], E_mat, ncat, nall, nloci, false, false, mtype);
-         
-         calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_cervus, E_mat, mtype);
+
+         calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_mat, mtype, nall);
 
          int cnt_ds=0;
          int p;

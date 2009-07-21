@@ -7,15 +7,14 @@ An object containing scaling constants for the tuning parameters used in the Met
 }
 \usage{
 tunePed(E1 = NULL, E2 = NULL, beta = NULL, USdam = NULL, 
-   USsire = NULL,...)
+   USsire = NULL)
 }
 \arguments{
-  \item{E1}{vector of scaling parameters for allelic dropout rates for codominat markers or the probability of mis-scoring a dominant allele as recessive for dominant markers}
-  \item{E2}{vector of scaling parameters for stochastic error rates for codominat markers or the probability of mis-scoring a recessive allele as dominant for dominant markers}
+  \item{E1}{vector of scaling parameters for E1}
+  \item{E2}{vector of scaling parameters for E2}
   \item{beta}{vector which is multiplied by \code{sqrt(10)} to get scaling parameters for beta}
   \item{USdam}{vector which is multiplied by \code{10} to get scaling parameters for the number of unsampled females}
   \item{USsire}{vector which is multiplied by \code{10} to get scaling parameters for the number of unsampled males}
-  \item{...}{further arguments to be passed}
 }
 \details{
   The proposal distribution for all parameters is the multivariate normal, the variances of which are the large sample  variance covariances of the Maximum Likelihood estimates multiplied by the scaling constants.  For all parameters except \code{beta}, the covariance matrix for the proposal distribution has all off-diagonal elements set to zero.  These parameters must be positive and so the proposal distribution is reflected at zero. A diagonal covariance matrices ensures that the proposal distribution remains symetric.  For beta the covariances are not constrained at zero, and so the matrices are multiplied by the scaling constants in a way that preserves the correlational structure.  The tuning parameters for the error rates are the scaling constants multiplied by 3e-5. 

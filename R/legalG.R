@@ -1,4 +1,4 @@
-"legalG"<-function(G, A, ped, time_born=NULL, marker.type="MS", ...){
+"legalG"<-function(G, A, ped, time_born=NULL, marker.type="MSW"){
 
   nind<-length(ped[,1])
   nloci<-length(A)
@@ -32,7 +32,7 @@
 
   legal<-TRUE
 
-  mtype.numeric<-sum(c("MS", "AFLP", "SNP")%in%marker.type*c(1:3))
+  mtype.numeric<-sum(c("MSC", "AFLP", "MSW", "SNP")%in%marker.type*c(1:4))
 
   output<-.C("legalG",
 	as.integer(nind),		 
@@ -42,15 +42,15 @@
 	as.integer(nall),		
 	as.integer(maxall),		
         as.double(unlist(A)),                   
-        as.integer(GtoC(G, marker.type!="MS")),                  
+        as.integer(GtoC(G, (marker.type!="MSC" & marker.type!="MSW"))),                  
         as.logical(legal),
         as.integer(mtype.numeric))
 
-  tmp<-array(output[[8]], c(1+(marker.type=="MS"), length(ped[,1]), length(A)))+as.numeric(marker.type=="MS")
+  tmp<-array(output[[8]], c(1+(marker.type=="MSC" | marker.type=="MSW"), length(ped[,1]), length(A)))+as.numeric(marker.type=="MSC" | marker.type=="MSW")
 
   Gnew<-as.data.frame(matrix(NA, length(ped[,1]), 2*length(A)))
-  
-  if(marker.type=="MS"){
+
+  if(marker.type=="MSC" | marker.type=="MSW"){
     for(i in 1:length(A)){
       Gnew[,c(((i*2)-1):(i*2))]<-t(tmp[,,i])
       Gnew[,(i*2)-1]<-names(A[[i]])[Gnew[,(i*2)-1]]
@@ -66,7 +66,6 @@
       }
     }
   }
-
     Gnew<-Gnew[match(ped[,1], oped[,1]),]
     gens <- list()
     for (i in 1:(length(Gnew[1, ])/2)){

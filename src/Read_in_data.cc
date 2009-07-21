@@ -6,7 +6,7 @@ void read_G(int *GP, int nsamp, int nloci, int **G, int mtype){
 	int l;			// itterates through loci
 	int records = 0;	// itterates through genotypes
 
-        if(mtype==1){
+        if(mtype==1 || mtype==3){
 	  for(i = 0; i < nsamp; i++){
             for(l = 0; l < nloci; l++){	
 	      G[i][l*2] = GP[records];

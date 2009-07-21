@@ -5,13 +5,12 @@
 Computes posterior probabilities of pairs of indiviuals falling into specific relatedness categories (parent-offsping, sibs, full-sibs, half-sibs).  Returns those pairs that have a posterior probability greater than some threshold. 
 }
 \usage{
-post.pairs(postP, threshold=0, rel="PO", ...)
+post.pairs(postP, threshold=0, rel="PO")
 }
 \arguments{
   \item{postP}{joint posterior distribution of parentage}
   \item{threshold}{threshold probability over which related pairs are returned}
   \item{rel}{relatedness category. Currently \code{"PO"} (Parent-Offspring), \code{"S"} (Sibs), \code{"FS"} (Full-Sibs) and \code{"HS"} (Half-Sibs) are supported.}
-  \item{...}{further arguments to be passed}
 }
 \value{
   pairs of indiviuals that fall into the \code{rel} category with poterior probability >  \code{threshold}

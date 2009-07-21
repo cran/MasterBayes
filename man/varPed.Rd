@@ -6,7 +6,7 @@
 \usage{
 varPed(x, gender=NULL, lag=c(0,0), relational=FALSE, 
   lag_relational=c(0,0), restrict=NULL, keep=FALSE, 
-  USvar=NULL, merge=FALSE, ...)
+  USvar=NULL, merge=FALSE)
 }
 \arguments{
   \item{x}{predictor variable; numeric or factor}
@@ -16,7 +16,8 @@ varPed(x, gender=NULL, lag=c(0,0), relational=FALSE,
   \item{lag_relational}{numeric vector of length 2. If \code{relational} is not \code{FALSE} then the time interval over which \code{x} is evaluated in the relational category relative to the offspring record.}
   \item{restrict}{character string designating parents with a zero prior probability of parentage. Only parents for which \code{x} matches \code{restrict} have non-zero probabilities of parentage.  When \code{relational="OFFSPRING"} is specified, then \code{restrict} can take on the inequalities \code{"=="}, \code{"!="}, \code{">"}, \code{">="}, \code{"<"} and \code{"<="}. Parents for which the inequalities are satisfied have non-zero probabilities of parentage, with the parental value of \code{x} on the left hand side of the inequality and the offspring value on the right hand side. Restrict is not implemented when \code{relational="MATE"}}
   \item{keep}{logical; if \code{TRUE} then the design matrices for parents excluded using the argument \code{restrict} are retained in the estimation of beta}
-  \item{USvar}{if \code{NULL}, unsampled parents take the population mean value of the parameter.  If \code{x} is a factor then \code{USvar} can be a level of that factor to which unsampled parents belong.  If \code{x} is numeric then \code{USvar} can be the value for unsampled parents. When \code{relational=="MATE"}, \code{relational=="MATEV"} or male and female variables are interacted \code{USvar} must be \code{NULL}.}  
+  \item{USvar}{if \code{NULL}, the phenotypes of unsampled parents are assumed to be drawn from the same statistaical population as the sampled parents. If \code{x} is a factor then \code{USvar} can be a level of that factor to which unsampled parents belong.  If \code{x} is numeric then \code{USvar} can be the value for unsampled parents.  Sampled individuals for which there are missing covariate data will also take on USvar if specified.
+}  
   \item{merge}{logical; if \code{TRUE} then beta is the log odds ratio of an offspring's parent belonging to category \eqn{A} compared to category \eqn{B}, where \eqn{A} and \eqn{B} are levels of \code{x}.  If \code{FALSE} then beta is the log odds ratio of an individual belonging to category \eqn{A} being the parent of an offspring compared to an individual of category \eqn{B}.  When \code{relational=="MATE"}, \code{relational=="MATEV"} or male and female variables are interacted \code{keep} must be \code{FALSE}.}
   \item{...}{further arguments to be passed}
 }

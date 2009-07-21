@@ -1,27 +1,27 @@
 \name{fillX.G}
 \alias{fillX.G}
-\title{Mendelian Transition Probalities}
+\title{Mendelian Transition Probabilities}
 \description{
-   This function is primarily intended for use within \code{\link{getXlist}}, and fills in the design matrices of the model with the genetic likelihoods.  The model of genotyping error for codominant markers is taken from CERVUS (Kalinowski, 2006; Marshall, 1998), and the model for dominant markers is taken from (Hadfield, 2007).
+   This function is primarily intended for use within \code{\link{getXlist}}, and fills in the design matrices of the model with the genetic likelihoods.
 }
 \usage{
-fillX.G(X.list, A, G, E1=0.005, E2=0.005, marker.type="MS", ...)
+fillX.G(X.list, A, G, E1=0.005, E2=0.005, marker.type="MSW")
 }
 \arguments{
   \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}}
   \item{A}{list of allele frequencies}
   \item{G}{list of genotype objects; rows must correspond to individuals in the vector \code{X.list$id}}
-  \item{E1}{the probability of a dominant allele being scored as a recessive allele for dominant markers}
-  \item{E2}{per-allele genotyping error rate. \code{E2}(2-\code{E2}) is the per-genotype rate defined in Kalinowski (2006) for codominant markers, and \code{E2} is the probability of a recessive allele being scored as a dominant allele for dominant markers}
-  \item{marker.type}{"MS" or "AFLP" for codominant or dominant markers respectively}
-  \item{...}{further arguments to be passed}
+  \item{E1}{if Wang's (2004) model of genotyping error for co-dominant markers is used this is the probability of an allele dropping out. If CERVUS's (Kalinowski, 2006; Marshall, 1998) model of genotyping error for co-dominant markers is used this parameter is not used. If Hadfield's (2009) model of genotyping error for dominant markers is used this is the probability of a dominant allele being scored as a recessive allele.}
+  \item{E2}{if Wang's (2004) or CERVUS's (Kalinowski, 2006; Marshall, 1998) model of genotyping error for co-dominant markers are used this is the probability of an allele being miss-scored. In the CERVUS model errors are not independent for the two alleles within a genotype and so if a genotyping error has occurred at one allele then a genotyping error occurs at the other allele with probability one. Accordingly, \code{E2}(2-\code{E2}) is the per-genotype rate defined in CERVUS. If Hadfield's (2009) model of genotyping error for dominant markers is used this is the probability of a recessive allele being scored as a dominant allele.}
+  \item{marker.type}{\code{"MSW"} or \code{"MSC"} for co-dominant markers with Wang's (2004) model of genotyping error or CERVUS's model of genotyping error (Kalinowski, 2006; Marshall, 1998) or \code{"AFLP"} for dominant markers (Hadfield, 2009).}
 }
 \value{
   list of design matrices of the form \code{X.list} containing genetic likelihoods for each offspring.
 }
 \references{
-Kalinowski S.T. \emph{et al} (2006) Molecular Ecology \emph{in press}
-Hadfield J. D. \emph{et al} (2007) \emph{in prep}
+Marshall, T. C. \emph{et al} (1998) Molecular Ecology 7 5 639-655
+Kalinowski S.T. \emph{et al} (2007) Molecular Ecology 16 5 1099-1106
+Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 }
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \note{If a  \code{\link{GdataPed}} object is passed to \code{\link{getXlist}} then the genetic likelihoods will be calculated by default.
