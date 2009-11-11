@@ -10,8 +10,8 @@ MLE.popsize(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL,
 }
 \arguments{
   \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}}
- \item{USdam}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled females exists. If \code{USdam} is a character vector it must have the same length as \code{id} with factor levels representing sub-populations (in time or space) over which the number of unsampled females vary.}  
-  \item{USsire}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled males exists. if    \code{USsire} is a character vector it must either have the same length as \code{id} with factor levels representing sub-populations (in time or space) over which the number of unsampled males vary, or alternatively \code{"USdam"}, in which case the unsampled male and female populations are constrained to be equal.}  
+ \item{USdam}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled females exists. If \code{USdam} is a character vector it must have the same length as the number of offspring (\code{length(X.list$X)}) with factor levels representing sub-populations (in time or space) over which the number of unsampled females vary.}  
+  \item{USsire}{logical or character; if \code{TRUE} a single undiferentiated population of unsampled males exists. if    \code{USsire} is a character vector it must either have the same length as the number of offspring (\code{length(X.list$X)}) with factor levels representing sub-populations (in time or space) over which the number of unsampled males vary, or alternatively \code{"USdam"}, in which case the unsampled male and female populations are constrained to be equal.}  
   \item{nUS}{optional starting vector for the size of the unsampled population.  Parmeters for the unsampled female population come before the male population.}
   \item{ped}{optional pedigree with id, dam and sire in ech column}
 }
@@ -26,7 +26,7 @@ Nielsen's original model does not account for genotyping error, and estimation o
 }
 \seealso{\code{\link{MCMCped}}, \code{\link{popsize.loglik}}}
 \examples{
-
+\dontrun{
 data(WarblerP)
 data(WarblerG)
 
@@ -39,7 +39,7 @@ X.list<-getXlist(PdP=PdP, GdP=GdP, E2=0.02)
 
 nUS<-MLE.popsize(X.list, USsire=TRUE, USdam=TRUE)
 nUS
-
+}
 }
 \keyword{models}
 \keyword{optimize}

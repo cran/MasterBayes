@@ -8,12 +8,8 @@
   }
 
   if(sP$estA == TRUE | sP$estG==TRUE | CERVUS==TRUE | is.null(sP$G)==FALSE){ 
-    if(length(sP$A)==0){           
-      if(length(sP$G)!=0){        
-        sP$A<-extractA(sP$G)
-      }else{                      
-        sP$A<-extractA(GdP$G)
-      }
+    if(length(sP$A)==0){                           
+      sP$A<-extractA(GdP$G)      
     }
   }
 
@@ -33,6 +29,12 @@
   }else{
     if(sP$estG==TRUE | any(sP$E1==0)){
       sP$E1[which(sP$E1==0)]<-1e-5
+    }
+    if(length(sP$E1)!=No.E){stop("starting values for E1 are the wrong length")}
+    if(GdP$perlocus==FALSE){
+      names(sP$E1)<-unique(GdP$categories)
+    }else{
+      names(sP$E1)<-paste(unique(GdP$categories), rep(names(GdP$G), each=length(unique(GdP$categories))), sep=".")
     }
   }
   if(GdP$marker.type=="MSC"){
@@ -55,9 +57,13 @@
     if(sP$estG==TRUE | any(sP$E2==0)){
       sP$E2[which(sP$E2==0)]<-1e-5
     }
+    if(length(sP$E2)!=No.E){stop("starting values for E1 are the wrong length")}
+    if(GdP$perlocus==FALSE){
+      names(sP$E2)<-unique(GdP$categories)
+    }else{
+      names(sP$E2)<-paste(unique(GdP$categories), rep(names(GdP$G), each=length(unique(GdP$categories))), sep=".")
+    }
   }
-
-
 
   # if sP$G does not exist obtain from the first genotype of each individual in GdP$G
 
@@ -68,7 +74,24 @@
   }
 
     if(sPGgiven == FALSE){ 
-      sP$G<-lapply(GdP$G, function(x){x[-duplicated(GdP$id)==FALSE]}) 
+       sP$G<-lapply(GdP$G, function(x){x[-duplicated(GdP$id)==FALSE]}) 
+    }else{
+      for(i in 1:length(sP$A)){
+        if(any((allele.names(sP$G[[i]])%in%names(sP$A[[i]]))==FALSE)){
+          stop("some alleles in sP$G are not in sP$A")
+        }
+      }
+    }
+        
+
+    if(is.null(sP$ped)==FALSE){
+      if(sPGgiven){
+         sP$G<-lapply(sP$G, function(x){x[order(as.numeric(match(sP$id, unique_id)))]}) 
+      }
+      sP$ped[,1]<-match(sP$ped[,1], unique_id)
+      sP$ped[,2]<-match(sP$ped[,2], unique_id)
+      sP$ped[,3]<-match(sP$ped[,3], unique_id)
+      sP$ped<-sP$ped[order(as.numeric(sP$ped[,1])),]
     }
 
     if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
@@ -100,12 +123,7 @@
     sP$USsire<-MLENus$nUS[(nusd+1):(nusd+nuss)]
   }
 
- if(is.null(sP$ped)==FALSE){
-    sP$ped[,1]<-match(sP$ped[,1], unique_id)
-    sP$ped[,2]<-match(sP$ped[,2], unique_id)
-    sP$ped[,3]<-match(sP$ped[,3], unique_id)
-    sP$ped<-sP$ped[order(as.numeric(sP$ped[,1])),]
-  }else{
+ if(is.null(sP$ped)){
     if(sP$estP==TRUE){  
        sP$ped<-MLE.ped(X.list, ped=NULL, USdam=PdP$USdam, nUSdam=sP$USdam, USsire=PdP$USsire, nUSsire=sP$USsire, checkP=checkP)$P   
     }else{
@@ -138,8 +156,7 @@
         time_born = PdP$timevar[which(PdP$offspring==1)][match(sP$ped[,1], PdP$id)] 
       }
       if(legalG(sP$G, sP$A, sP$ped, time_born=time_born, marker.type=GdP$marker.type)$valid=="FALSE"){
-        warning("sP$G does not have postive probability given possible starting pedigree")
-        stop()
+        stop("sP$G does not have postive probability given possible starting pedigree")
       }
     }else{   
       if(is.null(GdP$G)==FALSE){   
@@ -147,7 +164,6 @@
       }  
     }
   }
-
   # get a legal configuration for sP$G 
 
 ############################################ get tuning parameters ###############################################
@@ -206,7 +222,5 @@
        }
        tP$USsire<-abs(tP$USsire*diag(MLENus$C)[nusd+(1:nuss)])
     }
-
-
 list(sP=sP, tP=tP)
 }

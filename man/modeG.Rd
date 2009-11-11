@@ -18,6 +18,7 @@ modeG(postG, threshold=0)
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}, \code{genotype}}
 \examples{
+\dontrun{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)
@@ -44,5 +45,6 @@ model1<-MCMCped(PdP=PdP, GdP=GdP, tP=tP, nitt=3000, thin=2, burnin=1000, write_p
 
 G<-modeG(model1$G)$G
 summary(G[[1]])
+}
 }
 \keyword{distribution}

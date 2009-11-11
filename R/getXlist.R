@@ -621,21 +621,28 @@ for(off in 1:sum(PdP$offspring==1)){
     }    
 
     if(is.null(GdP$G)==FALSE){
+      if(is.null(A)==TRUE){
+        A<-extractA(GdP$G)
+      }else{
+        for(i in 1:length(GdP$G)){
+          A[[i]]<-A[[i]][order(A[[i]], decreasing=T)]
+          GdP$G[[i]]<-genotype(GdP$G[[i]], alleles=names(A[[i]]), reorder="no")
+        }
+      }
       Gid<-GdP$id[-duplicated(GdP$id)==FALSE]
       G<-lapply(GdP$G, function(x){x[-duplicated(GdP$id)==FALSE]})
       grouped_by_id<-order(match(Gid, unique_id))        
       G<-lapply(G, function(x){x[grouped_by_id]}) 
       Gid<-grouped_by_id  
+
       X.list<-mismatches(X.list, G=G, mm.tol=mm.tol)
-      if(is.null(A)==TRUE){
-        A<-extractA(GdP$G)
-      }
       if(is.null(E1)==TRUE){
         E1<-0.005
       }
       if(is.null(E2)==TRUE){
         E2<-0.005
       }
+
       X.list<-fillX.G(X.list, A=A, G=G, E1=E1, E2=E2, marker.type=GdP$marker.type)
       X.list<-reordXlist(X.list, marker.type=GdP$marker.type)
     }
@@ -643,8 +650,8 @@ for(off in 1:sum(PdP$offspring==1)){
     npdam<-unlist(lapply(X.list$X, function(x){length(x$restdam.id)}))
     npsire<-unlist(lapply(X.list$X, function(x){length(x$restsire.id)}))
 
-    if(any(npdam==0)){ stop(paste("Indiviudals", paste(names(X.list$X)[which(npdam==0)], collapse=" "), "have no possible dams"))}
-    if(any(npsire==0)){stop(paste("Individuals", paste(names(X.list$X)[which(npsire==0)], collapse=" "), "have no possible sires"))}
+    if(any(npdam==0)){ stop(paste("Indiviudals", paste(X.list$id[as.numeric(names(X.list$X)[which(npdam==0)])], collapse=" "), "have no possible dams"))}
+    if(any(npsire==0)){stop(paste("Individuals", paste(X.list$id[as.numeric(names(X.list$X)[which(npsire==0)])], collapse=" "), "have no possible sires"))}
 
   }
 X.list

@@ -22,7 +22,7 @@ popsize.loglik(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE
 \note{Intended to be used within \code{\link{MLE.popsize}}}
 \seealso{\code{\link{MCMCped}}, \code{\link{MLE.popsize}}}
 \examples{
-
+\dontrun{
 data(WarblerG)
 A<-extractA(WarblerG)
 
@@ -71,6 +71,6 @@ for(i in 1:100){
 }
 plot(nUS_Loglik~nUS, type="l", main="Profile Log-likelihood
    for number of unsampled males")
-
+}
 }
 \keyword{models}

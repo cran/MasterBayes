@@ -1,5 +1,6 @@
 "MLE.popsize"<-function(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL){
  
+
   if(length(USdam)==1){
     if(USdam==TRUE){
       nbetaD<-1
@@ -8,6 +9,7 @@
       nbetaD<-0
     }
   }else{  
+    if(length(USdam)!=length(X.list$X)){stop("length of USdam does not equal number of offspring")}
     nbetaD<-length(unique(USdam))
   }
 
@@ -26,6 +28,7 @@
       nbetaS<-0
     }
   }else{
+    if(length(USsire)!=length(X.list$X)){stop("length of USsire does not equal number of offspring")}
     nbetaS<-length(unique(USsire))
   }
 
@@ -63,7 +66,7 @@
     }
 
     if(is.null(ped)==FALSE){
-      ped<-ped[match(names(X.list$X),X.list$id),]
+      ped<-ped[match(X.list$id[as.numeric(names(X.list$X))], ped[,1]),]
     }
 
     X<-lapply(X.list$X, function(x){list(N=NULL,G=NULL)})

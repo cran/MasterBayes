@@ -421,7 +421,7 @@ The fundamental difference between the exact solution implemented in MasterBayes
   We can fit a model where the pedigree and $\beta$ are estimated simultaneously, although for now we will retain the approximation for genotyping error and leave the number of unsampled males fixed at 10.
 
 %%<<echo=true, fig=FALSE>>=
-%%sP<-startPed(estG=FALSE,A=extractA(WarblerG),E2=0.005,estUSsire=FALSE,USsire=10)  
+%%sP<-startPed(estG=FALSE,A=extractA(WarblerG),E1=0.005, E2=0.005,estUSsire=FALSE,USsire=10)  
 %%model3<-MCMCped(PdP=PdP, GdP=GdP, sP=sP, verbose=FALSE) 
 %%plot(model3$beta)
 %%summary(model3$beta)
@@ -698,7 +698,7 @@ In Section \ref{MCMC.D-sec} I mentioned the fact that MCMC may be sensitive to t
 
 %%<<echo=TRUE, fig=FALSE>>=
 %%stG<-simgenotypes(A=A, E1=0, E2=0, ped=ped, no_dup=1)
-%%sP<-startPed(ped=ped, G=stG$Gobs)
+%%sP<-startPed(ped=ped, G=stG$Gobs, A=A)
 %%# A new set of random genotypes with positive probability
 %%# are generated and used as the starting configuration
 %%model.config<-MCMCped(GdP=GdP,sP=sP,tP=tP,verbose=FALSE) 
@@ -730,7 +730,7 @@ When only dams are known the chain still mixes well and the chain converges very
 %%# 10 full-sib families of size 10
 
 %%G<-simgenotypes(A=A,E1=0.1,E2=0.005,ped=ped,no_dup=1)
-%%sP<-startPed(ped=ped, G=G$G)
+%%sP<-startPed(ped=ped, G=G$G, A=A)
 
 %%#specify that the dams and sires are known, 
 %%#and use the true G as the starting configuration
@@ -739,7 +739,7 @@ When only dams are known the chain still mixes well and the chain converges very
 %%model.DS1<-MCMCped(GdP=GdP,sP=sP,tP=tP,verbose=FALSE) 
 
 %%stG<-simgenotypes(A=A,E1=0.1,E2=0.005,ped=ped,no_dup=1)
-%%sP<-startPed(ped=ped, G=stG$G)
+%%sP<-startPed(ped=ped, G=stG$G,A=A)
 
 %%#use a random G as the starting configuration
  

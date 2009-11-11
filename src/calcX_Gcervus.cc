@@ -140,11 +140,9 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                      if((d2==o1 && s2==o2) || (d2==o2 && s2==o1)){TacP +=0.25;}
 
                      if(dam_poss!=sire_poss){  // non-selfers
-                       TacP *= E_mat[l][2]*E_mat[l][0];
-                       X_design_G[i][records_off] *=  ((E_mat[l][2]*E_mat[l][0]*(sslfl+dslfl+pG))+TacP+(pG*pow(E_mat[l][2],2.0)*(3.0-(2.0*E_mat[l][2]))));
+                       X_design_G[i][records_off] *=  (E_mat[l][0]*E_mat[l][0]*(E_mat[l][2]*(sslfl+dslfl+pG)+E_mat[l][0]*TacP)+(pG*pow(E_mat[l][2],2.0)*(3.0-(2.0*E_mat[l][2]))));
                      }else{                   // selfers
-                       TacP *= E_mat[l][2]*E_mat[l][0];
-                       X_design_G[i][records_off] *=  ((E_mat[l][2]*E_mat[l][0]*(sslfl+dslfl+pG))+TacP+(pG*pow(E_mat[l][2],2.0)*(3.0-(2.0*E_mat[l][2]))));
+                       X_design_G[i][records_off] *=  (E_mat[l][0]*E_mat[l][0]*(E_mat[l][2]*(sslfl+dslfl+pG)+E_mat[l][0]*TacP)+(pG*pow(E_mat[l][2],2.0)*(3.0-(2.0*E_mat[l][2]))));
                      }
                    } 
                  }
@@ -299,18 +297,21 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                         hit=1;
                       }
                     }
+
                     if(hit==0){
                       Aobs[na]=d1;
                       P[na] = A[l][d1];
                       A[l][d1] = 0.0;   
                       na++;
                     }
+
                     hit=0;
                     for(dk = 0; dk < na; dk++){   
                       if(d2==Aobs[dk]){
                         hit=1;
                       }
                     }
+
                     if(hit==0){
                       Aobs[na]=d2;
                       P[na] = A[l][d2];
@@ -326,18 +327,21 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                         hit=1;
                       }
                     }
+
                     if(hit==0){
                       Aobs[na]=s1;
                       P[na] = A[l][s1];
                       A[l][s1] = 0.0;   
                       na++;
                     }
+
                     hit=0;
                     for(sk = 0; sk < na; sk++){   
                       if(s2==Aobs[sk]){
                         hit=1;
                       }
                     }
+
                     if(hit==0){
                       Aobs[na]=s2;
                       P[na] = A[l][s2];
@@ -352,7 +356,7 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                     P[na] = 0.0;
                     for(dj = 0; dj<nall[l]; dj++){
                       P[na] += A[l][dj];
-                      if(A[l][dj]>1e-10){
+                      if(A[l][dj]>(1e-10)){
                         Aobs[na]=dj;
                       }
                     }
@@ -375,7 +379,6 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
  
                               if(oj!=ok){pG *= 2.0;}
 // P(O_o | O)
-
 
                               if(o1==o2){
                                 if(o1==Aobs[oj] && o1==Aobs[ok]){
@@ -483,12 +486,12 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                       }
                     }
                   }
-
                   X_design_G[i][records_off] *=  o2inp/o1inp;
 // read back in used allele frequencies
                   for(dj = 0; dj<(na-1); dj++){ 
                     A[l][Aobs[dj]] = P[dj];
                   }
+
                   if(A[l][Aobs[(na-1)]]<(1e-10)){
                     A[l][Aobs[(na-1)]] = P[(na-1)];
                   }

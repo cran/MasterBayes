@@ -16,8 +16,10 @@ genotypeD(a1, locus=NULL)
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{genotype}, \code{summary.genotypeD}}
 \examples{
+\dontrun{
 l1<-rbinom(100,1,0.5)
 l1<-genotypeD(l1)
+}
 }
 \keyword{classes}
 

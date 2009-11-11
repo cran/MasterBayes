@@ -64,6 +64,7 @@ void sampDomG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, dou
 
 if(id[i+end]!=ind){                 // the last record for that individual
 
+
 // get dam genotype //     
                            
                 if(dam[ind]<nind){                 
@@ -85,7 +86,6 @@ if(id[i+end]!=ind){                 // the last record for that individual
                 if(sa!=-999){ 
                   rel_status++;  // has a father //
                 }
-
 // rel status: 0: no par 1: one par 2: two par  
 
         switch(rel_status){

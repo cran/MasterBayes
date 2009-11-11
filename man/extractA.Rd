@@ -11,9 +11,11 @@
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{genotype.list}}, \code{genotype}}
 \examples{
+\dontrun{
   data(WarblerG)
 
   A<-extractA(WarblerG)
   A[[1]]
+}
 }
 \keyword{manip}

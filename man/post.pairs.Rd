@@ -18,6 +18,7 @@ post.pairs(postP, threshold=0, rel="PO")
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{modeP}}}
 \examples{
+\dontrun{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)
@@ -44,6 +45,7 @@ model1<-MCMCped(PdP=PdP, GdP=GdP, tP=tP, nitt=3000, thin=2, burnin=1000, write_p
 
 fsib<-post.pairs(model1$P, threshol=0.9, rel="FS")
 fsib
+}
 }
 \keyword{manip}
 \keyword{models}

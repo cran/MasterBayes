@@ -157,7 +157,7 @@ if(id[i+q]!=ind){                 // the last record for that individual
                   }
                 }
                 if(rel_status==1 && gen_status!=0){rel_status=4;}
-
+       
 // rel status: 0: no rel 1: one par but no observed genotype!! 2: both par  3: offspring + both par 4: everything else 
 
 switch(rel_status){

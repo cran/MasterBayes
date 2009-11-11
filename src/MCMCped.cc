@@ -112,6 +112,7 @@ bool    estP = bool(estimatingP[0]),
         USdamsire = bool(estimatingP[9]),
         checkP = bool(estimatingP[10]),
         jointP = bool(estimatingP[11]),
+
         est_pE1 = FALSE,           
         est_pE2 = FALSE,
         est_pbeta = FALSE,           
@@ -371,6 +372,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                  log_det = log_detP[0];
                  est_pbeta = TRUE;
                }
+
                if(int(prior_us_muP[0])!=999){         
           	 prior_us_mu = Matrix<double>  (nus,1, prior_us_muP);
           	 prior_us_sigma = Matrix<double> (nus,1, prior_us_sigmaP);
@@ -538,29 +540,23 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 * sample P    *
 ***************/
 	    if(estP==TRUE){ 
-
               for(i = 0; i < tot_par; i++){
                 beta_mapped[i] = beta_1[beta_mapP[i]];
               }
-
               if(jointP){
                 sampP(offidP,noff,X_design_G,npar, DSuu, X_design_betaDus, X_design_betaSus,X_design_betaDSus, X_design_betaDs, X_design_betaSs,X_design_betaDSs, dam,sire,beta_mapped,us_1, usdamcat,ussirecat, nusd, nuss, ndamP,nsireP,ntdamP,ntsireP, Dams_vec,Sires_vec, nind, nmerge, mergeV, mergeUS, mergeN, checkP);
               }else{
                 sampS(offidP,noff,X_design_GS,npar, DSuu, X_design_betaSus, X_design_betaDSus, X_design_betaSs, X_design_betaDSs, dam,sire,beta_mapped,us_1, ussirecat, nusd, nuss, ndamP,nsireP,ntdamP,ntsireP, Sires_vec, nind, nmerge, mergeV, mergeUS, mergeN, Dams, Sires, checkP);
-
                 if(estG){
                    calcX_GD(X_design_GD, offidP, noff , ndamP, nind, Dams_vec, sire, G, nloci, A, mtype);
                 }else{
                    calcX_GcervusD(X_design_GD, X_design_G, offidP, noff, ndamP, nsireP, Sires, sire);
                 }
-
                 sampD(offidP,noff,X_design_GD,npar, DSuu, X_design_betaDus, X_design_betaDSus, X_design_betaDs, X_design_betaDSs, dam,sire,beta_mapped,us_1, usdamcat, nusd, ndamP,nsireP,ntdamP,ntsireP, Dams_vec, nind, nmerge, mergeV, mergeUS, mergeN, Dams, Sires, checkP);
-
                 if(estG==FALSE){
                   calcX_GcervusS(X_design_GS, X_design_G, offidP, noff, ndamP, nsireP, Dams, dam);                
                 }
               }
-
               if(estbeta==TRUE){
                 llB_1 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_1, ratio_1, nmerge, mergeV, mergeUS, mergeN, DSapprox);
@@ -577,7 +573,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                 }
               }
             }
- 
+
 /**************
 * sample G & A*
 ***************/
@@ -695,7 +691,7 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
                 llE_1 = llE_0;
                 E2_1 = E2_0;
               }
-
+ 
 /**************
 * sample beta *
 ***************/
@@ -743,7 +739,6 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
 **************************/
 
            if(estUS==TRUE){ 
-            
              us_0 = fabs(rmvnormM(us_1, int_us, nus));
 
              if(USdamsire==TRUE){
@@ -762,7 +757,7 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
 
 	     m_ll = std::min(1.0, llUS_0-llUS_1); 
 
-      if(m_ll<log(runif(0.0,1.0))){
+              if(m_ll<log(runif(0.0,1.0))){
                 llUS_0 = llUS_1;
 	        us_0 = us_1;	
                 acceptUS--;

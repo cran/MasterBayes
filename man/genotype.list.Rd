@@ -22,11 +22,11 @@ Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 \author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
 \seealso{\code{genotype}}
 \examples{
-
+\dontrun{
   data(WarblerG)
 
   G<-genotype.list(WarblerG[,-1])
   summary(G[[1]])
-
+}
 }
 \keyword{manip}

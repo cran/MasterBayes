@@ -38,7 +38,9 @@ export(
   orderPed,
   extractA,
   post.pairs,
-  autocorrP 
+  autocorrP,
+  insertPed,
+  consensusG 
 ) 
 S3method(summary, genotypeD)
 S3method(print, genotypeD)

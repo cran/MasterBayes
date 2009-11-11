@@ -1,5 +1,5 @@
 "varPed" <-
-function(x, gender=NULL, lag=c(0,0), relational=FALSE, lag_relational=c(0,0), restrict=NULL, keep=FALSE, USvar=NULL, merge=FALSE){
+function(x, gender=NULL, lag=c(0,0), relational=FALSE, lag_relational=c(0,0), restrict=NULL, keep=FALSE, USvar=NULL, merge=FALSE, NAvar=NULL){
 
       if(relational!=FALSE){
         if(relational!="OFFSPRING" & relational!="MATE" & relational!="OFFSPRINGV" & relational!="MATEV"){stop("relational must either be 'OFFSPRING', 'OFFSPRINGV', 'MATE' or 'MATEV'")}
@@ -12,16 +12,16 @@ function(x, gender=NULL, lag=c(0,0), relational=FALSE, lag_relational=c(0,0), re
      
       sex<-with(parent.frame(), sex)               
       id<-with(parent.frame(), id)
-      off_record<-with(parent.frame(), off_record)                
+      off_record<-with(parent.frame(), off_record)         
       data<-with(parent.frame(), data)                 # these are objects taken from the environment in which
       keepDam<-with(parent.frame(), keepDam)           # varPed is called - typically MCMCped
       keepSire<-with(parent.frame(), keepSire)  
       time_var<-with(parent.frame(), timevar) 
       namevar<-x
       x<-data[,x]                                      # gets variable(s)
-      if(length(USvar)>0 & relational==FALSE){
-        x[which(is.na(x)==TRUE)]<-USvar                # Fills missing values if specified in USvar
-      }     
+#      if(length(USvar)>0 & relational==FALSE){
+#        x[which(is.na(x)==TRUE)]<-USvar                # Fills missing values if specified in USvar
+#      }     
       hermaphrodite<-length(sex)==0                    # is this an hermaphroditic system
       sex_specific<-length(gender)==1                  # is the variable sex-specific
       ud<-with(parent.frame(), USdam)
@@ -98,7 +98,8 @@ if(length(restrict)!=0){
         if(lag_relational[1]==0 & lag_relational[2]==0){
            PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
         }else{
-           PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+            PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
+#           PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
         }
         if(keep==FALSE){
           PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
@@ -108,7 +109,7 @@ if(length(restrict)!=0){
         if(lag_relational[1]==0 & lag_relational[2]==0){
           PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
         }else{
-          PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+          PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
         }
         if(keep==FALSE){
            PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
@@ -120,14 +121,14 @@ if(length(restrict)!=0){
           if(lag_relational[1]==0 & lag_relational[2]==0){
             PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
           }else{
-            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
           }
         }
         if("Female"%in%gender){
           if(lag_relational[1]==0 & lag_relational[2]==0){
             PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
           }else{
-            PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+             PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
           }
         }
       }else{
@@ -135,8 +136,8 @@ if(length(restrict)!=0){
           PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
           PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
         }else{
-          PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
-          PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+          PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
+          PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
         } 
       }
       if(keep==FALSE){
@@ -201,7 +202,7 @@ if(length(restrict)==0){
     }else{
       off_var<-as.matrix(x)[which(id%in%id[off_record] & ((time_var>=(lag_relational[1]+off_time) & time_var<=(lag_relational[2]+off_time)) | is.na(time_var))),]
     }
- 
+
 ############### Covariates of fecundity, or distance from offspring ###############################
 
     if(relational!="MATE"){
@@ -225,32 +226,34 @@ if(length(restrict)==0){
   
         # OFFSPRING RELATIONAL - NUMERIC
 
-        if((relational=="OFFSPRING" | relational=="OFFSPRINGV") & "numeric"%in%facnum){
-          var_tmp<-as.matrix(as.matrix(var_tmp)[time_for_P,])
+        if((relational=="OFFSPRING" | relational=="OFFSPRINGV") & "numeric"%in%facnum){   
+          var_tmp<-as.matrix(as.matrix(var_tmp)[time_for_P,])      
           id_tmp<-id_tmp[time_for_P]
            if(is.null(dim(var_tmp))){
             var_tmp<-t(as.matrix(var_tmp)) 
           }
-          if(is.na(off_var)[1]){
-            dup_off_var<-var_tmp
-          }else{
-            dup_off_var<-rep(1, length(var_tmp[,1]))%*%t(off_var)
-          }
+          dup_off_var<-rep(1, length(var_tmp[,1]))%*%t(off_var)
           if(relational=="OFFSPRING"){
             predict_ped<-rowSums((var_tmp-dup_off_var)^2)^0.5
           }else{
             predict_ped<-rowSums(var_tmp-dup_off_var)
           }
-          if(length(USvar)>0){
-            predict_ped[which(is.na(predict_ped)==T)]<-USvar          # Fills missing values if specified in USvar
+          if(length(NAvar)>0){
+            predict_ped[which(is.na(predict_ped)==T)]<-NAvar          # Fills missing values if specified in USvar
           }
           namex<-namevar
           predict_ped<-tapply(predict_ped, id_tmp, mean, na.rm=T)
           if("Male"%in%gender){
             predict_ped<-predict_ped[match(keepSire,names(predict_ped))]
+            if(us & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           if("Female"%in%gender){
             predict_ped<-predict_ped[match(keepDam,names(predict_ped))]
+            if(ud & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           predict_ped<-matrix(predict_ped, length(predict_ped),1)
         }
@@ -262,8 +265,8 @@ if(length(restrict)==0){
           id_tmp<-id_tmp[time_for_P]
           NAvec<-which(is.na(var_tmp)==TRUE)
           var_tmp<-var_tmp%in%off_var
-          if(length(USvar)>0){
-            var_tmp[NAvec]<-USvar      # Fills missing values if specified in USvar
+          if(length(NAvar)>0){
+            var_tmp[NAvec]<-NAvar      # Fills missing values if specified in USvar
           }else{
             var_tmp[NAvec]<-NA
           }    
@@ -271,9 +274,15 @@ if(length(restrict)==0){
           namex<-paste(namevar, c(TRUE, FALSE), sep=".")
           if("Male"%in%gender){
             predict_ped<-predict_ped[match(keepSire,names(predict_ped))]
+            if(us & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           if("Female"%in%gender){
             predict_ped<-predict_ped[match(keepDam,names(predict_ped))]
+            if(ud & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           predict_ped<-matrix(predict_ped, length(predict_ped),1)      
         }
@@ -286,14 +295,20 @@ if(length(restrict)==0){
           var_tmp<-tapply(var_tmp, id_tmp, mean, na.rm=T)
           id_tmp<-names(var_tmp)
           predict_ped<-var_tmp
-          if(length(USvar)>0){
-            predict_ped[which(is.na(predict_ped)==T)]<-USvar                # Fills missing values if specified in USvar
+          if(length(NAvar)>0){
+            predict_ped[which(is.na(predict_ped)==T)]<-NAvar                # Fills missing values if specified in USvar
           }
           if("Male"%in%gender){
             predict_ped<-predict_ped[match(keepSire,names(predict_ped))]
+            if(us & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           if("Female"%in%gender){
             predict_ped<-predict_ped[match(keepDam,names(predict_ped))]
+            if(ud & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           predict_ped<-matrix(predict_ped, length(predict_ped),1)
           namex<-namevar
@@ -309,21 +324,27 @@ if(length(restrict)==0){
           }
           var_tmp<-unlist(tapply(var_tmp, id_tmp, function(x){x[1]}, simplify=FALSE))
           NAvec<-which(is.na(var_tmp)==TRUE)
-          if(length(USvar)>0){
-            var_tmp[NAvec]<-USvar                # Fills missing values if specified in USvar
+          if(length(NAvar)>0){
+            var_tmp[NAvec]<-NAvar                # Fills missing values if specified in USvar
           }else{
             var_tmp[NAvec]<-levels(var_tmp)[1]
           }
           predict_ped<-as.matrix(model.matrix(~var_tmp)[,-1])
           rownames(predict_ped)<-names(var_tmp)
-          if(length(USvar)==0){
+          if(length(NAvar)==0){
             predict_ped[NAvec,]<-NA
           }
           if("Male"%in%gender){
             predict_ped<-as.matrix(predict_ped[match(keepSire,rownames(predict_ped)),])
+            if(us & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           if("Female"%in%gender){
             predict_ped<-as.matrix(predict_ped[match(keepDam,rownames(predict_ped)),])
+            if(ud & is.null(USvar)==FALSE){
+              predict_ped[length(predict_ped)]<-USvar
+            }
           }
           namex<-paste(namevar, levels(var_tmp)[-1], sep=".")
           colnames(predict_ped)<-levels(var_tmp)[-1]
@@ -415,8 +436,18 @@ if(length(restrict)==0){
         }else{
           predict_ped<-matrix(NA, length(keepDam)*length(keepSire), 1)
         }
-        if(length(USvar)>0){
-          predict_ped[which(is.na(predict_ped)==T)]<-USvar                # Fills missing values if specified in USvar
+        if(length(NAvar)>0){
+          predict_ped[which(is.na(predict_ped)==T)]<-NAvar                # Fills missing values if specified in USvar
+        }
+        if((us | ud) & is.null(USvar)==FALSE){
+           us.samples<-c()
+           if(ud){
+             us.samples<-c(us.samples, (length(keepDam)-1)*length(keepSire)+1:length(keepSire))
+           }
+           if(us){
+             us.samples<-c(us.samples, 0:length(keepDam)*length(keepSire))
+           }
+           predict_ped[us.samples]<-USvar 
         }
         namex<-namevar
       }
@@ -429,8 +460,18 @@ if(length(restrict)==0){
         }else{
           predict_ped<-matrix(NA, length(keepDam)*length(keepSire), 1)
         }
-        if(length(USvar)>0){
-          predict_ped[which(is.na(predict_ped)==TRUE)]<-USvar                # Fills missing values if specified in USvar
+        if(length(NAvar)>0){
+          predict_ped[which(is.na(predict_ped)==TRUE)]<-NAvar                # Fills missing values if specified in USvar
+        }
+        if((us | ud) & is.null(USvar)==FALSE){
+           us.samples<-c()
+           if(ud){
+             us.samples<-c(us.samples, (length(keepDam)-1)*length(keepSire)+1:length(keepSire))
+           }
+           if(us){
+             us.samples<-c(us.samples, 0:length(keepDam)*length(keepSire))
+           }
+           predict_ped[us.samples]<-USvar 
         }
         namex<-paste(namevar, c(TRUE, FALSE), sep=".")
       }

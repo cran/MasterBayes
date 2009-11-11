@@ -41,6 +41,7 @@ If the argument \code{relational="OFFSPRING"} is specified in \code{\link{varPed
 
 \seealso{\code{\link{varPed}}, \code{\link{MCMCped}}}
 \examples{
+\dontrun{
 id<-1:20
 sex<-sample(c("Male", "Female"),20, replace=TRUE)
 offspring<-c(rep(0,18),1,1)
@@ -75,6 +76,7 @@ matrix(X.list$X$"19"$XDSs, ncol=length(X.list$X$"19"$dam.id),
 # are the same mating type. Again this is a contrast with the first 
 # parental combination (which is +/+) so 0 actually represents parents
 # with the same mating type.
+}
 }
 \keyword{manip}
 \keyword{models}

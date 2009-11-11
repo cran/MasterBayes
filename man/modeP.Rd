@@ -19,6 +19,7 @@ Individuals that do not have a parent assignment with a posterior probability ex
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)
@@ -45,5 +46,6 @@ model1<-MCMCped(PdP=PdP, GdP=GdP, tP=tP, nitt=3000, thin=2, burnin=1000)
 
 ped<-modeP(model1$P, threshol=0.9)
 ped
+}
 }
 \keyword{distribution}

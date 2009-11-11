@@ -104,15 +104,12 @@ index  += (ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2)));
 	map<int, int> Sires [noff];    // map[i][dam_id] = n           dam_id is the n^th mother of the i^th individual
         Matrix<int> Dams_vec [noff];   // Matrix[i][n] = dam_id        the n^th mother of the i^th individul is dam.id 
 	Matrix<int> Sires_vec [noff];
-      
+
          read_G(GP, nind, nloci, G, mtype);
          read_A(AP, nloci, A, nall);
          read_stP(noff, ndamP, damidP, nsireP, sireidP,Dams,Sires,Dams_vec,Sires_vec); 
-
          Error_Mat(E1P[0], E2P[0], E_mat, ncat, nall, nloci, false, false, mtype);
-
          calcX_Gcervus(X_design_G, offidP, noff , ndamP, nsireP, nind, Dams_vec, Sires_vec, G, nloci, A, E_mat, mtype, nall);
-
          int cnt_ds=0;
          int p;
 

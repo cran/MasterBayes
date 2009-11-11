@@ -38,6 +38,9 @@ function(PdP=PdataPed(),
       if(is.null(sP$A)==FALSE & (GdP$marker.type=="MSC" || GdP$marker.type=="MSW")){
         for(i in 1:length(GdP$G)){
           sP$A[[i]]<-sP$A[[i]][order(sP$A[[i]], decreasing=T)]
+          if(any((allele.names(GdP$G[[i]])%in%names(sP$A[[i]]))==FALSE)){
+            stop("some alleles in GdP$G are not in sP$A")
+          }
           GdP$G[[i]]<-genotype(GdP$G[[i]], alleles=names(sP$A[[i]]), reorder="no")
         }
       }
@@ -55,8 +58,19 @@ function(PdP=PdataPed(),
 
 ############################### build design matrices ############################################################
 
-    X.list<-getXlist(PdP, GdP, A=sP$A, E1=sP$E1, E2=sP$E2, mm.tol=mm.tol) 
-
+    if(is.null(GdP$G)==FALSE){    
+       if(sP$estG & GdP$marker.type=="MSW"){
+          GdP$marker.type<-"MSC" # speed calculation up is genotypes are going to be calculated anyway 
+          X.list<-getXlist(PdP, GdP, A=sP$A, E1=sP$E1, E2=sP$E2, mm.tol=mm.tol) 
+          GdP$marker.type<-"MSW"
+       }else{
+          X.list<-getXlist(PdP, GdP, A=sP$A, E1=sP$E1, E2=sP$E2, mm.tol=mm.tol)
+       }
+    }else{
+      X.list<-getXlist(PdP, GdP, A=sP$A, E1=sP$E1, E2=sP$E2, mm.tol=mm.tol) 
+    }
+    
+ 
     noff<-length(X.list$X)	
     ndam<-c(unlist(lapply(X.list$X,function(x){length(x$restdam.id)})))	
     nsire<-c(unlist(lapply(X.list$X,function(x){length(x$restsire.id)})))
@@ -84,12 +98,12 @@ function(PdP=PdataPed(),
 ################################ make sure evrything is OK ####################################################
 
   sP<-ErrorCheck(sP, tP, pP, PdP=PdP, GdP=GdP, unique_id=unique_id, nbeta=nbeta, nlinked=nlinked)
+
   if(sP$estG==FALSE & write_postG==TRUE){write_postG<-FALSE}
 
 ################################ get starting/tuning/prior parameterisation if not given ############################
 
   sPtP<-getsPandtP(sP, tP, PdP=PdP, GdP=GdP, X.list=X.list, nbeta=nbeta, unique_id=unique_id, checkP=checkP)
-
   sP<-sPtP$sP
   tP<-sPtP$tP
 
@@ -172,6 +186,8 @@ function(PdP=PdataPed(),
      GdP$categories<-0
    }
 
+#return(list(G=sP$G, ped=sP$ped))
+
    if(length(sP$G)!=0){              # if sP$G is specified then convert to c++ format
        sP$G<-GtoC(sP$G, biallelic=(GdP$marker.type!="MSC" & GdP$marker.type!="MSW"))
     }else{
@@ -199,8 +215,9 @@ function(PdP=PdataPed(),
    }
 
    if(pP$beta$mu[1]!=999 & length(pP$beta$mu)>1){
-     pP$beta$mu<-pP$beta$mu[X.list$beta_map]
-     pP$beta$sigma<-pP$beta$sigma[,X.list$beta_map][X.list$beta_map,]
+     if(length(pP$beta$mu)!=length(unique(X.list$beta_map))){stop("pP$beta$mu is the wrong length")}
+     if(dim(pP$beta$sigma)[1]!=length(unique(X.list$beta_map))){stop("pP$beta$sigma is the wrong dimension")}
+     if(dim(pP$beta$sigma)[2]!=length(unique(X.list$beta_map))){stop("pP$beta$sigma is the wrong dimension")}
    }
 
 # get linked parameters
@@ -299,13 +316,13 @@ output<-.C("MCMCped",
 	as.double(c(sP$beta)),	             # starting vector of beta
 	as.double(c(sP$USdam, sP$USsire)),   # starting vector of US numbers
         as.integer(sP$G),                    # starting true genotypes  
-	as.integer(as.numeric(sP$ped[,2])-1),    # starting vector of dams
+	as.integer(as.numeric(sP$ped[,2])-1),   # starting vector of dams
 	as.integer(as.numeric(sP$ped[,3])-1),   # starting vector of sires
 	as.double(post$A),	                # posterior distribution of allele frequencies
 	as.double(post$E1),	                # posterior distribution of E1
 	as.double(post$E2),	                # posterior distribution of E2
 	as.double(post$beta),	                # posterior distribution of beta
-	as.double(c(post$USdam, post$USsire)),	# posterior distribution of beta
+	as.double(c(post$USdam, post$USsire)),	# posterior distribution of USs'
         as.integer(unlist(post$G)),     # posterior distribution of true genotypes
 	as.integer(post$P),	        # posterior distribution of Pedigree
 	as.double(c(pP$E1)),            # prior distribution for E1 across categories; beta(a,b)

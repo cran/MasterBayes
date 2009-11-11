@@ -16,6 +16,7 @@ orderPed(ped, time_born=NULL)
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 pedigree<-matrix(NA, 8,3)
 pedigree[,1]<-1:8
 pedigree[,2][5:8]<-c(1,1,2,2)
@@ -24,5 +25,6 @@ pedigree[,3][5:8]<-c(3,3,4,4)
 pedigree<-pedigree[sample(1:8),]
 
 pedigree2<-orderPed(pedigree)
+}
 }
 \keyword{manip}

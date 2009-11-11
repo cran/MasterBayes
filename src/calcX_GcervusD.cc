@@ -11,6 +11,5 @@ void calcX_GcervusD(Matrix<double> X_design_GD [], Matrix<double> X_design_G [],
               X_design_GD[i][d] = X_design_G[i][(d*nsire[i])+sire_poss];
            }
          }
-
 }
 

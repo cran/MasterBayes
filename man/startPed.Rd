@@ -35,6 +35,7 @@ If \code{estG=FALSE} an approximation is used for genotyping error.  In this cas
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 # In this example we simulate a pedigree and then fix the
 # pedigree and estimate the population level paarmeters
 
@@ -65,7 +66,7 @@ model1<-MCMCped(PdP=PdP, sP=sP, nitt=3000, thin=2, burnin=1000)
 plot(model1$beta)
 
 # The true underlying value is -0.25
-
+}
 }
 \keyword{classes}
    

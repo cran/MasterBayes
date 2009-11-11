@@ -19,6 +19,7 @@ priorPed(E1=999, E2=999, beta=list(mu=999, sigma=999),
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 # When each individual has only been genotyped once, and no pedigree 
 # information exists, there is virtually no information available
 # to estimate error rates.  The tiny amount of information comes 
@@ -41,7 +42,7 @@ model1<-MCMCped(GdP=GdP, pP=pP)
 
 summary(model1$E1)
 quantile(rbeta(1000, 40, 1600), prob=c(0.025, 0.25, 0.5, 0.75, 0.975))
-
+}
 }
 \keyword{classes}
   

@@ -27,10 +27,11 @@
 /p1  { stroke } def
 /p2  { gsave bg fill grestore newpath } def
 /p3  { gsave bg fill grestore stroke } def
-/t   { 6 -2 roll moveto gsave rotate
-       ps mul neg 0 2 1 roll rmoveto
+/t   { 5 -2 roll moveto gsave rotate
        1 index stringwidth pop
        mul neg 0 rmoveto show grestore } def
+/ta  { 4 -2 roll moveto gsave rotate show } def
+/tb  { 2 -1 roll 0 rmoveto show } def
 /cl  { grestore gsave newpath 3 index 3 index moveto 1 index
        4 -1 roll lineto  exch 1 index lineto lineto
        closepath clip newpath } def
@@ -16880,17 +16881,17 @@ np
 360.20 215.78 m
 28.87 114.07 l
 o
-/ps 12 def /Font1 findfont 12 s
-58.30 202.04 (P) 0 0 0 t
-66.30 202.04 (r) 0 0 0 t
-/ps 12 def /Font5 findfont 12 s
-206.31 102.07 (b) 0 0 0 t
-/ps 8 def /Font1 findfont 8 s
-212.90 99.88 (1) 0 0 0 t
-/ps 12 def /Font5 findfont 12 s
-374.93 165.30 (b) 0 0 0 t
-/ps 8 def /Font1 findfont 8 s
-381.51 163.11 (2) 0 0 0 t
+/Font1 findfont 12 s
+58.30 202.04 (P) 0 0 t
+66.30 202.04 (r) 0 0 t
+/Font5 findfont 12 s
+206.31 102.07 (b) 0 0 t
+/Font1 findfont 8 s
+212.90 99.88 (1) 0 0 t
+/Font5 findfont 12 s
+374.93 165.30 (b) 0 0 t
+/Font1 findfont 8 s
+381.51 163.11 (2) 0 0 t
 ep
 %%Trailer
 %%Pages: 1

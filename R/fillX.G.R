@@ -13,7 +13,10 @@ fillX.G<-function(X.list, A, G, E1=0.005, E2=0.005, marker.type="MSW"){
        maxall<-max(nall)
        nloci<-length(nall)
        nind<-length(X.list$id)
-
+       A<-unlist(A)
+       if(any(A<1e-10)){
+         A[which(A<1e-10)]<-1e-8
+       }
        if(is.null(E2)){
          E1<-0.005
        }
@@ -23,7 +26,6 @@ fillX.G<-function(X.list, A, G, E1=0.005, E2=0.005, marker.type="MSW"){
        }
   
        G<-GtoC(G, (marker.type!="MSC" & marker.type!="MSW"))
-
        X_design_G<-rep(0, sum(ndam*nsire))
 
 output<-.C("fillXG",
@@ -38,13 +40,12 @@ output<-.C("fillXG",
         as.integer(damid),      # candidate dam id's for each offspring
         as.integer(sireid),	# candidate sire id's for each offspring	
         as.double(X_design_G),  # Mendelian transition probabilities dam and sire sampled			
-        as.double(unlist(A)),	# starting allele frequencies
+        as.double(A),	# starting allele frequencies
         as.double(E1),	        # starting values of E1 and E2
         as.double(E2),	       
         as.integer(G),           # starting true genotypes    
         as.integer(mtype.numeric)
 )
-
 
 startG<-1
 startD<-1

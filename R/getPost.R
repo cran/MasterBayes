@@ -124,10 +124,10 @@
     post$A<-rep(0, ceiling((nitt-burnin)/thin)*length(unlist(sP$A)))
   }
   if(length(post$USdam)==0 & sP$estUSdam==TRUE){
-    post$USdam<-rep(0, ceiling((nitt-burnin)/thin)*length(unique(sP$USdam)))
+    post$USdam<-rep(0, ceiling((nitt-burnin)/thin)*length(sP$USdam))
   }
   if(length(post$USsire)==0 & (sP$estUSsire==TRUE | sP$estUSsire=="USdam")){
-    post$USsire<-rep(0, ceiling((nitt-burnin)/thin)*length(unique(sP$USsire)))
+    post$USsire<-rep(0, ceiling((nitt-burnin)/thin)*length(sP$USsire))
   }
   if(length(post$P)==0 & write_postP=="JOINT" & sP$estP==TRUE){
     post$P<-rep(0, ceiling((nitt-burnin)/thin)*length(X.list$X)*2)

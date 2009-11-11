@@ -17,6 +17,7 @@ For each offspring the proportion of transitions is calculated at lags 1, 2, 5, 
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)
@@ -40,8 +41,7 @@ PdP<-PdataPed(formula=list(var1,res1,res2), data=WarblerP, USsire=FALSE)
 tP<-tunePed(beta=30)
 
 model1<-MCMCped(PdP=PdP, GdP=GdP, tP=tP, nitt=3000, thin=1,  burnin=0, write_postP="JOINT") 
-
 autocorrP(model1$P)
-
+}
 }
 \keyword{distribution}

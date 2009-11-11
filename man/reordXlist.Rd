@@ -21,6 +21,7 @@
 }
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 data(WarblerG)
 A<-extractA(WarblerG)
 
@@ -53,5 +54,6 @@ X.list.reord<-reordXlist(X.list)
 
 X.list$X$"5"$G
 X.list.reord$X$"5"$G
+}
 }
 \keyword{manip}

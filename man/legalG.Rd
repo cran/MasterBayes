@@ -26,6 +26,7 @@ Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 data(WarblerG)
 A<-extractA(WarblerG[,16:17])
 
@@ -44,6 +45,7 @@ newG$valid
 # positive probability
 
 legalG(newG$G,A,pedigree)$valid
+}
 }
 \keyword{manip}
 \keyword{models}

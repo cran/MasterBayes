@@ -9,7 +9,6 @@
     }
   }
 
-
   if(Ppresent==TRUE){
     if(length(PdP$USdam)==1 & PdP$USdam[1]==FALSE){
       sP$estUSdam<-FALSE
@@ -80,7 +79,6 @@
       }
     }
   }
-
   if(is.null(sP$A)==FALSE){
     if(length(names(sP$A[[1]]))==0){
       stop("starting allele frequencies do not have allele names")
@@ -90,11 +88,8 @@
         stop("different number of loci in starting genotypes and starting allele frequencies")
       }
       for(i in 1:length(sP$A)){
-        if(FALSE%in%names(sP$A[[i]])%in%allele.names(sP$G[[i]])){
-          stop("some allele frequncies refer to alleles not in sP$G but")
-        }
-        if(FALSE%in%allele.names(sP$G[[i]])%in%names(sP$A[[i]])){
-          stop("some alleles in sP$G are not in sP$G")
+        if(any((allele.names(sP$G[[i]])%in%names(sP$A[[i]]))==FALSE)){
+          stop("some alleles in sP$G are not in sP$A")
         }
       }
     }
@@ -103,10 +98,7 @@
         stop("different number of loci in starting allele frequencies and genotype data")
       }
       for(i in 1:length(sP$A)){
-        if(FALSE%in%names(sP$A[[i]])%in%allele.names(GdP$G[[i]])){
-          stop("some allele frequncies refer to alleles not in GdP$G but")
-        }
-        if(FALSE%in%allele.names(GdP$G[[i]])%in%names(sP$A[[i]])){
+        if(any((allele.names(GdP$G[[i]])%in%names(sP$A[[i]]))==FALSE)){
           stop("some alleles in GdP$G are not in sP$A")
         }
       }

@@ -21,8 +21,10 @@ Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 data(WarblerG)
 GdP<-GdataPed(WarblerG)
+}
 }
 \keyword{classes}
 

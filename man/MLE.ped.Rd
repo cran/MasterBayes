@@ -33,6 +33,7 @@ Kalinowski S.T. \emph{et al}, Molecular Ecology \emph{in press}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
+\dontrun{
 data(WarblerP)
 data(WarblerG)
 
@@ -47,6 +48,7 @@ PdP<-PdataPed(formula=list(res1,res2), data=WarblerP, USsire=TRUE)
 X.list<-getXlist(PdP=PdP, GdP=GdP, E2=0.005)
 
 ped<-MLE.ped(X.list, USsire=TRUE, nUSsire=10, threshold=0.75)
+}
 }
 \keyword{models}
 \keyword{optimize}

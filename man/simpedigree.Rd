@@ -23,7 +23,5 @@ simpedigree(PdP, beta=NULL, nUS=NULL)
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{MCMCped}
 \examples{
-
-
 }
 \keyword{datagen}
