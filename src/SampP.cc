@@ -22,7 +22,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
         bool damV;
         bool sireV;
         bool damsireV;
-        int dsmatch[noff];
+        int *dsmatch = new int[noff];
         bool mother_complete = TRUE;
         bool father_complete = TRUE;
 

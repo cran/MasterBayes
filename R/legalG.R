@@ -17,10 +17,13 @@
 
   #################################### order pedigree and data #############################################
 
+  if(all(is.na(ped))){
+    ped[,1]<-1:dim(ped)[1]
+  }
+
   oped<-orderPed(ped, time_born=NULL)
 
   rearrange_data<-match(oped[,1], ped[,1])
-
   dam<-match(oped[,2], oped[,1])-1
   dam[which(is.na(dam)==T)]<-nind
   sire<-match(oped[,3], oped[,1])-1
@@ -46,6 +49,7 @@
         as.logical(legal),
         as.integer(mtype.numeric))
 
+
   tmp<-array(output[[8]], c(1+(marker.type=="MSC" | marker.type=="MSW"), length(ped[,1]), length(A)))+as.numeric(marker.type=="MSC" | marker.type=="MSW")
 
   Gnew<-as.data.frame(matrix(NA, length(ped[,1]), 2*length(A)))
@@ -70,7 +74,7 @@
     gens <- list()
     for (i in 1:(length(Gnew[1, ])/2)){
        gens[[i]] <- genotype(as.matrix(Gnew[, ((i * 2) - 1):(i *2)]), alleles=names(A[[i]]), reorder="no")
-       names(gens)[i] <- names(G[i * 2])
+       names(gens)[i] <- namesG[i]
     }
 
   list(G=gens,valid=output[[9]]) 

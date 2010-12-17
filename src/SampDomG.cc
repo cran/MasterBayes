@@ -23,8 +23,12 @@ void sampDomG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, dou
         double newA[2];      // allele counts from true genotypes
         int rel_status; 
         int samp_A;
-        int par[nind][50];
-        int no_off[nind];
+        int *no_off = new int[nind];
+
+        int** par = new int*[nind];
+        for(i = 0; i < nind; ++i){
+           par[i] = new int[50];
+        }
 
         for(o=0; o < nind; o++){
            no_off[o] = 0;

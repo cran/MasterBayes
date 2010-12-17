@@ -173,8 +173,7 @@ Equations \ref{no_pedigree-eq} and \ref{pedigree-eq} are equivalent. In the latt
 
 \begin{Schunk}
 \begin{Sinput}
-> res1 <- expression(varPed(x = "terr", gender = "Female", relational = "OFFSPRING", 
-+     restrict = "=="))
+> res1 <- expression(varPed(x = "terr", gender = "Female", relational = "OFFSPRING", restrict = "=="))
 \end{Sinput}
 \end{Schunk}
 
@@ -184,8 +183,7 @@ We also need to exclude individuals that are born in 1999 as potential parents
  
 \begin{Schunk}
 \begin{Sinput}
-> res2 <- expression(varPed(x = "offspring", gender = NULL, relational = FALSE, 
-+     restrict = 0))
+> res2 <- expression(varPed(x = "offspring", gender = NULL, relational = FALSE, restrict = 0))
 \end{Sinput}
 \end{Schunk}
 
@@ -195,8 +193,7 @@ The goal of the analysis is to estimate $\beta$, the rate at which paternity dro
 
 \begin{Schunk}
 \begin{Sinput}
-> var1 <- expression(varPed(x = c("lat", "long"), gender = "Male", 
-+     relational = "OFFSPRING"))
+> var1 <- expression(varPed(x = c("lat", "long"), gender = "Male", relational = "OFFSPRING"))
 \end{Sinput}
 \end{Schunk}
 
@@ -213,8 +210,7 @@ The full notation for a multinomial model is cumbersome so I'll express all mode
 
 \begin{Schunk}
 \begin{Sinput}
-> PdP <- PdataPed(formula = list(res1, res2, var1), data = WarblerP, 
-+     USsire = TRUE)
+> PdP <- PdataPed(formula = list(res1, res2, var1), data = WarblerP, USsire = TRUE)
 \end{Sinput}
 \end{Schunk}
 
@@ -243,8 +239,7 @@ By default MasterBayes will not use CERVUS's model of genotyping error but uses 
 
 \begin{Schunk}
 \begin{Sinput}
-> sP <- startPed(estG = FALSE, E1 = 0.005, E2 = 0.005, A = extractA(WarblerG), 
-+     estUSsire = FALSE, USsire = 10)
+> sP <- startPed(estG = FALSE, E1 = 0.005, E2 = 0.005, A = extractA(WarblerG), estUSsire = FALSE, USsire = 10)
 \end{Sinput}
 \end{Schunk}
 
@@ -253,8 +248,7 @@ CERVUS breaks the problem down into two stages.  In the first stage the pedigree
 
 \begin{Schunk}
 \begin{Sinput}
-> PdPCervus <- PdataPed(formula = list(res1, res2), data = WarblerP, 
-+     USsire = TRUE)
+> PdPCervus <- PdataPed(formula = list(res1, res2), data = WarblerP, USsire = TRUE)
 > model1 <- MCMCped(PdP = PdPCervus, GdP = GdP, sP = sP, verbose = FALSE)
 \end{Sinput}
 \begin{Soutput}
@@ -272,8 +266,8 @@ Note that we have created a new \texttt{PdataPed} object, \texttt{PdPCervus}, th
 \begin{Soutput}
       [,1]      [,2]      [,3]     
  [1,] "N748835" "K278102" "N021989"
- [2,] "Z993558" "K278102" "K278112"
- [3,] "N748825" "K278115" "N021716"
+ [2,] "Z993558" "K278102" "K278027"
+ [3,] "N748825" "K278115" "N021840"
  [4,] "N748841" "N021991" "VE80200"
  [5,] "N748842" "J368410" "J368403"
  [6,] "N748848" "J854303" "K278101"
@@ -315,13 +309,13 @@ This is the Maximum Likelihood estimate of ${\bm P}$ and is equivalent, in this 
 > ped1$prob[1:10][discrepancies]
 \end{Sinput}
 \begin{Soutput}
-[1] 0.508
+[1] 0.516
 \end{Soutput}
 \begin{Sinput}
 > ped2$prob[3:12][discrepancies]
 \end{Sinput}
 \begin{Soutput}
-[1] 0.5011074
+[1] 0.4929997
 \end{Soutput}
 \end{Schunk}
 
@@ -344,12 +338,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-    -0.0534434      0.0080268      0.0002538      0.0002379 
+    -0.0539791      0.0080652      0.0002550      0.0002822 
 
 2. Quantiles for each variable:
 
     2.5%      25%      50%      75%    97.5% 
--0.06966 -0.05880 -0.05334 -0.04770 -0.03802 
+-0.07059 -0.05918 -0.05398 -0.04827 -0.03982 
 \end{Soutput}
 \end{Schunk}
 
@@ -394,16 +388,16 @@ Despite the two methods giving similar estimates, they are both severely biased 
 \end{Sinput}
 \begin{Soutput}
       [,1]      [,2]      [,3]     
- [1,] "N748835" "K278102" NA       
- [2,] "Z993558" "K278102" NA       
- [3,] "N748825" "K278115" NA       
- [4,] "N748841" "N021991" NA       
- [5,] "N748842" "J368410" NA       
- [6,] "N748848" "J854303" NA       
+ [1,] "N748835" NA        NA       
+ [2,] "Z993558" NA        NA       
+ [3,] "N748825" NA        NA       
+ [4,] "N748841" NA        NA       
+ [5,] "N748842" NA        NA       
+ [6,] "N748848" NA        NA       
  [7,] "Z993553" "K278011" "J368403"
  [8,] "N748838" "N021965" "N021760"
- [9,] "N748827" "K278018" NA       
-[10,] "Z993562" "K278018" NA       
+ [9,] "N748827" NA        NA       
+[10,] "Z993562" NA        NA       
 \end{Soutput}
 \begin{Sinput}
 > MLElat3 <- MLE.beta(getXlist(PdP), ped3$P)
@@ -411,14 +405,14 @@ Despite the two methods giving similar estimates, they are both severely biased 
 \end{Sinput}
 \begin{Soutput}
            [,1]
-[1,] -0.2169994
+[1,] -0.2418198
 \end{Soutput}
 \begin{Sinput}
 > sqrt(MLElat3$C)
 \end{Sinput}
 \begin{Soutput}
            [,1]
-[1,] 0.04231408
+[1,] 0.04607608
 \end{Soutput}
 \end{Schunk}
 
@@ -448,8 +442,7 @@ The fundamental difference between the exact solution implemented in MasterBayes
 
 \begin{Schunk}
 \begin{Sinput}
-> sP <- startPed(estG = FALSE, A = extractA(WarblerG), E1 = 0.005, 
-+     E2 = 0.005, estUSsire = FALSE, USsire = 10)
+> sP <- startPed(estG = FALSE, A = extractA(WarblerG), E1 = 0.005, E2 = 0.005, estUSsire = FALSE, USsire = 10)
 > model3 <- MCMCped(PdP = PdP, GdP = GdP, sP = sP, verbose = FALSE)
 \end{Sinput}
 \begin{Soutput}
@@ -469,12 +462,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-    -0.2336037      0.0293521      0.0009282      0.0014290 
+    -0.2384179      0.0302981      0.0009581      0.0016025 
 
 2. Quantiles for each variable:
 
    2.5%     25%     50%     75%   97.5% 
--0.2949 -0.2524 -0.2323 -0.2132 -0.1824 
+-0.3047 -0.2571 -0.2364 -0.2168 -0.1850 
 \end{Soutput}
 \end{Schunk}
  
@@ -498,8 +491,7 @@ Next we will relax the assumption that the number of unsampled males is 10 and s
 
 \begin{Schunk}
 \begin{Sinput}
-> sP <- startPed(estG = FALSE, A = extractA(WarblerG), E1 = 0.005, 
-+     E2 = 0.005)
+> sP <- startPed(estG = FALSE, A = extractA(WarblerG), E1 = 0.005, E2 = 0.005)
 > model4 <- MCMCped(PdP = PdP, GdP = GdP, sP = sP, verbose = FALSE)
 \end{Sinput}
 \begin{Soutput}
@@ -519,12 +511,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-       33.3913        14.0652         0.4448         0.5226 
+       33.7145        15.0501         0.4759         0.5410 
 
 2. Quantiles for each variable:
 
  2.5%   25%   50%   75% 97.5% 
-11.85 23.05 31.15 41.15 66.74 
+11.76 23.29 31.33 41.50 69.72 
 \end{Soutput}
 \end{Schunk}
 
@@ -537,7 +529,7 @@ Sample size per chain = 1000
 \label{model4US-fig}
 \end{figure}
 
-The population of Seychelles Warbler on Cousin Island is small and essentially closed. Given that the island has been extensively sampled we have reasonable prior belief that the number of unsampled males is somewhere between 2 and 15, and an estimate of 31.15 unsampled males seems unreasonably large.  We could set up a prior specification that reflected this, but before doing this it will be useful to discuss some possible reasons why the model has failed to estimate the number of unsampled males accurately.\\
+The population of Seychelles Warbler on Cousin Island is small and essentially closed. Given that the island has been extensively sampled we have reasonable prior belief that the number of unsampled males is somewhere between 2 and 15, and an estimate of 31.33 unsampled males seems unreasonably large.  We could set up a prior specification that reflected this, but before doing this it will be useful to discuss some possible reasons why the model has failed to estimate the number of unsampled males accurately.\\
 
 The problem of accommodating unsampled parents is a difficult one because the genotypes and phenotypes of unsampled individuals are by definition unobserved. This does not mean that information does not exist in the observed data regarding the genotypes and phenotypes of unsampled individuals.  Imagine, that 3 offspring in the north of the island possess an allele that is not present in the sampled parental population. If genotyping error was low enough we could be reasonably confident in stating that an unsampled male was present in the north of the island and that his genotype contained the rare allele.  However, using this information is difficult and I use two approximations for dealing with unobserved genotypes and phenotypes that are based around the same logic.\\
 
@@ -554,8 +546,7 @@ We can fit Nielsen's [\citeyear{Nielsen.2001}] model using the function \texttt{
 
 \begin{Schunk}
 \begin{Sinput}
-> MLEUSsire <- MLE.popsize(getXlist(PdP, GdP, E1 = 1e-10, E2 = 1e-10), 
-+     USsire = TRUE, USdam = FALSE)
+> MLEUSsire <- MLE.popsize(getXlist(PdP, GdP, E1 = 1e-10, E2 = 1e-10), USsire = TRUE, USdam = FALSE)
 > MLEUSsire$nUS
 \end{Sinput}
 \begin{Soutput}
@@ -575,8 +566,7 @@ Even larger! The estimates of the unsampled population size are sensitive to eve
   
 \begin{Schunk}
 \begin{Sinput}
-> MLEUSsire2 <- MLE.popsize(getXlist(PdP, GdP, E1 = 1e-10, E2 = 0.01), 
-+     USsire = TRUE, USdam = FALSE)
+> MLEUSsire2 <- MLE.popsize(getXlist(PdP, GdP, E1 = 1e-10, E2 = 0.01), USsire = TRUE, USdam = FALSE)
 > MLEUSsire2$nUS
 \end{Sinput}
 \begin{Soutput}
@@ -630,7 +620,7 @@ p(\sum^{N-n}{\bm{\hat{p}}^{(miss)}} | \bm{\hat{p}}^{(obs)}) \approx N(\frac{(N-n
 
 which takes into account the sampling variance in calculating the expectation from the sampled population (avoiding assumption c), and the sampling variance that arises because the size of the unsampled population is finite (assumption d). $S_{obs}^{2}$ is the sample variance of the observed linear predictors \citep[see][Chapter 7]{Gelman.2004}   I should emphasise at this point that the approximated linear predictors for missing individuals do not enter into the likelihoood for $\beta$, they are only there to simplify the estimation of the pedigree.  However, if the phenotypes of unsampled individuals are known, then the linear predictors of unsampled individuals do not need to be estimated and can enter into the likelihood for $\beta$.  In  this instance the ratio in Equation \ref{usgen-eq} may not be unity and assumption f) is relaxed (See Section \ref{EPP-sec} for an example).\\
 
-We have no information regarding the phenotypes of unsampled males in the Seychelles Warbler, and therefore the data do not allow us to distinguish between a large unsampled population and a smaller population with a reduced chance of paternity.  However, as noted earlier, the discrepancy between our estimate of 31.15 unsampled males and our prior belief that the number of males should be less than 15 may be a consequence of underestimating the level of genotyping error.
+We have no information regarding the phenotypes of unsampled males in the Seychelles Warbler, and therefore the data do not allow us to distinguish between a large unsampled population and a smaller population with a reduced chance of paternity.  However, as noted earlier, the discrepancy between our estimate of 31.33 unsampled males and our prior belief that the number of males should be less than 15 may be a consequence of underestimating the level of genotyping error.
 
 \subsection{Genotyping Error}
 \label{GE-sec}
@@ -682,12 +672,12 @@ The chain is slow to mix when genotypes are estimated and successive samples fro
 \begin{Soutput}
 , , E1
 
-                E1
-Lag 0   1.00000000
-Lag 1   0.38563620
-Lag 5   0.17694032
-Lag 10  0.12770186
-Lag 50 -0.01294900
+               E1
+Lag 0  1.00000000
+Lag 1  0.40963578
+Lag 5  0.15533552
+Lag 10 0.11548840
+Lag 50 0.02686955
 \end{Soutput}
 \end{Schunk}
 
@@ -697,8 +687,7 @@ The chain needs to be run for longer to ensure that we gather independent sample
 \begin{Schunk}
 \begin{Sinput}
 > pP <- priorPed(USsire = list(mu = log(5), sigma = 0.5))
-> model6 <- MCMCped(PdP = PdP, GdP = GdP, pP = pP, tP = tunePed(USsire = 0.1), 
-+     verbose = FALSE)
+> model6 <- MCMCped(PdP = PdP, GdP = GdP, pP = pP, tP = tunePed(USsire = 0.1), verbose = FALSE)
 > plot(model6$USsire)
 \end{Sinput}
 \end{Schunk}
@@ -747,12 +736,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     0.0998886      0.0105240      0.0003328      0.0003400 
+     0.0887159      0.0096288      0.0003045      0.0003308 
 
 2. Quantiles for each variable:
 
    2.5%     25%     50%     75%   97.5% 
-0.08107 0.09252 0.09903 0.10686 0.12090 
+0.07013 0.08200 0.08855 0.09524 0.10735 
 \end{Soutput}
 \begin{Sinput}
 > summary(model.dupE$E2)
@@ -767,12 +756,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     8.776e-03      2.970e-03      9.392e-05      1.244e-04 
+     0.0075755      0.0031373      0.0000992      0.0001500 
 
 2. Quantiles for each variable:
 
     2.5%      25%      50%      75%    97.5% 
-0.003722 0.006646 0.008555 0.010663 0.014821 
+0.002531 0.005313 0.007202 0.009458 0.014986 
 \end{Soutput}
 \end{Schunk}
 
@@ -799,12 +788,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     0.1252940      0.0133647      0.0004226      0.0005738 
+     0.0745659      0.0108133      0.0003419      0.0003470 
 
 2. Quantiles for each variable:
 
    2.5%     25%     50%     75%   97.5% 
-0.09846 0.11651 0.12515 0.13396 0.15204 
+0.05510 0.06701 0.07384 0.08158 0.09711 
 \end{Soutput}
 \begin{Sinput}
 > summary(model.pedE$E2)
@@ -819,12 +808,12 @@ Sample size per chain = 1000
    plus standard error of the mean:
 
           Mean             SD       Naive SE Time-series SE 
-     0.0132305      0.0075319      0.0002382      0.0006749 
+     0.0030745      0.0029441      0.0000931      0.0001692 
 
 2. Quantiles for each variable:
 
-    2.5%      25%      50%      75%    97.5% 
-0.001116 0.007896 0.012297 0.017785 0.030465 
+     2.5%       25%       50%       75%     97.5% 
+6.632e-05 9.752e-04 2.228e-03 4.327e-03 1.064e-02 
 \end{Soutput}
 \begin{Sinput}
 > plot(model.pedE$E2)
@@ -912,15 +901,13 @@ A pedigree is simulated with $\beta_{1}$ and $\beta_{2}$ set to -1 and 1, respec
 > sex <- c(rep("Female", 50), rep("Male", 100))
 > offspring <- c(rep(0, 100), rep(1, 50))
 > size <- rnorm(150, 10)
-> data.MM <- as.data.frame(list(id = 1:150, sex = sex, offspring = offspring, 
-+     size = size))
+> data.MM <- as.data.frame(list(id = 1:150, sex = sex, offspring = offspring, size = size))
 > res1 <- expression(varPed(x = "offspring", restrict = 0))
 > var1 <- expression(varPed(x = "size", gender = "Male"))
 > var2 <- expression(varPed(x = "size", gender = "Female"))
 > PdP <- PdataPed(formula = list(res1, var1, var2), data = data.MM)
 > simped <- simpedigree(PdP, beta = c(1, -1))
-> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, 
-+     no_dup = 1)
+> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, no_dup = 1)
 > GdP <- GdataPed(G = G$Gobs, id = G$id)
 > model_pedMM999 <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE)
 > model_pedMM2 <- MCMCped(PdP = PdP, GdP = GdP, mm.tol = 2, verbose = FALSE)
@@ -929,24 +916,24 @@ A pedigree is simulated with $\beta_{1}$ and $\beta_{2}$ set to -1 and 1, respec
 \end{Sinput}
 \begin{Soutput}
              Mean        SD
-size.D  1.3223785 0.2170615
-size.S -0.9435895 0.1614431
+size.D  0.8704854 0.1749540
+size.S -1.1587299 0.1705104
 \end{Soutput}
 \begin{Sinput}
 > summary(model_pedMM2$beta)[[1]][, 1:2][1:2, ]
 \end{Sinput}
 \begin{Soutput}
-             Mean        SD
-size.D  1.3161295 0.2253079
-size.S -0.9386415 0.1598695
+            Mean        SD
+size.D  0.873614 0.1716659
+size.S -1.210798 0.1710248
 \end{Soutput}
 \begin{Sinput}
 > summary(model_pedMM1$beta)[[1]][, 1:2][1:2, ]
 \end{Sinput}
 \begin{Soutput}
-             Mean        SD
-size.D  1.2845238 0.2017242
-size.S -0.9411962 0.1572764
+            Mean        SD
+size.D  0.840978 0.1701362
+size.S -1.208325 0.1723819
 \end{Soutput}
 \end{Schunk}
 
@@ -956,32 +943,31 @@ An alternative method for speeding things up is to specify \texttt{jointP=FALSE}
 
 \begin{Schunk}
 \begin{Sinput}
-> model_pedJPF <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE, 
-+     jointP = FALSE)
+> model_pedJPF <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE, jointP = FALSE)
 > summary(model_pedJPF$beta)[[1]][, 1:2][1:2, ]
 \end{Sinput}
 \begin{Soutput}
              Mean        SD
-size.D  1.2616248 0.2027634
-size.S -0.9330864 0.1585476
+size.D  0.8623071 0.1654108
+size.S -1.2071492 0.1738680
 \end{Soutput}
 \begin{Sinput}
 > effectiveSize(model_pedMM999$beta)
 \end{Sinput}
 \begin{Soutput}
   size.D   size.S 
-146.2016 426.4197 
+870.7394 565.1698 
 \end{Soutput}
 \begin{Sinput}
 > effectiveSize(model_pedJPF$beta)
 \end{Sinput}
 \begin{Soutput}
-   size.D    size.S 
- 81.42878 415.72900 
+  size.D   size.S 
+802.4934 848.6709 
 \end{Soutput}
 \end{Schunk}
 
-The posterior distributions are identical up to Monte Carlo error since we have only changed the sampling scheme, not the posterior distribution from which we are trying to sample. However, the alternative sampling scheme iterates much faster (1.2 minutes compared to compared to 7.7) although the amount of information we gain per iteration is slightly less (415.7 effective samples compared to 426.4 for the effect of size on paternity).  Models that include a variable with the argument \texttt{relational="MATE"} are particularly slow when the number of parental combinations is large and I discuss faster approximate methods in Section \ref{AMH}.
+The posterior distributions are identical up to Monte Carlo error since we have only changed the sampling scheme, not the posterior distribution from which we are trying to sample. However, the alternative sampling scheme iterates much faster (1.2 minutes compared to compared to 7.7) although the amount of information we gain per iteration is slightly less (848.7 effective samples compared to 565.2 for the effect of size on paternity).  Models that include a variable with the argument \texttt{relational="MATE"} are particularly slow when the number of parental combinations is large and I discuss faster approximate methods in Section \ref{AMH}.
   
 \subsection{Equivalence with Poisson Models}
 
@@ -991,8 +977,7 @@ The posterior distributions are identical up to Monte Carlo error since we have 
 \begin{Sinput}
 > counts <- rep(0, 50)
 > noff <- table(simped$ped[, 2])
-> counts[as.numeric(names(noff))] <- counts[as.numeric(names(noff))] + 
-+     noff
+> counts[as.numeric(names(noff))] <- counts[as.numeric(names(noff))] + noff
 > model.Pd <- glm(counts ~ size[1:50], family = "poisson")
 > summary(model.Pd)
 \end{Sinput}
@@ -1002,22 +987,22 @@ glm(formula = counts ~ size[1:50], family = "poisson")
 
 Deviance Residuals: 
     Min       1Q   Median       3Q      Max  
--1.4474  -0.7415  -0.3811   0.4774   1.8707  
+-1.6272  -0.9670  -0.5573   0.1248   3.6667  
 
 Coefficients:
             Estimate Std. Error z value Pr(>|z|)    
-(Intercept)  -12.393      1.775  -6.982 2.91e-12 ***
-size[1:50]     1.159      0.157   7.387 1.51e-13 ***
+(Intercept)  -9.1920     1.7209  -5.341 9.23e-08 ***
+size[1:50]    0.8982     0.1619   5.548 2.89e-08 ***
 ---
-Signif. codes:  0 `***' 0.001 `**' 0.01 `*' 0.05 `.' 0.1 ` ' 1 
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
 
 (Dispersion parameter for poisson family taken to be 1)
 
-    Null deviance: 104.73  on 49  degrees of freedom
-Residual deviance:  37.06  on 48  degrees of freedom
-AIC: 99.127
+    Null deviance: 90.10  on 49  degrees of freedom
+Residual deviance: 57.81  on 48  degrees of freedom
+AIC: 123.09
 
-Number of Fisher Scoring iterations: 5
+Number of Fisher Scoring iterations: 6
 \end{Soutput}
 \end{Schunk}
 
@@ -1025,16 +1010,15 @@ The slopes are virtually the same,  but the standard errors are a little larger 
 
 \begin{Schunk}
 \begin{Sinput}
-> table(simped$ped[, 2:3][101:150, ] == modeP(model_pedMM999$P)$P[, 
-+     2:3])
+> table(simped$ped[, 2:3][101:150, ] == modeP(model_pedMM999$P)$P[, 2:3])
 \end{Sinput}
 \begin{Soutput}
 FALSE  TRUE 
-   10    90 
+   11    89 
 \end{Soutput}
 \end{Schunk}
 
-The modal parentage assignments are close to the true pedigree, with 90\% of assignments correct. One important difference arises because \texttt{MCMCped} uses a mutinomial log-linear model rather than the Poisson log-linear model used above.  The models are very similar except the multinomial model conditions on the number of counts (offspring) whereas the Poisson model does not. Consequently the number of parameters in a multinomial model (excluding the count total) is one less than the equivalent Poisson model. In the above example an intercept term is not calculated because it can be derived directly from the number of parental combinations and the number of offspring which we have conditioned on \citep{McCullagh.1989}.  
+The modal parentage assignments are close to the true pedigree, with 89\% of assignments correct. One important difference arises because \texttt{MCMCped} uses a mutinomial log-linear model rather than the Poisson log-linear model used above.  The models are very similar except the multinomial model conditions on the number of counts (offspring) whereas the Poisson model does not. Consequently the number of parameters in a multinomial model (excluding the count total) is one less than the equivalent Poisson model. In the above example an intercept term is not calculated because it can be derived directly from the number of parental combinations and the number of offspring which we have conditioned on \citep{McCullagh.1989}.  
 
 \subsection{Interactions and Reparameterisation}
 
@@ -1055,11 +1039,9 @@ The $\delta$ variables take on the values 1 if the individual is young, and zero
 > res1 <- expression(varPed(x = "offspring", restrict = 0))
 > var1 <- expression(varPed(x = "size"))
 > var2 <- expression(varPed(x = "age"))
-> PdP <- PdataPed(formula = list(res1, var1, var2, list(var1, var2)), 
-+     data = data_INT)
+> PdP <- PdataPed(formula = list(res1, var1, var2, list(var1, var2)), data = data_INT)
 > simped <- simpedigree(PdP, beta = c(0.5, 10, -1))
-> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, 
-+     no_dup = 1)
+> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, no_dup = 1)
 > GdP <- GdataPed(G = G$Gobs, id = G$id)
 > model.INT <- MCMCped(PdP = PdP, GdP = GdP, mm.tol = 1, verbose = FALSE)
 \end{Sinput}
@@ -1073,12 +1055,12 @@ Markov chains may not mix well when the posterior distribution of the parameters
 > autocorr(model.INT$beta)[, , 3]
 \end{Sinput}
 \begin{Soutput}
-                size   age.young size.age.young
-Lag 0  -0.6967549813 -0.99097194     1.00000000
-Lag 1  -0.1190755988 -0.24880428     0.26430478
-Lag 5   0.0007159008 -0.05548494     0.06180209
-Lag 10 -0.0380808563 -0.05414043     0.05305653
-Lag 50 -0.0224961265 -0.05080229     0.05322268
+              size    age.young size.age.young
+Lag 0  -0.61576648 -0.994094306    1.000000000
+Lag 1  -0.20308996 -0.364969640    0.365537679
+Lag 5  -0.05647493 -0.088645796    0.093996120
+Lag 10  0.03473510 -0.019660411    0.017188461
+Lag 50 -0.03403096 -0.006717241    0.004001981
 \end{Soutput}
 \end{Schunk}
 
@@ -1097,19 +1079,18 @@ The dependency between slopes and intercepts in regression models is well know a
 \begin{Schunk}
 \begin{Sinput}
 > data_INT[, "size"] <- size - 10
-> PdP <- PdataPed(formula = list(res1, var1, var2, list(var1, var2)), 
-+     data = data_INT)
+> PdP <- PdataPed(formula = list(res1, var1, var2, list(var1, var2)), data = data_INT)
 > model.INT.cntr <- MCMCped(PdP = PdP, GdP = GdP, mm.tol = 1, verbose = FALSE)
 > plot(model.INT.cntr$beta)
 > autocorr(model.INT.cntr$beta)[, , 3]
 \end{Sinput}
 \begin{Soutput}
-                size  age.young size.age.young
-Lag 0  -0.6670727717 0.34466912     1.00000000
-Lag 1  -0.2273120513 0.18759154     0.38570038
-Lag 5  -0.0000721773 0.05366713     0.08045415
-Lag 10  0.0389550299 0.11401119     0.05847653
-Lag 50  0.0029256667 0.04242018     0.05117598
+              size   age.young size.age.young
+Lag 0  -0.63471307  0.15832853    1.000000000
+Lag 1  -0.23301757  0.06076566    0.334028539
+Lag 5  -0.02530118  0.04681907    0.068662114
+Lag 10  0.01300251  0.03053844   -0.019981624
+Lag 50 -0.01894546 -0.01420772    0.004566597
 \end{Soutput}
 \end{Schunk}
 
@@ -1126,8 +1107,7 @@ Despite having similar Metropolis-Hastings acceptance rates the second chain mix
 
 \begin{Schunk}
 \begin{Sinput}
-> young.slope <- mcmc(model.INT.cntr$beta[, 1] + model.INT.cntr$beta[, 
-+     3])
+> young.slope <- mcmc(model.INT.cntr$beta[, 1] + model.INT.cntr$beta[, 3])
 > plot(young.slope)
 \end{Sinput}
 \end{Schunk}
@@ -1147,8 +1127,7 @@ There is good evidence that the slope for young individuals is negative (Figure 
 \begin{Sinput}
 > counts <- rep(0, 100)
 > noff <- table(c(simped$ped[, 2], simped$ped[, 3]))
-> counts[as.numeric(names(noff))] <- counts[as.numeric(names(noff))] + 
-+     noff
+> counts[as.numeric(names(noff))] <- counts[as.numeric(names(noff))] + noff
 > par_age <- age[1:100]
 > par_size <- size[1:100] - 10
 > model.Pint <- glm(counts ~ par_age * par_size, family = "poisson")
@@ -1159,23 +1138,23 @@ Call:
 glm(formula = counts ~ par_age * par_size, family = "poisson")
 
 Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--2.2784  -1.0205  -0.3433   0.5728   1.8292  
+     Min        1Q    Median        3Q       Max  
+-1.92188  -1.19467  -0.06756   0.52728   2.50632  
 
 Coefficients:
                       Estimate Std. Error z value Pr(>|z|)    
-(Intercept)            -0.1211     0.1582  -0.765 0.443980    
-par_ageyoung           -0.2105     0.2430  -0.866 0.386400    
-par_size                0.5163     0.1345   3.840 0.000123 ***
-par_ageyoung:par_size  -1.1135     0.1843  -6.043 1.51e-09 ***
+(Intercept)            0.02234    0.14601   0.153  0.87838    
+par_ageyoung          -0.29789    0.22456  -1.327  0.18465    
+par_size               0.44566    0.13319   3.346  0.00082 ***
+par_ageyoung:par_size -0.90375    0.20319  -4.448 8.67e-06 ***
 ---
-Signif. codes:  0 `***' 0.001 `**' 0.01 `*' 0.05 `.' 0.1 ` ' 1 
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
 
 (Dispersion parameter for poisson family taken to be 1)
 
-    Null deviance: 137.78  on 99  degrees of freedom
-Residual deviance:  99.68  on 96  degrees of freedom
-AIC: 244.19
+    Null deviance: 127.23  on 99  degrees of freedom
+Residual deviance: 105.30  on 96  degrees of freedom
+AIC: 254.36
 
 Number of Fisher Scoring iterations: 5
 \end{Soutput}
@@ -1218,17 +1197,14 @@ Consider a study site with 50 territories, each of which contains a pair of adul
 > sex <- c(rep("Male", 50), rep("Female", 125))
 > terr <- as.factor(c(1:50, 26:50, rep(26:50, each = 4)))
 > offspring <- c(rep(0, 75), rep(1, 100))
-> data_EPP <- as.data.frame(list(id = 1:175, sex = sex, offspring = offspring, 
-+     terr = terr))
-> res1 <- expression(varPed(x = "terr", gender = "Female", relational = "OFFSPRING", 
-+     restrict = "=="))
+> data_EPP <- as.data.frame(list(id = 1:175, sex = sex, offspring = offspring, terr = terr))
+> res1 <- expression(varPed(x = "terr", gender = "Female", relational = "OFFSPRING", restrict = "=="))
 > var1 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING"))
 > res2 <- expression(varPed(x = "offspring", restrict = 0))
 > PdP <- PdataPed(formula = list(res1, var1, res2), data = data_EPP)
 > EPP <- 0.8/(0.8 + (0.2/49))
 > simped <- simpedigree(PdP, beta = logit(EPP))
-> G <- simgenotypes(A = A, E1 = 0.01, E2 = 0.01, ped = simped$ped, 
-+     no_dup = 1)
+> G <- simgenotypes(A = A, E1 = 0.01, E2 = 0.01, ped = simped$ped, no_dup = 1)
 > GdP <- GdataPed(G = G$Gobs, id = G$id)
 > rm_males <- 1:25
 > data_EPP_miss <- data_EPP[-rm_males, ]
@@ -1242,12 +1218,9 @@ Notice the argument \texttt{merge=FALSE} is passed to \texttt{varPed} for \textt
   
 \begin{Schunk}
 \begin{Sinput}
-> PdP_miss <- PdataPed(formula = list(res1, var1, res2), data = data_EPP_miss, 
-+     USsire = TRUE)
-> pP <- priorPed(USsire = list(mu = log(25), sigma = 1), beta = list(mu = as.matrix(0), 
-+     sigma = as.matrix(pi^2/3)))
-> model.miss <- MCMCped(PdP = PdP_miss, GdP = GdP_miss, pP = pP, 
-+     verbose = FALSE)
+> PdP_miss <- PdataPed(formula = list(res1, var1, res2), data = data_EPP_miss, USsire = TRUE)
+> pP <- priorPed(USsire = list(mu = log(25), sigma = 1), beta = list(mu = as.matrix(0), sigma = as.matrix(pi^2/3)))
+> model.miss <- MCMCped(PdP = PdP_miss, GdP = GdP_miss, pP = pP, verbose = FALSE)
 > plot(model.miss$beta)
 > plot(model.miss$USsire)
 \end{Sinput}
@@ -1299,12 +1272,9 @@ Given the mode of the posterior of $\beta$ is very close to 5.28 (Figure \ref{EP
 
 \begin{Schunk}
 \begin{Sinput}
-> var2 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING", 
-+     USvar = FALSE))
-> PdP_miss2 <- PdataPed(formula = list(res1, var2, res2), data = data_EPP_miss, 
-+     USsire = TRUE)
-> model.miss2 <- MCMCped(PdP = PdP_miss2, GdP = GdP_miss, pP = pP, 
-+     verbose = FALSE)
+> var2 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING", USvar = FALSE))
+> PdP_miss2 <- PdataPed(formula = list(res1, var2, res2), data = data_EPP_miss, USsire = TRUE)
+> model.miss2 <- MCMCped(PdP = PdP_miss2, GdP = GdP_miss, pP = pP, verbose = FALSE)
 > plot(model.miss2$beta)
 > plot(model.miss2$USsire)
 \end{Sinput}
@@ -1355,12 +1325,9 @@ The estimate of within-pair paternity from \texttt{model.miss2} is plotted in Fi
 
 \begin{Schunk}
 \begin{Sinput}
-> var3 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING", 
-+     USvar = FALSE, merge = TRUE))
-> PdP_miss3 <- PdataPed(formula = list(res1, var3, res2), data = data_EPP_miss, 
-+     USsire = TRUE)
-> model.miss3 <- MCMCped(PdP = PdP_miss3, GdP = GdP_miss, pP = pP, 
-+     verbose = FALSE)
+> var3 <- expression(varPed(x = "terr", gender = "Male", relational = "OFFSPRING", USvar = FALSE, merge = TRUE))
+> PdP_miss3 <- PdataPed(formula = list(res1, var3, res2), data = data_EPP_miss, USsire = TRUE)
+> model.miss3 <- MCMCped(PdP = PdP_miss3, GdP = GdP_miss, pP = pP, verbose = FALSE)
 > theta_o <- inv.logit(model.miss3$beta)
 > plot(mcmc(theta_o))
 \end{Sinput}
@@ -1401,16 +1368,14 @@ $\delta_{i,j}$ takes on the value one when the mating type of female $i$ matches
 > var2 <- expression(varPed(c("MT"), gender = "Female", relational = "MATE"))
 > PdP <- PdataPed(formula = list(res1, var2), data = test.data)
 > simped <- simpedigree(PdP, beta = logit(0.75))
-> table(MT[as.numeric(simped$ped[, 2])] == MT[as.numeric(simped$ped[, 
-+     3])])
+> table(MT[as.numeric(simped$ped[, 2])] == MT[as.numeric(simped$ped[, 3])])
 \end{Sinput}
 \begin{Soutput}
 FALSE  TRUE 
-    8    22 
+    7    23 
 \end{Soutput}
 \begin{Sinput}
-> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, 
-+     no_dup = 1)
+> G <- simgenotypes(A = A, E1 = 0.005, E2 = 0.005, ped = simped$ped, no_dup = 1)
 > GdP <- GdataPed(G = G$Gobs, id = G$id)
 > model.ass.mat <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE)
 > plot(mcmc(inv.logit(model.ass.mat$beta)))
@@ -1444,8 +1409,7 @@ How well this approximation works is not entirely known, but for such a small pr
 
 \begin{Schunk}
 \begin{Sinput}
-> model.ass.mat.approx <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE, 
-+     DSapprox = TRUE)
+> model.ass.mat.approx <- MCMCped(PdP = PdP, GdP = GdP, verbose = FALSE, DSapprox = TRUE)
 > plot(mcmc.list(model.ass.mat$beta, model.ass.mat.approx$beta))
 \end{Sinput}
 \end{Schunk}
@@ -1483,12 +1447,9 @@ MasterBayes is able to work with longitudinal data, allowing the possibility of 
 > long <- runif(200)
 > data.ped <- data.frame(id, sex, offspring, lat, long, year)
 > res1 <- expression(varPed(x = "offspring", restrict = 0))
-> res2 <- expression(varPed(x = "year", relational = "OFFSPRING", 
-+     restrict = "=="))
-> var1 <- expression(varPed(x = c("lat", "long"), lag = c(0, 0), 
-+     relational = "OFFSPRING"))
-> PdP <- PdataPed(formula = list(res1, res2, var1), data = data.ped, 
-+     timevar = year)
+> res2 <- expression(varPed(x = "year", relational = "OFFSPRING", restrict = "=="))
+> var1 <- expression(varPed(x = c("lat", "long"), lag = c(0, 0), relational = "OFFSPRING"))
+> PdP <- PdataPed(formula = list(res1, res2, var1), data = data.ped, timevar = year)
 > P <- simpedigree(PdP, beta = -1)$ped
 > G <- simgenotypes(A = A, ped = P)
 > GdP <- GdataPed(G = G$Gobs, id = G$Gid)
@@ -1547,8 +1508,7 @@ Although more efficient methods could be developed for modelling inbreeding, alt
 
 \begin{Schunk}
 \begin{Sinput}
-> model.herm.approx <- MCMCped(PdP, GdP, verbose = FALSE, jointP = FALSE, 
-+     DSapprox = TRUE)
+> model.herm.approx <- MCMCped(PdP, GdP, verbose = FALSE, jointP = FALSE, DSapprox = TRUE)
 > plot(mcmc.list(model.herm$beta, model.herm.approx$beta))
 \end{Sinput}
 \end{Schunk}

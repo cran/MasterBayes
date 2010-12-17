@@ -22,6 +22,4 @@ simpedigree(PdP, beta=NULL, nUS=NULL)
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{MCMCped}
-\examples{
-}
 \keyword{datagen}

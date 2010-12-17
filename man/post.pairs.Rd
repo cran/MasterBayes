@@ -13,7 +13,8 @@ post.pairs(postP, threshold=0, rel="PO")
   \item{rel}{relatedness category. Currently \code{"PO"} (Parent-Offspring), \code{"S"} (Sibs), \code{"FS"} (Full-Sibs) and \code{"HS"} (Half-Sibs) are supported.}
 }
 \value{
-  pairs of indiviuals that fall into the \code{rel} category with poterior probability >  \code{threshold}
+   \item{P}{pairs of indiviuals that fall into the \code{rel} category with posterior probability >  \code{threshold}}
+   \item{prob}{posterior probability}
 }
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{modeP}}}
@@ -44,7 +45,7 @@ tP<-tunePed(beta=30)
 model1<-MCMCped(PdP=PdP, GdP=GdP, tP=tP, nitt=3000, thin=2, burnin=1000, write_postP="JOINT") 
 
 fsib<-post.pairs(model1$P, threshol=0.9, rel="FS")
-fsib
+fsib$P
 }
 }
 \keyword{manip}

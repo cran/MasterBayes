@@ -11,8 +11,6 @@ genotypeD(a1, locus=NULL)
   \item{locus}{object of class locus, gene, or marker, holding information about the source of this genotype.}
   \item{...}{further arguments to be passed}
 }
-\details{
-}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{genotype}, \code{summary.genotypeD}}
 \examples{

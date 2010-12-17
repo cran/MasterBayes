@@ -100,8 +100,8 @@
       startd<-startd+ndam[i]
       starts<-starts+nsire[i]
       start<-start+(ndam[i]*nsire[i])
-      colnames(Pmarginal[[i]])[which(is.na(colnames(Pmarginal[[i]]))==T)]<-"USdam"
-      rownames(Pmarginal[[i]])[which(is.na(rownames(Pmarginal[[i]]))==T)]<-"USsire"      
+      colnames(Pmarginal[[i]])[which(is.na(colnames(Pmarginal[[i]]))==T)]<-"us"
+      rownames(Pmarginal[[i]])[which(is.na(rownames(Pmarginal[[i]]))==T)]<-"us"      
     }
     post$P<-Pmarginal
     names(post$P)<-unique_id[as.numeric(names(X.list$X))]

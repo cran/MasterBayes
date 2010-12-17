@@ -10,7 +10,6 @@ MCMCped(PdP=PdataPed(), GdP=GdataPed(), sP=startPed(), tP=tunePed(),
    3000, write_postG = FALSE, write_postA=FALSE, write_postP = 
    "MARGINAL", checkP = FALSE, jointP = TRUE, DSapprox=FALSE, verbose=TRUE)
 }
-
 \arguments{
   \item{PdP}{optional \code{\link{PdataPed}} object containing phenotypic data}
   \item{GdP}{optional \code{\link{GdataPed}} object containing genetic data}
@@ -28,8 +27,6 @@ MCMCped(PdP=PdataPed(), GdP=GdataPed(), sP=startPed(), tP=tunePed(),
   \item{jointP}{if \code{TRUE} both parents are sampled simultaneously, if \code{FALSE} each parent is sampled conditional on the other. \code{TRUE} should mix faster, but \code{FALSE} should iterate faster, especially when \code{relational="MATE"} is passed to \code{\link{varPed}}}
   \item{DSapprox}{if \code{TRUE} the likelihood for models in which a \code{relational="MATE"} variable is passed is approximated.  This can be much more efficient because the denominator of the multinomial is the summed linear pedictors for combinations in which i=m or j=m where m referes to the "MATE" at the current iteration.}
   \item{verbose}{if \code{TRUE} posterior samples and the Metropolis Hastings accpetance rates of \code{beta}, \code{USdam}, \code{USsire}, \code{E1}, \code{E2} are printed to the screen every 1000 iterations.}
-}
-\details{
 }
 \value{
   \item{beta}{an \code{mcmc} object containing samples from the posterior distribution of the population level parameters}

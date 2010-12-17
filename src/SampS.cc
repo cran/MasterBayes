@@ -16,7 +16,7 @@ void sampS(int *offid, int noff, Matrix<double> X_design_GS [], int *npar, int *
         double mean_vec;
         double n;
         double N;
-        int dsmatch[noff];
+        int *dsmatch = new int[noff];
          
          Matrix<double> betaSus (npar[2],1); 
 

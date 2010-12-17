@@ -266,7 +266,7 @@ double  *pA,
     }
   }
 
-  Matrix<int> post_P [noff]; 
+  Matrix<int> *post_P = new Matrix<int>[noff]; 
 
   if(writeJP==false){
 
@@ -318,16 +318,17 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                prior_beta_mu,
                prior_beta_invsigma,
                prior_us_mu,
-               prior_us_sigma,
-               X_design_G [noff],
-               X_design_GD [noff],
-               X_design_GS [noff],
-               X_design_betaDus [noff],
-               X_design_betaSus [noff],
-               X_design_betaDSus [noff],
-               X_design_betaDs [noff],
-               X_design_betaSs [noff],
-               X_design_betaDSs [noff];
+               prior_us_sigma;
+
+               Matrix<double> *X_design_G = new Matrix<double>[noff];
+               Matrix<double> *X_design_GD = new Matrix<double>[noff];
+               Matrix<double> *X_design_GS = new Matrix<double>[noff];
+               Matrix<double> *X_design_betaDus = new Matrix<double>[noff];
+               Matrix<double> *X_design_betaSus = new Matrix<double>[noff];
+               Matrix<double> *X_design_betaDSus = new Matrix<double>[noff];
+               Matrix<double> *X_design_betaDs = new Matrix<double>[noff];
+               Matrix<double> *X_design_betaSs = new Matrix<double>[noff];
+               Matrix<double> *X_design_betaDSs = new Matrix<double>[noff];
 
         double llB_0 = 0.0,
                llB_1 = 0.0,
@@ -385,7 +386,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                int nmerge = nmergeP[0];
                int *mergeV = mergeVP;
                int *mergeUS = mergeUSP;
-               Matrix<double> mergeN [nmerge];	       
+               Matrix<double> *mergeN = new Matrix<double>[nmerge];	       
 
                if(nmergeP>0){    
                  for(i=0; i<nmerge; i++){   
@@ -404,12 +405,12 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                  ratio_1[1] = ones<double>(noff,1);
                }
 
-	map<int, int> Dams [noff];     // two way indexing vectors
-	map<int, int> Sires [noff];    // map[i][dam_id] = n   dam_id is the n^th mother of the i^th individual
+	map<int, int> *Dams = new map<int, int>[noff];     // two way indexing vectors
+	map<int, int> *Sires = new map<int, int> [noff];    // map[i][dam_id] = n   dam_id is the n^th mother of the i^th individual
         int *dam = st_damP;            // starting vector of dams
 	int *sire = st_sireP;		
-        Matrix<int> Dams_vec [noff];   // Matrix[i][n] = dam_id    the n^th mother of the i^th individul is dam.id 
-	Matrix<int> Sires_vec [noff];
+        Matrix<int> *Dams_vec = new Matrix<int>[noff];   // Matrix[i][n] = dam_id    the n^th mother of the i^th individul is dam.id 
+	Matrix<int> *Sires_vec = new Matrix<int>[noff];
 	
 	GetRNGstate();                                 // get seed for random number generation
  
@@ -434,6 +435,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
            
            llB_0 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP,ndamP, nsireP, Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN, DSapprox);
+
            if(est_pbeta){
                llB_0 += lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
              }
@@ -528,6 +530,8 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 	      Rprintf("                            %10.5f\n", E2_0[i]);
             }
           }
+          R_FlushConsole();
+          R_ProcessEvents();
         }
 
 //***************************************************************************************************************
@@ -707,7 +711,6 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
               llB_0 = LLP_B(offidP,noff,nind,X_design_betaDus,X_design_betaSus,X_design_betaDSus,X_design_betaDs,
 X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,ndamP,nsireP,Dams,Sires, nusd,  usdamcat, nuss, ussirecat, us_0, ratio_0, nmerge, mergeV, mergeUS, mergeN, DSapprox);
 
-
               if(est_pbeta){
                 llB_0 += lmvnormM(beta_0,  nbeta, prior_beta_mu, log_det, prior_beta_invsigma);
               }
@@ -886,6 +889,8 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
           acceptE1=1000;
           acceptE2=1000;
           acceptUS=1000;
+          R_FlushConsole();
+          R_ProcessEvents();
         }
      }
 	

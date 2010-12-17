@@ -8,7 +8,6 @@ void sampGC(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, doubl
         int ind = 0;              // individual
         int n = 0;                // number of samples within indiviual
         int ns;                   // sample within indiviual
-        int obs_G[maxrep][2];     // observed genotypes of an individual
         int da[2];                // genotypes of individual's dam
         int sa[2];                // genotypes of individual's sire
         int S_1;
@@ -18,11 +17,10 @@ void sampGC(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, doubl
         int sp_1;
         int sp_2;
         double tac;
-        double vec[2][maxall];
         int which_vec = 0;
         int offhom_sizeS;
-        int cat_tmp[maxrep];      // categories to which those genotypes belong
-        double Ppart[maxall*maxall];        // Probability vector for true genotypes
+        int *cat_tmp = new int[maxrep];      // categories to which those genotypes belong
+        double *Ppart = new double[maxall*maxall];        // Probability vector for true genotypes
         int a1;                   // observed allele 1
         int a2;                   // observed allele 2
         int sample_cat;           // category for observed genotype
@@ -35,25 +33,41 @@ void sampGC(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, doubl
         int cnt;                  // temporary counter
         int q = 1;                // a bit of fuckwittery
         int misstype = 0;         // are there dupliacate genotypes that differ
-        int all_set[maxall];      // temporary vector for counting sampled alleles
-        int unique_set[maxall];   // set of sampled alleles
+        int *all_set = new int[maxall];      // temporary vector for counting sampled alleles
+        int *unique_set = new int[maxall];   // set of sampled alleles
         int set_size;             // number of sampled alleles per individual 
         int itt_set;              // nth sampled allele per indivdiual
         int hom1;                 // if only 2 alleles are sampled in the misstypes is the homozygote a1/a1 or a2/a2
-        double PA[maxall];        // temporary vector of allele frequencies
-        double newA[maxall];      // allele counts from true genotypes
+        double *PA = new double[maxall];        // temporary vector of allele frequencies
+        double *newA = new double[maxall];      // allele counts from true genotypes
         double eterm;
         int gen_status; 
         int rel_status; 
         int samp_A;
         int no_base;
-        int par[nind][100];
-        int no_off[nind];
+        int *no_off = new int[nind];
         int no_all_in_S;
         int IBL [2];             // variable for recording the number of alleles in offspring produced by selfing 
                                  // if there is only a single allele in the selfed offspring IBL[0] is the allele
                                  // and IBL[1] is the number of IBL[0] alleles in the selfed offspring.  If there 
                                  // are 2 alleles then IBL[1] is the second allele and the genotype of the indiviual is known.
+
+        int** obs_G = new int*[maxrep];
+        for(i = 0; i < maxrep; ++i){
+           obs_G[i] = new int[2];
+        }
+
+        double** vec = new double*[2];
+        for(i = 0; i < 2; ++i){
+           vec[i] = new double[maxall];
+        }
+
+        int** par = new int*[nind];
+        for(i = 0; i < nind; ++i){
+           par[i] = new int[100];
+        }
+
+
 /*
         int oldG1;         // some variables that are used for bug checking
         int oldG2;

@@ -38,7 +38,7 @@ double  phom,
         qhom,
         pqhet;
 
-double  Pall[maxall];
+double  *Pall = new double[maxall];
 
 int mtype = mtypeP[0];
 
@@ -95,8 +95,12 @@ index  += maxall;
     read_G(st_GP, nind, nloci, G, mtype);
     read_A(st_AP, nloci, A, nall);
 
-     int par[nind][50];
-     int no_off[nind];
+    int** par = new int*[nind];
+    for(i = 0; i < nind; ++i){
+      par[i] = new int[50];
+    }
+
+     int *no_off = new int[nind];
      int itt_set;
 
      for(i=0; i < nind; i++){

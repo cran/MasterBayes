@@ -38,7 +38,7 @@
   P1<-rownames(post)[which(post>(dim(postP)[2]*threshold/2), arr.ind = TRUE)[,1]]
   P2<-rownames(post)[which(post>(dim(postP)[2]*threshold/2), arr.ind = TRUE)[,2]]
   sig.pairs<-cbind(P1, P2)
-  sig.pairs
+  list(P=sig.pairs, prob=(2*post/dim(postP)[2])[which(post>(dim(postP)[2]*threshold/2))])
 }
 
 

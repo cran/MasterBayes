@@ -919,7 +919,7 @@ namespace scythe {
 #ifdef SCYTHE_LAPACK
 
   template<>
-  inline Matrix<>
+  Matrix<>
   cholesky (const Matrix<>& A)
   {
     SCYTHE_DEBUG_MSG("Using lapack/blas for cholesky");
@@ -953,7 +953,7 @@ namespace scythe {
   }
 
   template<>
-  inline Matrix<>
+  Matrix<>
   chol_solve (const Matrix<>& A, const Matrix<>& b, const Matrix<>& M)
   {
     SCYTHE_DEBUG_MSG("Using lapack/blas for chol_solve");
@@ -989,7 +989,7 @@ namespace scythe {
   }
 
   template<>
-  inline Matrix<>
+  Matrix<>
   chol_solve (const Matrix<>& A, const Matrix<>& b)
   {
     SCYTHE_DEBUG_MSG("Using lapack/blas for chol_solve");
@@ -1138,7 +1138,7 @@ namespace scythe {
    * \throw scythe_null_error (Level 1)
    * \throw scythe_lapack_internal_error (Level 1)
    */
-  inline QRdecomp
+  QRdecomp
   qr_decomp (const Matrix<>& A)
   {
     SCYTHE_DEBUG_MSG("Using lapack/blas for qr_decomp");
@@ -1275,7 +1275,7 @@ namespace scythe {
 
     Matrix<> result(A.cols(), b.cols(), false);
     for (uint i = 0; i < QR.pivot.size(); ++i)
-      result(i, _) = bb((uint) QR.pivot(i), _);
+      result(i, _) = bb(QR.pivot(i), _);
     return result;
   }
 
@@ -1396,7 +1396,7 @@ namespace scythe {
   }
 
   template<>
-  inline Matrix<>
+  Matrix<>
   invpd (const Matrix<>& A)
   {
     SCYTHE_DEBUG_MSG("Using lapack/blas for invpd");
@@ -1434,7 +1434,7 @@ namespace scythe {
   }
 
   template<>
-  inline Matrix<>
+  Matrix<>
   invpd (const Matrix<>& A, const Matrix<>& M)
   {
     SCYTHE_DEBUG_MSG("Using lapack/blas for invpd");
@@ -1467,7 +1467,7 @@ namespace scythe {
   }
 
   template <>
-  inline Matrix<>
+  Matrix<>
   inv(const Matrix<>& A)
   {
     SCYTHE_DEBUG_MSG("Using lapack/blas for inv");

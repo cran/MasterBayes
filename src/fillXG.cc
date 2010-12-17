@@ -98,12 +98,12 @@ E_mat[i] = &pE_mat[index];
 index  += (ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2)));
 }
         
-        Matrix<double> X_design_G [noff];
+        Matrix<double> *X_design_G = new Matrix<double>[noff];
 
-	map<int, int> Dams [noff];     // two way indexing vectors
-	map<int, int> Sires [noff];    // map[i][dam_id] = n           dam_id is the n^th mother of the i^th individual
-        Matrix<int> Dams_vec [noff];   // Matrix[i][n] = dam_id        the n^th mother of the i^th individul is dam.id 
-	Matrix<int> Sires_vec [noff];
+	map<int, int> *Dams = new map<int, int>[noff];     // two way indexing vectors
+	map<int, int> *Sires = new map<int, int>[noff];    // map[i][dam_id] = n           dam_id is the n^th mother of the i^th individual
+        Matrix<int> *Dams_vec = new Matrix<int>[noff];   // Matrix[i][n] = dam_id        the n^th mother of the i^th individul is dam.id 
+	Matrix<int> *Sires_vec = new Matrix<int>[noff];
 
          read_G(GP, nind, nloci, G, mtype);
          read_A(AP, nloci, A, nall);

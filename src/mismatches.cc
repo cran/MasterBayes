@@ -49,13 +49,13 @@ l  += (2*nloci);
 }
 
      
-        Matrix<int> mmD [noff];
-        Matrix<int> mmS [noff];
+        Matrix<int> *mmD = new Matrix<int>[noff];
+        Matrix<int> *mmS = new Matrix<int>[noff];
 
-	map<int, int> Dams [noff];     // two way indexing vectors
-	map<int, int> Sires [noff];    // map[i][dam_id] = n           dam_id is the n^th mother of the i^th individual
-        Matrix<int> Dams_vec [noff];   // Matrix[i][n] = dam_id        the n^th mother of the i^th individul is dam.id 
-	Matrix<int> Sires_vec [noff];
+	map<int, int> *Dams = new map<int, int>[noff];     // two way indexing vectors
+	map<int, int> *Sires = new map<int, int>[noff];    // map[i][dam_id] = n           dam_id is the n^th mother of the i^th individual
+        Matrix<int> *Dams_vec = new Matrix<int>[noff];   // Matrix[i][n] = dam_id        the n^th mother of the i^th individul is dam.id 
+	Matrix<int> *Sires_vec = new Matrix<int>[noff];
 	
         read_G(st_GP, nind, nloci, G, 1);
 
