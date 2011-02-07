@@ -205,7 +205,7 @@
        }
     }
 
-    if(sP$estUSdam){
+    if(sP$estUSdam | (nusd>0 & sP$estUSsire)){
       if(is.null(tP$USdam)){
         tP$USdam<-rep(10,nusd)
       }else{
@@ -214,7 +214,7 @@
       tP$USdam<-abs(tP$USdam*diag(MLENus$C)[1:nusd])
     }
 
-     if(sP$estUSsire==TRUE | sP$estUSsire=="USdam"){
+     if(sP$estUSsire==TRUE | sP$estUSsire=="USdam" | (nuss>0 & sP$estUSdam)){
        if(is.null(tP$USsire)){
          tP$USsire<-rep(10, nuss)
        }else{

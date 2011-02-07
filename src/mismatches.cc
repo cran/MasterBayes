@@ -80,5 +80,16 @@ l  += (2*nloci);
             cnt++;
            }
          }
+
+       delete [] mmD;
+       delete [] mmS;
+       delete [] Dams;
+       delete [] Sires;
+       delete [] Dams_vec;
+       delete [] Sires_vec;
+       delete [] pG;
+       delete [] G;
+
+
 }
 }

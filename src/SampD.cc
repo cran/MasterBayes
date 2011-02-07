@@ -17,7 +17,6 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
         double n;
         double N;
         int *dsmatch = new int[noff];
-
          
          Matrix<double> betaDus (npar[0],1); 
 
@@ -201,6 +200,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
  
         }
 
+        free(dsmatch);
 }
 
 

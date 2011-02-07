@@ -20,11 +20,19 @@ function(PdP=PdataPed(),
     if(is.null(PdP$id)==FALSE){                    # if phenotypic data exists then use id's from PdP as reference
       unique_id<-as.character(unique(PdP$id))     
       PdP$id<-match(PdP$id, unique_id)             # convert phenotypic id's to numeric
-      if(length(PdP$USsire)>1 & length(PdP$USsire)==length(PdP$offspring)){
-        PdP$USsire<-as.character(PdP$USsire[which(PdP$offspring==1)])
+      if(length(PdP$USsire)>1){
+        if(length(PdP$USsire)==length(PdP$offspring)){
+          PdP$USsire<-as.character(PdP$USsire[which(PdP$offspring==1)])
+        }else{
+          stop("USsire in PdP should either be TRUE/FALSE or the same length as id")
+        }
       }
-      if(length(PdP$USdam)>1 & length(PdP$USdam)==length(PdP$offspring)){
-        PdP$USdam<-as.character(PdP$USdam[which(PdP$offspring==1)])
+      if(length(PdP$USdam)>1){
+        if(length(PdP$USdam)==length(PdP$offspring)){
+          PdP$USdam<-as.character(PdP$USdam[which(PdP$offspring==1)])
+        }else{
+          stop("USdam in PdP should either be TRUE/FALSE or the same length as id")
+        }
       }
     }else{             
       unique_id<-as.character(unique(GdP$id))
@@ -248,7 +256,7 @@ function(PdP=PdataPed(),
     DSapprox<-0    # no mate variables 
   }
 
-  estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, (sP$estUSdam==TRUE | sP$estUSsire==TRUE), GdP$perlocus, mtype.numeric, (sP$estUSsire=="USdam"), checkP, jointP,DSapprox)
+  estimating<-c(sP$estP,sP$estG,sP$estA,sP$estE1, sP$estE2, sP$estbeta, sP$estUSdam==TRUE, sP$estUSsire==TRUE, GdP$perlocus, mtype.numeric, sP$estUSsire=="USdam", checkP, jointP,DSapprox)
 
   store_post<-c(write_postG,write_postA,write_postP=="JOINT",verbose)
 
@@ -349,7 +357,7 @@ output<-.C("MCMCped",
   post$beta<-output[[46]]
 
   if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
-    UStmp<-t(matrix(output[[47]], nuss+nusd, ceiling((nitt-burnin)/thin)))
+    UStmp<-t(matrix(output[[47]], (sP$estUSsire==TRUE)*nuss+sP$estUSdam*nusd, ceiling((nitt-burnin)/thin)))
     if(sP$estUSdam==TRUE){
       post$USdam<-mcmc(as.matrix(UStmp[,1:nusd]))
       if(nusd>1){
@@ -359,7 +367,7 @@ output<-.C("MCMCped",
       }
     }
     if(sP$estUSsire==TRUE | sP$estUSsire=="USdam"){
-      post$USsire<-mcmc(as.matrix(UStmp[,(1:nuss)+nusd]))
+      post$USsire<-mcmc(as.matrix(UStmp[,(1:nuss)+nusd*sP$estUSdam]))
       if(nuss>1){
         colnames(post$USsire)<-paste("USsire.", unique(PdP$USsire), sep="")
       }else{

@@ -119,5 +119,18 @@ index  += (ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2)));
             cnt_ds++;
            }
        }
+
+   delete [] pG;
+   delete [] G;
+   delete [] pA;
+   delete [] A;
+   delete [] pE_mat;
+   delete [] E_mat;
+   delete [] Dams;
+   delete [] Sires;
+   delete [] Dams_vec;
+   delete [] Sires_vec;
+   delete [] X_design_G;
+
   }
 }

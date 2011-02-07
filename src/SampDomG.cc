@@ -283,5 +283,10 @@ if(id[i+end]!=ind){                 // the last record for that individual
      end = 1;
      ind = 0;
   }                         // end loci loop
+         for(i = 0; i < nind; i++){   
+           free(par [i]);
+         }
+         free(no_off);
+         free(par);
 }
  

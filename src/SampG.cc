@@ -67,13 +67,11 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
            par[i] = new int[100];
         }
 
+//        int oldG1;         // some variables that are used for bug checking
+//        int oldG2;
+//        bool problem;
+//        int j;
 
-/*
-        int oldG1;         // some variables that are used for bug checking
-        int oldG2;
-        bool problem;
-        int j;
-*/
         for(o=0; o < nind; o++){
            no_off[o] = 0;
         }
@@ -94,7 +92,7 @@ void sampG(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, double
         IBL[0] = -999;
         IBL[1] = -999;
 
-        for(l= 0; l < nloci; l++){                  // iterates through loci
+        for(l=0; l < nloci; l++){                  // iterates through loci
 
           nl = nall[l];                               // number of alleles at that locus
 
@@ -1543,5 +1541,29 @@ case 4: // has offspring but no parents, or one parent //
      q = 1;
      ind = 0;
   }                         // end loci loop
+  
+        for(i = 0; i < maxrep; ++i){
+           free(obs_G[i]);
+        }
+        for(i = 0; i < 2; ++i){
+           free(vec[i]);
+        }
+        for(i = 0; i < nind; ++i){
+           free(par[i]);
+        }
+  free(obs_G);
+  free(vec);
+  free(par);
+
+
+  free(cat_tmp);
+  free(Ppart);
+  free(all_set);
+  free(unique_set);
+  free(PA);       
+  free(newA);    
+  free(no_off); 
+
+
 }
  

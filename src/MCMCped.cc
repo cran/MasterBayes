@@ -107,11 +107,13 @@ bool    estP = bool(estimatingP[0]),
         estE1 = bool(estimatingP[3]), 
         estE2 = bool(estimatingP[4]), 
         estbeta = bool(estimatingP[5]),      
-        estUS = bool(estimatingP[6]), 
-        perlocus = bool(estimatingP[7]),
-        USdamsire = bool(estimatingP[9]),
-        checkP = bool(estimatingP[10]),
-        jointP = bool(estimatingP[11]),
+        estUSdam = bool(estimatingP[6]), 
+        estUSsire = bool(estimatingP[7]), 
+        estUS = (estUSdam || estUSsire),
+        perlocus = bool(estimatingP[8]),
+        USdamsire = bool(estimatingP[10]),
+        checkP = bool(estimatingP[11]),
+        jointP = bool(estimatingP[12]),
 
         est_pE1 = FALSE,           
         est_pE2 = FALSE,
@@ -122,8 +124,8 @@ bool    estP = bool(estimatingP[0]),
         writeJP = bool(store_postP[2]),  
         verbose = bool(store_postP[3]);
 
-int mtype = estimatingP[8],
-    DSapprox = estimatingP[12];
+int mtype = estimatingP[9],
+    DSapprox = estimatingP[13];
 
 
 /*************************************
@@ -275,6 +277,7 @@ double  *pA,
     }
   }
 
+
 /*************************************
 * declare some variable sized arrays *
 *************************************/
@@ -412,6 +415,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
         Matrix<int> *Dams_vec = new Matrix<int>[noff];   // Matrix[i][n] = dam_id    the n^th mother of the i^th individul is dam.id 
 	Matrix<int> *Sires_vec = new Matrix<int>[noff];
 	
+
 	GetRNGstate();                                 // get seed for random number generation
  
         if(nloci!=0){  
@@ -530,8 +534,6 @@ X_design_betaSs,X_design_betaDSs,npar, DSuu, dam,sire,beta_mapped,ntdamP,ntsireP
 	      Rprintf("                            %10.5f\n", E2_0[i]);
             }
           }
-          R_FlushConsole();
-          R_ProcessEvents();
         }
 
 //***************************************************************************************************************
@@ -743,7 +745,16 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
 
            if(estUS==TRUE){ 
              us_0 = fabs(rmvnormM(us_1, int_us, nus));
-
+             if(estUSdam==FALSE){
+                for(i = 0; i < nusd; i++){
+                   us_0[i]= us_1[i];
+                }  
+             }
+             if(estUSsire==FALSE){
+                for(i = 0; i < nuss; i++){
+                   us_0[nusd+i]= us_1[nusd+i];
+                }
+             }
              if(USdamsire==TRUE){
                 for(i = 0; i < nusd; i++){
                    us_0[nusd+i]= us_0[i];
@@ -798,12 +809,18 @@ X_design_betaSs,X_design_betaDSs,npar,DSuu,dam,sire,beta_mapped,ntdamP,ntsireP,n
                   post_betaP[write_postB] = beta_0[i];                 // record   
                   write_postB ++; 
                  }
+              }              
+              if(estUSdam){
+                for(i = 0; i < nusd; i++){
+                   post_usP[write_postUS]= us_0[i];
+                   write_postUS ++; 
+                }  
               }
-              if(estUS==TRUE){ 
-                 for (i=0; i<nus; ++i){
-                  post_usP[write_postUS] = us_0[i];                 // record   
+              if(estUSsire){
+                for(i = 0; i < nuss; i++){
+                  post_usP[write_postUS]= us_0[nusd+i];
                   write_postUS ++; 
-                 }
+                }
               }
               if(writeG==true){
                 if(mtype==1 || mtype==3){
@@ -937,6 +954,23 @@ if(writeG==true){
 delete [] ppost_G;
 delete [] post_G;
 }
+
+        delete [] mergeN;
+        delete [] post_P;
+        delete [] X_design_G;
+        delete [] X_design_GD;
+        delete [] X_design_GS;
+        delete [] X_design_betaDus;
+        delete [] X_design_betaSus;
+        delete [] X_design_betaDSus;
+        delete [] X_design_betaDs;
+        delete [] X_design_betaSs;
+        delete [] X_design_betaDSs;
+        delete [] Dams;
+        delete [] Sires;
+        delete [] Dams_vec;
+        delete [] Sires_vec;
+
 }
 } // extern "C" 
 

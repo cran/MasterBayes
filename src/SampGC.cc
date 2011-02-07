@@ -1433,5 +1433,27 @@ case 4: // has offspring but no parents, or one parent //
      q = 1;
      ind = 0;
   }                         // end loci loop
+  
+        for(i = 0; i < maxrep; ++i){
+           free(obs_G[i]);
+        }
+        for(i = 0; i < 2; ++i){
+           free(vec[i]);
+        }
+        for(i = 0; i < nind; ++i){
+           free(par[i]);
+        }
+  free(obs_G);
+  free(vec);
+  free(par);
+
+
+  free(cat_tmp);
+  free(Ppart);
+  free(all_set);
+  free(unique_set);
+  free(PA);       
+  free(newA);    
+  free(no_off); 
 }
  

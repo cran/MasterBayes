@@ -472,7 +472,7 @@ void sampP(int *offid, int noff, Matrix<double> X_design_G [], int *npar, int *D
             sire[offid[i]] = Sires_vec[i][new_sire_pos];  // puts new sire.id into pedigre        
  
         }
-
+     free(dsmatch);
 }
 
 

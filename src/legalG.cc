@@ -440,6 +440,18 @@ index  += maxall;
         }
       }
     }
+        for(i = 0; i < nind; ++i){
+           free(par[i]);
+        }
+        free(Pall);
+        free(par);
+        free(no_off);
+        delete [] pG;
+        delete [] G;
+        delete [] pA;
+        delete [] A;
+
+
  }
  }
 
