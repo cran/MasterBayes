@@ -20,7 +20,7 @@ MLE.popsize(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL,
  \item{C}{large sample variance-covariance matrix of \code{nUS} MLE's}
 }
 \references{Nielsen. R. \emph{et.al} Genetics (2001) 157 4 1673-1682}
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \note{
 Nielsen's original model does not account for genotyping error, and estimation of the unsampled population size is VERY sensitive to the level of genotyping error.  This function implements a commonly used approxiamtion for genotyping error that ignores pedigree information. For many problems this approximation seems valid, but appears to break down when estimating the size of the unsampled population size.  Bayesian estimation of the unsampled population size (see \code{\link{MCMCped}}) that uses an exact solution for genotyping error is more robust.
 }

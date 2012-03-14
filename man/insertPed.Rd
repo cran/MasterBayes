@@ -13,7 +13,7 @@ insertPed(ped, founders=NULL)
 \value{
   a pedigree pedigree with id, dam and sire in each column
 }
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 \dontrun{

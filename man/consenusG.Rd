@@ -17,7 +17,7 @@ consensusG(GdP, cat.levels=NULL, gmax=FALSE, het=FALSE)
 \value{
   \item{GdP}{a \code{GdataPed} object}
 }
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{GdataPed}}}
 \keyword{manip}
 \keyword{models}

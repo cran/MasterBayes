@@ -39,7 +39,7 @@ MCMCped(PdP=PdataPed(), GdP=GdataPed(), sP=startPed(), tP=tunePed(),
   \item{P}{either samples from the posterior distribution of the pedigree, or the marginal distribution of parents}
 }
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{getXlist}}}
 \examples{
 

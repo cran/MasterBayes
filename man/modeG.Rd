@@ -15,7 +15,7 @@ modeG(postG, threshold=0)
    \item{id}{id vector}
 }
 \references{Hadfield J.D. \emph{et al}, Molecular Ecology  }
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{MCMCped}}, \code{genotype}}
 \examples{
 \dontrun{

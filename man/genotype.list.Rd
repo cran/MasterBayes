@@ -19,7 +19,7 @@ Marshall, T. C. \emph{et al} (1998) Molecular Ecology 7 5 639-655
 Kalinowski S.T. \emph{et al} (2007) Molecular Ecology 16 5 1099-1106
 Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 }
-\author{Jarrod Hadfield \email{j.hadfield@sheffield.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{genotype}}
 \examples{
 \dontrun{

@@ -12,8 +12,8 @@ orderPed(ped, time_born=NULL)
 \value{
   an ordered pedigree pedigree with id, dam and sire in each column
 }
-\note{This function has changed name from \code{order.ped} in earler versions <2.42. \code{order.ped} did not always (rarely) ordered the pedigree correctly.  This new function uses the \code{kindepth} function from the \code{kinship} package}
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\note{This function has changed name from \code{order.ped} in earler versions <2.42. \code{order.ped} did not always (rarely) ordered the pedigree correctly.  This new function uses the \code{kindepth} function from the \code{kinship2} package}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 \dontrun{

@@ -17,7 +17,7 @@
   \item{genotype.freq}{frequencies of observed genotypes (phenotypes)}
 }
 \references{Lynch M. \& Milligan B.G. (1994) Molecular Ecology 3 91-99}
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{genotype}, \code{summary.genotypeD}}
 \examples{
 \dontrun{

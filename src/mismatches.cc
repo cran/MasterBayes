@@ -33,14 +33,12 @@ int     *pG,
 pG = new(nothrow) int [2*nind*nloci];
 if(pG==NULL)
 {
-Rprintf("NO MEMORY for G\n");
-exit(1);
+ error("NO MEMORY for G\n");
 }
 G = new(nothrow) int* [nind];
 if(G==NULL)
 {
-Rprintf("NO MEMORY for G\n");
-exit(1);
+ error("NO MEMORY for G\n");
 }
 
 for (i=0; i<nind; ++i){

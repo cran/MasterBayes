@@ -26,7 +26,7 @@ PdataPed(formula, data=NULL, id=data$id, sex=data$sex,
 \details{
    If the number of unsampled individuals varies over subpopulations, and the parentage of an offspring is not restricted to ceratin subpopulations then the parameters will not be idenifiable.  This can be resolved by using an informative prior (see \code{\link{priorPed}}) for the number of unsampled individuals in each sub-population, or using the \code{restrict} argument in \code{\link{varPed}}.
 }
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 id<-1:20

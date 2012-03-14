@@ -47,37 +47,27 @@ double  *pA,
 pG = new(nothrow) int [(1+int(mtype==1 || mtype==3))*nind*nloci];
 if(pG==NULL)
 {
-Rprintf("NO MEMORY for G\n");
-exit(1);
-}
+ error("NO MEMORY for G\n");}
 G = new(nothrow) int* [nind];
 if(G==NULL)
 {
-Rprintf("NO MEMORY for G\n");
-exit(1);
-}
+ error("NO MEMORY for G\n");}
 pA = new(nothrow) double [nloci*maxall];
 if(pA==NULL)
 {
-Rprintf("NO MEMORY for A\n");
-exit(1);
-}
+ error("NO MEMORY for A\n");}
 A = new(nothrow) double* [nloci];
 if(A==NULL)
 {
-Rprintf("NO MEMORY for A\n");
-exit(1);
+ error("NO MEMORY for A\n");
 }
 pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2))*nloci];
 if(pE_mat==NULL){
-Rprintf("NO MEMORY for E_mat\n");
-exit(1);
+ error("NO MEMORY for E_mat\n");
 }
-
 E_mat = new(nothrow) double* [nloci];
 if(E_mat==NULL){
-Rprintf("NO MEMORY for E_mat\n");
-exit(1);
+ error("NO MEMORY for E_mat\n");
 }
 
 for (i=0; i<nind; ++i){

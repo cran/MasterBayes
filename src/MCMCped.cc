@@ -147,62 +147,52 @@ double  *pA,
 
   pG = new(nothrow) int [(1+int(mtype==1 || mtype==3))*nind*nloci];
   if(pG==NULL){
-    Rprintf("NO MEMORY for G\n");
-    exit(1);
+    error("NO MEMORY for G\n");
   }
 
   G = new(nothrow) int* [nind];
   if(G==NULL){
-    Rprintf("NO MEMORY for G\n");
-    exit(1);
+   error("NO MEMORY for G\n");
   }
 
   pGobs = new(nothrow) int [(1+int(mtype==1 || mtype==3))*nsamp*nloci];
   if(pGobs==NULL){
-    Rprintf("NO MEMORY for Gobs\n");
-    exit(1);
+    error("NO MEMORY for Gobs\n");
   }
 
   Gobs = new(nothrow) int* [nsamp];
   if(Gobs==NULL){
-    Rprintf("NO MEMORY for Gobs\n");
-    exit(1);
+   error("NO MEMORY for Gobs\n");
   }
 
   pA = new(nothrow) double [nloci*maxall];
   if(pA==NULL){
-    Rprintf("NO MEMORY for A\n");
-    exit(1);
+   error("NO MEMORY for A\n");
   }
 
   A = new(nothrow) double* [nloci];
   if(A==NULL){
-    Rprintf("NO MEMORY for A\n");
-    exit(1);
+   error("NO MEMORY for A\n");
   }
 
   pE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2))*nloci];
   if(pE_mat==NULL){
-    Rprintf("NO MEMORY for E_mat\n");
-    exit(1);
+   error("NO MEMORY for E_mat\n");
   }
 
   E_mat = new(nothrow) double* [nloci];
   if(E_mat==NULL){
-    Rprintf("NO MEMORY for E_mat\n");
-    exit(1);
+   error("NO MEMORY for E_mat\n");
   }
 
   pLE_mat = new(nothrow) double [ncat*(4+3*int(mtype==1 || mtype==3)+2*int(mtype==2))*nloci];
   if(pLE_mat==NULL){
-    Rprintf("NO MEMORY for LE_mat\n");
-    exit(1);
+   error("NO MEMORY for LE_mat\n");
   }
 
   LE_mat = new(nothrow) double* [nloci];
   if(LE_mat==NULL){
-    Rprintf("NO MEMORY for LE_mat\n");
-    exit(1);
+   error("NO MEMORY for LE_mat\n");
   }
 
   cnt = 0;
@@ -245,14 +235,12 @@ double  *pA,
 
     ppost_G = new(nothrow) int [nind*tall];
     if(ppost_G==NULL){
-      Rprintf("NO MEMORY for posterior_G\n");
-      exit(1);
+      error("NO MEMORY for posterior_G\n");
     }
 
     post_G = new(nothrow) int* [nind];
     if(post_G==NULL){
-      Rprintf("NO MEMORY for posterior_G\n");
-      exit(1);
+      error("NO MEMORY for posterior_G\n");
     }
 
     cnt = 0;

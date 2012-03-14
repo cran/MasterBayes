@@ -16,7 +16,7 @@ priorPed(E1=999, E2=999, beta=list(mu=999, sigma=999),
   \item{USsire}{list containing vectors of means and standard deviations for log normal distributions that specify the prior distribution for the number of unsampled males. The order of \code{USsire} is the order in which the unsampled sire populations appear in the \code{USsire} argument of \code{\link{PdataPed}} (see \code{dlnorm})}
 }
 \value{list containing the arguments passed}
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 \dontrun{

@@ -21,9 +21,9 @@
     }else{
       sP$E1<-rep(0.005,No.E)
       if(GdP$perlocus==FALSE){
-        names(sP$E1)<-unique(GdP$categories)
+        names(sP$E1)<-unique(as.character(GdP$categories))
       }else{
-        names(sP$E1)<-paste(unique(GdP$categories), rep(names(GdP$G), each=length(unique(GdP$categories))), sep=".")
+        names(sP$E1)<-paste(unique(as.character(GdP$categories)), rep(names(GdP$G), each=length(unique(GdP$categories))), sep=".")
       }
     }
   }else{

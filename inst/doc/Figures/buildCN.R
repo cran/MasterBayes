@@ -1,4 +1,4 @@
-#source("~/Work/MasterBayes/MasterBayes_2.47/inst/doc/Figures/buildCN.R")
+#source("~/Work/MasterBayes/MasterBayes_2.48/inst/doc/Figures/buildCN.R")
 set.seed(33)
 forCRAN=TRUE
 LINUX=TRUE
@@ -9,7 +9,7 @@ options(width=80)
 # Need to make sure the data are more likely under N(0,0.5) than N(0,1) in Chapter 1 
 # Need to make sure the binary data are completely separated in Chapter 2 
 
-MCpath="~/Work/MasterBayes/MasterBayes_2.47/inst/doc/"
+MCpath="~/Work/MasterBayes/MasterBayes_2.48/inst/doc/"
 
 
 

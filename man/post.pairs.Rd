@@ -16,7 +16,7 @@ post.pairs(postP, threshold=0, rel="PO")
    \item{P}{pairs of indiviuals that fall into the \code{rel} category with posterior probability >  \code{threshold}}
    \item{prob}{posterior probability}
 }
-\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
+\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
 \seealso{\code{\link{modeP}}}
 \examples{
 \dontrun{
