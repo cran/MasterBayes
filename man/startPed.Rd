@@ -32,7 +32,7 @@ startPed(G=NULL, id=NULL, estG=TRUE, A=NULL, estA=TRUE, E1=NULL,
 If \code{estG=FALSE} an approximation is used for genotyping error.  In this case error rates and allele frequencies are not estimated but fixed at the starting parameterisation.  If indivdiuals have been typed more than once, then the approxiamtion only uses the genotype that first appears in the \code{GdP$G} object passed to \code{\link{MCMCped}}.  If \code{A} is not specified estimates are taken directly from \code{GdP$G} using \code{\link{extractA}}.  If \code{E1} and \code{E2} are not specified they are set to 0.005.  Note that if the approximation for genotyping error is used with codominant markers, Wang's (2005) model is not used, and the CEVUS model (Marshall 1998) is adopted.  In this case \code{E2} is the per-allele error rate and \code{E2}(2-\code{E2}) is the per-genotype error rate used by CERVUS.  If \code{dam} and \code{sire} are not specified the most likely set of parents given the genetic data are used (see \code{\link{MLE.ped}}).  The starting value of \code{beta}, if not given, is the MLE of beta given the starting pedigree (see \code{\link{MLE.beta}}).   The starting values of \code{USdam} and \code{USsire}, if not given, are the MLE based on the genotype data (see \code{\link{MLE.popsize}}).     
 }
 \value{list containing the arguments passed}
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 \dontrun{

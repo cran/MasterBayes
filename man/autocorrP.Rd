@@ -14,7 +14,7 @@ For each offspring the proportion of transitions is calculated at lags 1, 2, 5, 
 \value{
    matrix
 }
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 \dontrun{

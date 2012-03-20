@@ -200,7 +200,7 @@ void sampD(int *offid, int noff, Matrix<double> X_design_GD [], int *npar, int *
  
         }
 
-        free(dsmatch);
+        delete [] dsmatch;
 }
 
 

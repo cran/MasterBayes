@@ -20,7 +20,7 @@ tunePed(E1 = NULL, E2 = NULL, beta = NULL, USdam = NULL,
   The proposal distribution for all parameters is the multivariate normal, the variances of which are the large sample  variance covariances of the Maximum Likelihood estimates multiplied by the scaling constants.  For all parameters except \code{beta}, the covariance matrix for the proposal distribution has all off-diagonal elements set to zero.  These parameters must be positive and so the proposal distribution is reflected at zero. A diagonal covariance matrices ensures that the proposal distribution remains symetric.  For beta the covariances are not constrained at zero, and so the matrices are multiplied by the scaling constants in a way that preserves the correlational structure.  The tuning parameters for the error rates are the scaling constants multiplied by 3e-5. 
 }
 \value{list containing the arguments passed}
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 \dontrun{

@@ -39,7 +39,7 @@ MCMCped(PdP=PdataPed(), GdP=GdataPed(), sP=startPed(), tP=tunePed(),
   \item{P}{either samples from the posterior distribution of the pedigree, or the marginal distribution of parents}
 }
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{getXlist}}}
 \examples{
 
@@ -66,7 +66,7 @@ res2<-expression(varPed("terr", gender="Female", relational="OFFSPRING",
 PdP<-PdataPed(formula=list(var1,res1,res2), data=WarblerP, USsire=FALSE)
 tP<-tunePed(beta=30)
 
-model1<-MCMCped(PdP=PdP, GdP=GdP, tP=tP, nitt=3000, thin=1, burnin=0) 
+model1<-MCMCped(PdP=PdP, GdP=GdP, tP=tP, nitt=300, thin=1, burnin=0) 
 
 plot(model1$beta)
 

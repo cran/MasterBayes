@@ -14,7 +14,7 @@ mismatches(X.list, G, mm.tol=999)
 \value{
     list of design matrices of the form \code{X.list}, but containing the number of mismatches between parents and offspring.  Potential parents that exceed the number of mismatches specified by \code{mm.tol} are removed from the vectors of potential parents: \code{restdam.id} and \code{restsire.id}.  
 }
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \note{If a  \code{\link{GdataPed}} object is passed to \code{\link{getXlist}} then the number of mismatches will be calculated by default.
 }
 \seealso{\code{\link{MCMCped}}}

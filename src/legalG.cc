@@ -279,7 +279,7 @@ index  += maxall;
                   }else{
                      Pall[o1] ++;
                   }
-                  if(index!=2 & o2!=s1 && o2!=s2 && o2!=G[i][(l*2)]){
+                  if(index!=2 && o2!=s1 && o2!=s2 && o2!=G[i][(l*2)]){
                      G[i][(l*2)+index]=o2;       // offspring and spouse genotypes //
                      index++;
                   }else{
@@ -437,11 +437,11 @@ index  += maxall;
       }
     }
         for(i = 0; i < nind; ++i){
-           free(par[i]);
+           delete [] par[i];
         }
-        free(Pall);
-        free(par);
-        free(no_off);
+        delete [] Pall;
+        delete [] par;
+        delete [] no_off;
         delete [] pG;
         delete [] G;
         delete [] pA;

@@ -111,7 +111,7 @@ Versions >=2.1 accept different arguments for \code{restrict} than earlier versi
 Also, versions >=2.1 also accept \code{"OFFSPRINGV"} and \code{"MATEV"} for \code{relational} in addition to \code{"OFFSPRING"} and \code{"MATE"}.  \code{"V"} specifies that the signed vector should be used rather than the Euclidean distance.
   }
 \references{Hadfield J.D. \emph{et al} (2006) Molecular Ecology 15 3715-31}
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \keyword{models}
 \keyword{manip}

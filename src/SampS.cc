@@ -198,7 +198,7 @@ void sampS(int *offid, int noff, Matrix<double> X_design_GS [], int *npar, int *
               sire[offid[i]] = Sires_vec[i][new_sire_pos];     // puts new dam.id into pedigree       
  
         }
-       free(dsmatch);
+       delete [] dsmatch;
 }
 
 

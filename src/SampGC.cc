@@ -37,10 +37,8 @@ void sampGC(int nsamp, int **Gobs, int **G, int *nall, int nloci, int *id, doubl
         int *unique_set = new int[maxall];   // set of sampled alleles
         int set_size;             // number of sampled alleles per individual 
         int itt_set;              // nth sampled allele per indivdiual
-        int hom1;                 // if only 2 alleles are sampled in the misstypes is the homozygote a1/a1 or a2/a2
         double *PA = new double[maxall];        // temporary vector of allele frequencies
         double *newA = new double[maxall];      // allele counts from true genotypes
-        double eterm;
         int gen_status; 
         int rel_status; 
         int samp_A;
@@ -612,19 +610,19 @@ case 3:
                  Ppart[2] *= pow(double((da[0]==IBL[0])+(sa[1]==IBL[0])), -2.0*IBL[1]);
                  Ppart[3] *= pow(double((da[1]==IBL[0])+(sa[1]==IBL[0])), -2.0*IBL[1]);
                }else{
-                 if(da[0]!=IBL[0] & da[0]!=IBL[1]){
+                 if(da[0]!=IBL[0] && da[0]!=IBL[1]){
                    Ppart[0] = 0.0;
                    Ppart[2] = 0.0;
                  }
-                 if(da[1]!=IBL[0] & da[1]!=IBL[1]){
+                 if(da[1]!=IBL[0] && da[1]!=IBL[1]){
                    Ppart[1] = 0.0;
                    Ppart[3] = 0.0;
                  }
-                 if(sa[0]!=IBL[0] & sa[0]!=IBL[1]){
+                 if(sa[0]!=IBL[0] && sa[0]!=IBL[1]){
                    Ppart[0] = 0.0;
                    Ppart[1] = 0.0;
                  }
-                 if(sa[1]!=IBL[0] & sa[1]!=IBL[1]){
+                 if(sa[1]!=IBL[0] && sa[1]!=IBL[1]){
                    Ppart[2] = 0.0;
                    Ppart[3] = 0.0;
                  }
@@ -1435,25 +1433,25 @@ case 4: // has offspring but no parents, or one parent //
   }                         // end loci loop
   
         for(i = 0; i < maxrep; ++i){
-           free(obs_G[i]);
+           delete [] obs_G[i];
         }
         for(i = 0; i < 2; ++i){
-           free(vec[i]);
+           delete [] vec[i];
         }
         for(i = 0; i < nind; ++i){
-           free(par[i]);
+           delete [] par[i];
         }
-  free(obs_G);
-  free(vec);
-  free(par);
+  delete [] obs_G;
+  delete [] vec;
+  delete [] par;
 
 
-  free(cat_tmp);
-  free(Ppart);
-  free(all_set);
-  free(unique_set);
-  free(PA);       
-  free(newA);    
-  free(no_off); 
+  delete [] cat_tmp;
+  delete [] Ppart;
+  delete [] all_set;
+  delete [] unique_set;
+  delete [] PA;       
+  delete [] newA;    
+  delete [] no_off; 
 }
  

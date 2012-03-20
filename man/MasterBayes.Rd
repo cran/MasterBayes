@@ -70,6 +70,6 @@ Nielsen. R. \emph{et.al} Genetics (2001) 157 4 1673-1682
 Smouse P.E. \emph{et al} (1999) Journal of Evolutionary Biology 12 1069-1077
 Wang J.L. Genetics (2004) 166 4 1963-1979
  }
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \keyword{package}

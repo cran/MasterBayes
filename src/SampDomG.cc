@@ -284,9 +284,9 @@ if(id[i+end]!=ind){                 // the last record for that individual
      ind = 0;
   }                         // end loci loop
          for(i = 0; i < nind; i++){   
-           free(par [i]);
+           delete [] par [i];
          }
-         free(no_off);
-         free(par);
+         delete [] no_off;
+         delete [] par;
 }
  

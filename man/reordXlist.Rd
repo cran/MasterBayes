@@ -16,7 +16,7 @@
 \value{
   \code{X.list} for which parents are reordered 
 }
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \note{If a  \code{\link{GdataPed}} object is passed to \code{\link{getXlist}} then the design matrices will be reordered by default.
 }
 \seealso{\code{\link{MCMCped}}}

@@ -18,7 +18,7 @@ popsize.loglik(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE
   log-likelihood of the number of unsampled individuals given the genotype data.
 }
 \references{Nielsen. R. \emph{et.al} Genetics (2001) 157 4 1673-1682}
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \note{Intended to be used within \code{\link{MLE.popsize}}}
 \seealso{\code{\link{MCMCped}}, \code{\link{MLE.popsize}}}
 \examples{

@@ -19,7 +19,7 @@ Individuals that do not have a parent assignment with a posterior probability ex
    \item{prob}{marginal posterior probability of the most likely parental combination (joint) or the most likely mother (marginal)}
    \item{prob.male}{marginal posterior probability of the most likely father (marginal)}
 }
-\author{Jarrod Hadfield \email{jarrod.hadfield@zoo.ox.ac.uk}}
+\author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
 \dontrun{
