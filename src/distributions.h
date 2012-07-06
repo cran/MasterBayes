@@ -573,7 +573,10 @@ namespace scythe {
           *cum = 0.;
           *ccum = 1.;
         }
-        SCYTHE_THROW_10(scythe_convergence_error, "Did not converge");
+        //XXX commented out for debug-on testing of ordfactanal
+        //(and perhaps others) since they tend to throw on the first
+        //iteration
+        //SCYTHE_THROW_10(scythe_convergence_error, "Did not converge");
       }
 
       return;

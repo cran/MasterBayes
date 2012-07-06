@@ -18,7 +18,7 @@ function(x, gender=NULL, lag=c(0,0), relational=FALSE, lag_relational=c(0,0), re
       keepSire<-with(parent.frame(), keepSire)  
       time_var<-with(parent.frame(), timevar) 
       namevar<-x
-      x<-data[,x]                                      # gets variable(s)
+      x<-as.matrix(data[,x])                                   # gets variable(s): Jarrod this used NOT to be a matrix
 #      if(length(USvar)>0 & relational==FALSE){
 #        x[which(is.na(x)==TRUE)]<-USvar                # Fills missing values if specified in USvar
 #      }     
@@ -89,6 +89,10 @@ if(length(restrict)!=0){
   }
 
   if(relational=="OFFSPRING" | relational=="OFFSPRINGV"){
+    restrict.comp<-substr(restrict, nchar(restrict), nchar(restrict))%in%c("=", "<", ">")
+    # if true then the restriction is based on comparing parent and offspring phenotye
+    # if false then the restriction is based on comparing teh distance between parent and offspring phenotye with what ever appears to the right of the inequality
+
     if(lag_relational[1]!=0 | lag_relational[2]!=0){
        off_time<-time_var[off_record]
        off_records<-which(id%in%id[off_record] & ((time_var>=(lag_relational[1]+off_time) & time_var<=(lag_relational[2]+off_time)) | is.na(time_var)))
@@ -96,10 +100,25 @@ if(length(restrict)!=0){
     if(hermaphrodite==FALSE){
       if("Female"%in%gender | sex_specific==FALSE){
         if(lag_relational[1]==0 & lag_relational[2]==0){
-           PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+          if(restrict.comp){
+           PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | rowSums(is.na(x))>0) & not_after_off)])
+          }else{
+            if(relational=="OFFSPRING"){
+              PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("sqrt(colSums((t(x)-x[off_record,])^2))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+              PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("colSums((t(x)-x[off_record,]))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+            }
+          }
         }else{
-            PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
-#           PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("sapply(x, FUN=function(y){TRUE%in%(y", restrict, "x[off_records])})"))) | is.na(x)==TRUE) & not_after_off)])
+          if(restrict.comp){
+            PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+          }else{
+            if(relational=="OFFSPRING"){
+              PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){sqrt(colSums((X-t(x[off_records,]))^2))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+              PedDesMatrix$Dam_restrict$id<-unique(id[which(sex=="Female" & (eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){colSums((X-t(x[off_records,])))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+            }
+          }
         }
         if(keep==FALSE){
           PedDesMatrix$Dam$id<-PedDesMatrix$Dam_restrict$id
@@ -107,9 +126,25 @@ if(length(restrict)!=0){
       }
       if("Male"%in%gender | sex_specific==FALSE){
         if(lag_relational[1]==0 & lag_relational[2]==0){
-          PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+          if(restrict.comp){
+            PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("x", restrict, "x[off_record]"))) | rowSums(is.na(x))>0) & not_after_off)])
+          }else{
+            if(relational=="OFFSPRING"){
+              PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("sqrt(colSums((t(x)-x[off_record,])^2))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+              PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("colSums((t(x)-x[off_record,]))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+            }
+          }
         }else{
-          PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
+          if(restrict.comp){
+            PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+          }else{
+            if(relational=="OFFSPRING"){
+              PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){sqrt(colSums((X-t(x[off_records,]))^2))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+              PedDesMatrix$Sire_restrict$id<-unique(id[which(sex=="Male" & (eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){colSums((X-t(x[off_records,])))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+            }
+          }
         }
         if(keep==FALSE){
            PedDesMatrix$Sire$id<-PedDesMatrix$Sire_restrict$id
@@ -119,25 +154,77 @@ if(length(restrict)!=0){
       if(sex_specific==TRUE){
         if("Male"%in%gender){
           if(lag_relational[1]==0 & lag_relational[2]==0){
-            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+            if(restrict.comp){
+              PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+              if(relational=="OFFSPRING"){
+                PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("sqrt(colSums((t(x)-x[off_record,])^2))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+              }else{
+                PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("colSums((t(x)-x[off_record,]))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+              }
+            }
           }else{
-            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
+            if(restrict.comp){
+              PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+             }else{
+               if(relational=="OFFSPRING"){
+                 PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){sqrt(colSums((X-t(x[off_records,]))^2))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+               }else{
+                 PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){colSums((X-t(x[off_records,])))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+               }
+             }
           }
         }
         if("Female"%in%gender){
           if(lag_relational[1]==0 & lag_relational[2]==0){
-            PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+            if(restrict.comp){
+              PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+              if(relational=="OFFSPRING"){
+                PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("sqrt(colSums((t(x)-x[off_record,])^2))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+              }else{
+                PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("colSums((t(x)-x[off_record,]))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+              }
+            }
           }else{
-             PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
+            if(restrict.comp){
+              PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+              if(relational=="OFFSPRING"){
+                PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){sqrt(colSums((X-t(x[off_records,]))^2))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+              }else{
+                PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){colSums((X-t(x[off_records,])))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+              }
+            }
           }
         }
       }else{
         if(lag_relational[1]==0 & lag_relational[2]==0){
-          PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
-          PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | is.na(x)==TRUE) & not_after_off)])
+          if(restrict.comp){
+            PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | rowSums(is.na(x))>0) & not_after_off)])
+            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("x", restrict, "x[off_record]"))) | rowSums(is.na(x))>0) & not_after_off)])
+          }else{
+            if(relational=="OFFSPRING"){
+              PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("sqrt(colSums((t(x)-x[off_record,])^2))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+              PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("sqrt(colSums((t(x)-x[off_record,])^2))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+            }else{
+             PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("colSums((t(x)-x[off_record,]))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+              PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("colSums((t(x)-x[off_record,]))", restrict))) | rowSums(is.na(x))>0) & not_after_off)])
+            }
+          }
         }else{
-          PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
-          PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | is.na(x)==TRUE) & not_after_off)])
+          if(restrict.comp){
+            PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+            PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(outer(x, x[off_records], {restrict}))>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+           }else{
+             if(relational=="OFFSPRING"){
+               PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){sqrt(colSums((X-t(x[off_records,]))^2))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+               PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){sqrt(colSums((X-t(x[off_records,]))^2))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+             }else{
+               PedDesMatrix$Dam_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){colSums((X-t(x[off_records,])))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+               PedDesMatrix$Sire_restrict$id<-unique(id[which((eval(parse(text=paste("rowSums(t(apply(X=x, 1, function(X){colSums((X-t(x[off_records,])))}))", restrict, ")>0"))) | rowSums(is.na(x))>0) & not_after_off)])
+             }
+           }
         } 
       }
       if(keep==FALSE){
