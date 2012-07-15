@@ -12,6 +12,12 @@
 
 \author{\bf{\large{J. D. Hadfield}}}
 
+<<echo=FALSE>>=
+options(SweaveHooks=list(fig=function() par(bty="l")))
+options(useFancyQuotes=FALSE)
+options(width=60)
+@
+
 
 \begin{document}
 
@@ -117,9 +123,13 @@ text(0.16,-0.33,expression(beta[2]))
 
 This document provides worked examples for several types of model that can be fitted using MasterBayes.  The main emphasis is on the syntax used to specify, estimate and interpret the models, although in some cases I have tried to explain the underlying theory.  I assume a basic familiarity with R.  All example code can be extracted by using the \texttt{Stangle} function on the file \texttt{Tutorial.Rnw} in the \texttt{MasterBayes/inst/doc/Figures} folder.
 
-<<echo=true>>=
+<<echo=false, hide=TRUE>>=
 library("MasterBayes")  
 @
+<<echo=true, eval=FALSE>>=
+library("MasterBayes")  
+@
+
 
 Many of the models that can be fitted are computationally intensive, and many routines have been written in compiled C++ code for efficiency.  Nethertheless, the amount of computing time required by some models may be a limiting factor, and I incude model run times for many examples.  These examples were run on a dual Xeon 3GHz Linux machine with 1Gb RAM. In general the length of the Markov chain is much shorter that what would be used in a real analysis.  Generally, these examples can be fitted in a few minutes, even seconds, but for real problems I would suggest running multiple chains for as long as possible.  There have been many updates and bug fixes since the original version of MasterBayes, and these used to be documented as footnotes in this manual. I have now updated the manual and absorbed them into the body of the text.   
 
@@ -421,7 +431,7 @@ The fundamental difference between the exact solution implemented in MasterBayes
   We can fit a model where the pedigree and $\beta$ are estimated simultaneously, although for now we will retain the approximation for genotyping error and leave the number of unsampled males fixed at 10.
 
 <<echo=true, fig=FALSE>>=
-sP<-startPed(estG=FALSE,A=extractA(WarblerG),E1=0.005, E2=0.005,estUSsire=FALSE,USsire=10)  
+sP<-startPed(estG=FALSE, A=extractA(WarblerG), E1=0.005, E2=0.005, estUSsire=FALSE, USsire=10)  
 model3<-MCMCped(PdP=PdP, GdP=GdP, sP=sP, verbose=FALSE) 
 plot(model3$beta)
 summary(model3$beta)
@@ -1016,7 +1026,7 @@ Notice the argument \texttt{merge=FALSE} is passed to \texttt{varPed} for \textt
 <<echo=TRUE, fig=FALSE>>=
 PdP_miss<-PdataPed(formula=list(res1, var1, res2),
  data=data_EPP_miss, USsire=TRUE)
-pP <- priorPed(USsire = list(mu = log(25), sigma = 1), beta=list(mu=as.matrix(0), sigma=as.matrix(pi^2/3)))
+pP <- priorPed(USsire = list(mu = log(25), sigma = 1), beta=list(mu = as.matrix(0), sigma = as.matrix(pi^2/3)))
 model.miss<-MCMCped(PdP=PdP_miss, GdP=GdP_miss, pP=pP, verbose=FALSE)
 plot(model.miss$beta)
 plot(model.miss$USsire)

@@ -279,7 +279,6 @@ for(off in 1:sum(PdP$offspring==1)){
   ###################################################################################################################
 
   par_type=c()
-
   if(length(interactions)>0){
     
     for(i in 1:length(interactions)){ 
@@ -298,7 +297,6 @@ for(off in 1:sum(PdP$offspring==1)){
           damsire.damsire=rep(FALSE, length(interactions))
           effect=rep(0, length(interactions))
         }
-
         if(is.null(t1$Dam$X)==FALSE & is.null(t1$Sire$X)==FALSE){
           if(is.null(t2$Dam$X)==FALSE & is.null(t2$Sire$X)==FALSE){
             dam.dam[i]=TRUE
