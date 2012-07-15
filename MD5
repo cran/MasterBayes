@@ -1,4 +1,4 @@
-72c7ac527714806d4550c69592c30b64 *DESCRIPTION
+afbe9db5cd1fe501e5c866c26a7d0778 *DESCRIPTION
 330799dd11f5666d59cb68ef69b9afa2 *NAMESPACE
 cb67561831993c6110c0241fd6865991 *R/ErrorCheck.R
 ba7066c31830e079a380c3e86dda2f6b *R/GtoC.R
@@ -140,7 +140,7 @@ cf2eebba1716ee1f4f5e7879d6fb9cfa *src/General.h
 e4b93ae50e3842ec518fe3901302f320 *src/LikFunctions.h
 8010dd8a61ab798000a874f916e264c9 *src/MCMCped.cc
 04f10257483176b064b395a1fd829b86 *src/MCMCped.h
-b3e224bb1a8452c3da347348b8e510cc *src/Makevars
+838ff2656cdc7dd3aae29a00eb61d722 *src/Makevars
 43f4124319734194009441b15aff3695 *src/Makevars.in
 af805e8036b72c69d6ea05723628f63c *src/Read_in_data.cc
 928a3fe244bec84fff53f78511de11f3 *src/Read_in_data.h
@@ -176,11 +176,11 @@ b3e55dce9080169d7161c8a182f0c70a *src/error.h
 822c244edb53be2f4f8b1e831abe16fb *src/la.h
 41a6caea698666bf78dda6d4d8b923e8 *src/lapack.h
 b1cace7d456220e025e19c83841e88e2 *src/legalG.cc
-41fec997312cdc497e0baf2f4b7934ff *src/matrix.h
+0e84b5d3b0cd6c3d61f9ae9ab4bf3f64 *src/matrix.h
 7ab16dbb6757a5de37dc7de9867a3c10 *src/matrix_bidirectional_iterator.h
 f924b218cd6eaed80846ed0cba534b03 *src/matrix_forward_iterator.h
 3dc8b8e303daa7ffdf3e2d29b2fa43d9 *src/matrix_random_access_iterator.h
 d2d2e5b0d4106a3562cbe80c1d611c6a *src/mismatches.cc
 a111bb9e9e66be7cb044ad27ea675124 *src/optimize.h
-8aa95ee02342c8863d2d03b0e722aa4a *src/smath.h
-6f0c8e88a1aa10a5198551f9856ad516 *src/stat.h
+9a1656760820e50605248198302c308c *src/smath.h
+a5574b5829f3cab30cd73eb26725ae68 *src/stat.h
