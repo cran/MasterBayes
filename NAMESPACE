@@ -1,6 +1,8 @@
 useDynLib(MasterBayes)
 import(genetics)
 import(coda)
+import(gtools)
+import(kinship2)
 export(
   MCMCped,
   mismatches,
