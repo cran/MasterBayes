@@ -1,4 +1,4 @@
-6db5cc7ca335ab4a62b02401e835d1c3 *DESCRIPTION
+145c13f2b78696591b522b12abcc7437 *DESCRIPTION
 a4eae2a5ffa1244be1642a4ee9bd6fdd *NAMESPACE
 cb67561831993c6110c0241fd6865991 *R/ErrorCheck.R
 ba7066c31830e079a380c3e86dda2f6b *R/GtoC.R
@@ -29,7 +29,7 @@ d16aa077fe36c931247f7334377800af *R/reordXlist.R
 cebf313cbbba4a1092515eb5e6b8ff52 *R/simgenotypes.R
 45813cdf881c85868ea619bd4b068aae *R/simpedigree.R
 f5f6bf0e63a0dfc723032be927f086f6 *R/varPed.R
-f3c3cd1ee62a009322ff7843031205ba *build/vignette.rds
+93b5ce1c31120fec83613f5e7905ca98 *build/vignette.rds
 78e5c8bae7d2fbf8bab82e0195daf9a3 *data/WarblerG.tab.gz
 f69bffadd1a67de8ad5b557f311b5e0d *data/WarblerP.tab.gz
 2e4fc447aa224e47ce3c59820c2a7702 *inst/CITATION
@@ -73,7 +73,7 @@ ca62c1fe48bb1a09c1a0da61948bc416 *src/ErrorMat.h
 cf2eebba1716ee1f4f5e7879d6fb9cfa *src/General.h
 698ad2f3bc4e9f4b4226711d6cfd05f2 *src/LikFunctions.cc
 e4b93ae50e3842ec518fe3901302f320 *src/LikFunctions.h
-8010dd8a61ab798000a874f916e264c9 *src/MCMCped.cc
+a5395a28861e25f708849af59b1809ed *src/MCMCped.cc
 04f10257483176b064b395a1fd829b86 *src/MCMCped.h
 b3e224bb1a8452c3da347348b8e510cc *src/Makevars
 af805e8036b72c69d6ea05723628f63c *src/Read_in_data.cc

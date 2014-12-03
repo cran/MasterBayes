@@ -298,8 +298,6 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                beta_0 (nbeta,1,st_betaP), 	// starting vector of beta (new)
                beta_1 (nbeta,1,st_betaP), 	// starting vector of beta (old)
                beta_mapped (tot_par, 1),
-               ratio_0 [2],
-               ratio_1 [2],
                int_E1,	        
                int_E2,	        
                int_beta,	        
@@ -320,6 +318,8 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                Matrix<double> *X_design_betaDs = new Matrix<double>[noff];
                Matrix<double> *X_design_betaSs = new Matrix<double>[noff];
                Matrix<double> *X_design_betaDSs = new Matrix<double>[noff];
+               Matrix<double> *ratio_0 = new Matrix<double>[2];
+               Matrix<double> *ratio_1 = new Matrix<double>[2];
 
         double llB_0 = 0.0,
                llB_1 = 0.0,
@@ -958,7 +958,8 @@ delete [] post_G;
         delete [] Sires;
         delete [] Dams_vec;
         delete [] Sires_vec;
-
+        delete [] ratio_0;
+        delete [] ratio_1;
 }
 } // extern "C" 
 
