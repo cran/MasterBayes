@@ -104,8 +104,8 @@ for(l in 1:length(A)){
       Gobs[[l]]<-rbind(Gobs[[l]],obs_genotypes[[l]])
   }
   if(marker.type=="MSC" | marker.type=="SNP" | marker.type=="MSW"){
-    Gobs[[l]]<-genotype(Gobs[[l]])
-    true_genotypes[[l]]<-genotype(true_genotypes[[l]])
+    Gobs[[l]]<-genotype(Gobs[[l]], alleles=alleles[[l]], reorder="no")
+    true_genotypes[[l]]<-genotype(true_genotypes[[l]], alleles=alleles[[l]], reorder="no")
   }
   if(marker.type=="AFLP"){
     Gobs[[l]]<-genotypeD(Gobs[[l]])

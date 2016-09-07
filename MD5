@@ -1,5 +1,5 @@
-145c13f2b78696591b522b12abcc7437 *DESCRIPTION
-a4eae2a5ffa1244be1642a4ee9bd6fdd *NAMESPACE
+5cf4ac22b0f5be5d2dce533e7e45e318 *DESCRIPTION
+ac758536b276f4bd83da86e3c49c2798 *NAMESPACE
 cb67561831993c6110c0241fd6865991 *R/ErrorCheck.R
 ba7066c31830e079a380c3e86dda2f6b *R/GtoC.R
 979e953c6df246f2b7e299138211d22e *R/MCMCped.R
@@ -15,7 +15,7 @@ d887687e4db11fe06ad421b01bf01ef6 *R/beta.loglik.R
 87afc7a5e9ffc16d409f9f4406b09426 *R/genotype.list.R
 2184d509a2999919f3823519da9fac67 *R/genotypeD.R
 1aa132719864aab433b1edfd30fd24b5 *R/getPost.R
-8dbf002ed0e9f2c59edf85e6e3cf2feb *R/getXlist.R
+869390e62c1a8293762d54524c4076ea *R/getXlist.R
 dc562ee1ca3afd1a598a6db94fa5eece *R/getsPandtP.R
 c821639ea44d6e62adcfe953a2a46a93 *R/insertPed.R
 f81247549698a4ac8f4f4229527951d4 *R/legalG.R
@@ -26,10 +26,10 @@ d246e8e53212066e4f9abf082aec0768 *R/modeP.R
 0458860c8fa6425e2c9eaaf1fbf3aa59 *R/popsize.loglik.R
 99086cbe950a08e25b700b81dfdc5a4b *R/post.pairs.R
 d16aa077fe36c931247f7334377800af *R/reordXlist.R
-cebf313cbbba4a1092515eb5e6b8ff52 *R/simgenotypes.R
+b7289f155dd5e36b0f937bc7914229df *R/simgenotypes.R
 45813cdf881c85868ea619bd4b068aae *R/simpedigree.R
-f5f6bf0e63a0dfc723032be927f086f6 *R/varPed.R
-93b5ce1c31120fec83613f5e7905ca98 *build/vignette.rds
+535eef3b67c6c9d235e1c9463bc4a6c9 *R/varPed.R
+024e2ae97f0a49a680669ca84d081152 *build/vignette.rds
 78e5c8bae7d2fbf8bab82e0195daf9a3 *data/WarblerG.tab.gz
 f69bffadd1a67de8ad5b557f311b5e0d *data/WarblerP.tab.gz
 2e4fc447aa224e47ce3c59820c2a7702 *inst/CITATION
@@ -97,7 +97,7 @@ c8d8c29e756585e39d0a5c2cb5e7fdcd *src/SampP.cc
 919a0356a6ce46ea15152d76f8bb4f16 *src/calcX_G.h
 80b420bebda2285d18df2e4c8f41dce0 *src/calcX_GD.cc
 8394bdaee9496974c1fac41754fdc68d *src/calcX_GS.cc
-4231811ab9cc33ed83c879becb39f50d *src/calcX_Gcervus.cc
+acaff5deba28e8eef9b6540f5c43a787 *src/calcX_Gcervus.cc
 1c64343496d700114de40f9f699e3bdf *src/calcX_GcervusD.cc
 0ff109f22a6e74e8abf35b1f9c3581bb *src/calcX_GcervusS.cc
 2d5b725bcd4cd0978e3c3989221f6701 *src/calcX_Gmm.cc

@@ -28,7 +28,6 @@ function(x, gender=NULL, lag=c(0,0), relational=FALSE, lag_relational=c(0,0), re
 #          stop("variables must be numeric or factors")
 #        }
 #      }
-
       x<-data[match(x, names(data))]                                   # gets variable(s): Jarrod this used NOT to be a matrix
 
 #      if(length(USvar)>0 & relational==FALSE){
@@ -103,7 +102,7 @@ if(length(restrict)!=0){
   if(relational=="OFFSPRING" | relational=="OFFSPRINGV"){
     restrict.comp<-substr(restrict, nchar(restrict), nchar(restrict))%in%c("=", "<", ">")
     # if true then the restriction is based on comparing parent and offspring phenotye
-    # if false then the restriction is based on comparing teh distance between parent and offspring phenotye with what ever appears to the right of the inequality
+    # if false then the restriction is based on comparing the distance between parent and offspring phenotye with what ever appears to the right of the inequality
 
     if(lag_relational[1]!=0 | lag_relational[2]!=0){
        off_time<-time_var[off_record]
@@ -309,12 +308,12 @@ if(length(restrict)==0){
         if(sex_specific==FALSE & g==1){gender<-"Female"}
         if(sex_specific==FALSE & g==2){gender<-"Male"}
         if("Female"%in%gender){ 
-          var_tmp<-subset(x, id%in%keepDam==TRUE)
+          var_tmp<-x[which(id%in%keepDam==TRUE),,drop=FALSE]
           time_tmp<-subset(time_var, id%in%keepDam==TRUE)
           id_tmp<-subset(id, id%in%keepDam==TRUE)
         }
         if("Male"%in%gender){
-          var_tmp<-subset(x, id%in%keepSire==TRUE)
+          var_tmp<-x[which(id%in%keepSire==TRUE),,drop=FALSE]
           time_tmp<-subset(time_var, id%in%keepSire==TRUE)
           id_tmp<-subset(id, id%in%keepSire==TRUE)
         }
@@ -478,12 +477,13 @@ if(length(restrict)==0){
 
 ############### Covariates of distance from mate ###############################
 
+
     if(relational=="MATE" | relational=="MATEV"){
 
-      var_tmpF<-subset(x, id%in%keepDam==TRUE)
+      var_tmpF<-x[which(id%in%keepDam==TRUE),,drop=FALSE]  
       time_tmpF<-subset(time_var, id%in%keepDam==TRUE)
       id_tmpF<-subset(id, id%in%keepDam==TRUE)
-      var_tmpM<-subset(x, id%in%keepSire==TRUE)
+      var_tmpM<-x[which(id%in%keepSire==TRUE),,drop=FALSE]
       time_tmpM<-subset(time_var, id%in%keepSire==TRUE)
       id_tmpM<-subset(id, id%in%keepSire==TRUE)
 

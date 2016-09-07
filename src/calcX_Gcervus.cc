@@ -52,11 +52,11 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
 
            for(i = 0; i < noff ; i++){         // iterate through offspring
 
-             off_poss = offid[i];   
+             off_poss = offid[i];              // gets position of offspring genotype in G
              o1 = G[off_poss][l*2];
              o2 = G[off_poss][(l*2)+1];
 
-             for(d = 0; d < ndam[i]; d++){    // gets position of offspring genotype in G
+             for(d = 0; d < ndam[i]; d++){    
  
                dam_poss = Dams_vec[i][d];       // gets position of dam genotype in G
 
@@ -66,7 +66,6 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                }else{
                  d1 = -999;
                }
-
                for(s = 0; s < nsire[i]; s++){      // iterate through sires
 
                  records_off = (nsire[i]*d)+s;
@@ -78,6 +77,7 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                  }else{
                    s1 = -999;
                  }
+
                  if(o1!=-999){
                    pG = A[l][o1]*A[l][o2];
                    if(o1!=o2){
@@ -125,10 +125,10 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                      X_design_G[i][records_off] *= pG; 
                    }
                    if(d1!=-999 && s1==-999){      // if dam sampled only
-                     X_design_G[i][records_off] *=  E_mat[l][0]*dslfl+pG*E_mat[l][1];
+                     X_design_G[i][records_off] *=  pow(E_mat[l][0],2.0)*dslfl+pG*E_mat[l][1]*(2.0-E_mat[l][1]);
                    }
                    if(s1!=-999 &&  d1==-999){      // if sire sampled only
-                     X_design_G[i][records_off] *=  E_mat[l][0]*sslfl+pG*E_mat[l][1];
+                     X_design_G[i][records_off] *=  pow(E_mat[l][0],2.0)*sslfl+pG*E_mat[l][1]*(2.0-E_mat[l][1]);
                    }
                    if(s1!=-999 && d1!=-999){      // if both sampled only
 
@@ -140,9 +140,9 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                      if((d2==o1 && s2==o2) || (d2==o2 && s2==o1)){TacP +=0.25;}
 
                      if(dam_poss!=sire_poss){  // non-selfers
-                       X_design_G[i][records_off] *=  (E_mat[l][0]*E_mat[l][0]*(E_mat[l][2]*(sslfl+dslfl+pG)+E_mat[l][0]*TacP)+(pG*pow(E_mat[l][2],2.0)*(3.0-(2.0*E_mat[l][2]))));
+                       X_design_G[i][records_off] *=  pow(E_mat[l][0],3.0)*TacP+E_mat[l][1]*pow(E_mat[l][0],2.0)*(sslfl+dslfl)+pG*(E_mat[l][1]+pow(E_mat[l][1],2.0)-pow(E_mat[l][1],3.0));
                      }else{                   // selfers
-                       X_design_G[i][records_off] *=  (E_mat[l][0]*E_mat[l][0]*(E_mat[l][2]*(sslfl+dslfl+pG)+E_mat[l][0]*TacP)+(pG*pow(E_mat[l][2],2.0)*(3.0-(2.0*E_mat[l][2]))));
+                       X_design_G[i][records_off] *=  pow(E_mat[l][0],2.0)*TacP+E_mat[l][1]*pG+0.5*E_mat[l][1]*(1.0-E_mat[l][1])*(pG+double(o1==o2)*pow(pG,0.5));
                      }
                    } 
                  }
@@ -157,15 +157,14 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
        case 2:     
          for(l = 0; l<nloci ; l++){             // iterates through loci  
 
-             p=A[l][0];
-             q=A[l][1];
+             p=A[l][0]; // frequency of 0 allele
+             q=A[l][1]; // frequency of 1 allele
 
              T[0] = p/(1.0+p);                           // Pr(0|1,0) 
              T[1] = 1.0/(1.0+p);                         // Pr(1|1,0)  
              T[2] = pow(T[0],2.0);                       // Pr(0|1,1) 
              T[3] = (1.0+(2.0*p))/pow(1.0+p,2.0);        // Pr(1|1,1)  
                                                          // Pr(0|0,0) = 1
-
              T[4] = 0.5*T[0];                            // Pr(0|1)  when selfing
              T[5] = 1.5*T[0]+(1-p)/(1+p);                // Pr(1|1)  when selfing P(?|1,0) does not exist and P(0|0)=1 and P(1|0)=0
 
@@ -211,14 +210,14 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
 
                  if(o1!=-999){
                    if(d1!=-999 && s1!=-999){
-//                    if(dam_poss==sire_poss){  // selfing - so don't double count Pr(act|obs) for parent
-//                      TacP = P[o1]*P[d1];
-//                      TacP += ((T[4]*P[o1])+(T[5]*P[o1+2]))*P[d1+2];
-//                    }else{
+                    if(dam_poss==sire_poss){  // selfing - so don't double count Pr(act|obs) for parent
+                      TacP = P[o1]*P[d1];
+                      TacP += ((T[4]*P[o1])+(T[5]*P[o1+2]))*P[d1+2];
+                    }else{
                       TacP = P[o1]*P[d1]*P[s1];
                       TacP += ((T[0]*P[o1])+(T[1]*P[o1+2]))*((P[d1+2]*P[s1])+(P[d1]*P[s1+2]));
                       TacP += ((T[2]*P[o1])+(T[3]*P[o1+2]))*P[d1+2]*P[s1+2];
-//                    }
+                    }
                    }else{
                      if(d1!=-999 || s1!=-999){
                        if(d1==-999){
@@ -375,11 +374,9 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                           for(oj = 0; oj<na; oj++){   
                             for(ok = oj; ok<na; ok++){
 
-                              pG = P[oj]*P[ok];
- 
-                              if(oj!=ok){pG *= 2.0;}
-// P(O_o | O)
+                              pG = 1.0;
 
+// P(O_o | O)
                               if(o1==o2){
                                 if(o1==Aobs[oj] && o1==Aobs[ok]){
                                   pG *= E_mat[l][0];
@@ -435,7 +432,7 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                               }
 // P(S_o | S)
 
-                              if(s1!=-999){
+                              if(s1!=-999 && dam_poss!=sire_poss){
                                 if(s1==s2){
                                   if(s1==Aobs[sj] && s1==Aobs[sk]){
                                     pG *= E_mat[l][0];
@@ -466,18 +463,29 @@ void calcX_Gcervus(Matrix<double> X_design_G [], int *offid, int noff , int *nda
                               pG *= P[dj]*P[dk];  
                               if(dj!=dk){pG *= 2.0;}
 
+                              TacP = 0.0;
+
                               if(dam_poss!=sire_poss){  // If not selfing 
+
                                 pG *= P[sj]*P[sk]; 
                                 if(sj!=sk){pG *= 2.0;}
-                              }
-
-                              TacP = 0.0;
        
-                              if((dj==oj && sj==ok) || (dj==ok && sj==oj)){TacP += 0.25;}
-                              if((dj==oj && sk==ok) || (dj==ok && sk==oj)){TacP += 0.25;}
-                              if((dk==oj && sj==ok) || (dk==ok && sj==oj)){TacP += 0.25;}
-                              if((dk==oj && sk==ok) || (dk==ok && sk==oj)){TacP += 0.25;}
+                                if((dj==oj && sj==ok) || (dj==ok && sj==oj)){TacP += 0.25;}
+                                if((dj==oj && sk==ok) || (dj==ok && sk==oj)){TacP += 0.25;}
+                                if((dk==oj && sj==ok) || (dk==ok && sj==oj)){TacP += 0.25;}
+                                if((dk==oj && sk==ok) || (dk==ok && sk==oj)){TacP += 0.25;}
 
+                              }else{
+                                
+				if(dj==sj && dk==sk){
+                                  if((dj==oj && sj==ok) || (dj==ok && sj==oj)){TacP += 0.25;}
+                                  if((dj==oj && sk==ok) || (dj==ok && sk==oj)){TacP += 0.25;}
+                                  if((dk==oj && sj==ok) || (dk==ok && sj==oj)){TacP += 0.25;}
+                                  if((dk==oj && sk==ok) || (dk==ok && sk==oj)){TacP += 0.25;}
+                                }else{
+                                  pG = 0.0;
+                                }
+                              }
                               o1inp +=  pG;
                               o2inp +=  pG*TacP;
                             }
