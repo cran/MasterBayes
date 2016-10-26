@@ -1,8 +1,8 @@
-5cf4ac22b0f5be5d2dce533e7e45e318 *DESCRIPTION
+fc463daf893bd04d309fe95a2c6f6c6b *DESCRIPTION
 ac758536b276f4bd83da86e3c49c2798 *NAMESPACE
 cb67561831993c6110c0241fd6865991 *R/ErrorCheck.R
 ba7066c31830e079a380c3e86dda2f6b *R/GtoC.R
-979e953c6df246f2b7e299138211d22e *R/MCMCped.R
+0cf77f1405c6eb7ec61adc38ac98aef5 *R/MCMCped.R
 f3adfe24383f808aeae7cbe1d4b51b4b *R/MLE.beta.R
 a59bdc6f556384931e70abbd102e1cc9 *R/MLE.ped.R
 94c9b4378664ac8b1ec3fb696a75ce08 *R/MLE.popsize.R
@@ -15,7 +15,7 @@ d887687e4db11fe06ad421b01bf01ef6 *R/beta.loglik.R
 87afc7a5e9ffc16d409f9f4406b09426 *R/genotype.list.R
 2184d509a2999919f3823519da9fac67 *R/genotypeD.R
 1aa132719864aab433b1edfd30fd24b5 *R/getPost.R
-869390e62c1a8293762d54524c4076ea *R/getXlist.R
+e23142463932ca43f89f44e4e50d5722 *R/getXlist.R
 dc562ee1ca3afd1a598a6db94fa5eece *R/getsPandtP.R
 c821639ea44d6e62adcfe953a2a46a93 *R/insertPed.R
 f81247549698a4ac8f4f4229527951d4 *R/legalG.R
@@ -73,7 +73,7 @@ ca62c1fe48bb1a09c1a0da61948bc416 *src/ErrorMat.h
 cf2eebba1716ee1f4f5e7879d6fb9cfa *src/General.h
 698ad2f3bc4e9f4b4226711d6cfd05f2 *src/LikFunctions.cc
 e4b93ae50e3842ec518fe3901302f320 *src/LikFunctions.h
-a5395a28861e25f708849af59b1809ed *src/MCMCped.cc
+44ac8f1d7410c2717d73e63d82e73fdc *src/MCMCped.cc
 04f10257483176b064b395a1fd829b86 *src/MCMCped.h
 b3e224bb1a8452c3da347348b8e510cc *src/Makevars
 af805e8036b72c69d6ea05723628f63c *src/Read_in_data.cc

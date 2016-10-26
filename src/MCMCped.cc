@@ -379,7 +379,7 @@ Matrix<double> E1_0 (ncatnloci,1,st_E1P), 	        // starting vector of allelic
                int *mergeUS = mergeUSP;
                Matrix<double> *mergeN = new Matrix<double>[nmerge];	       
 
-               if(nmergeP>0){    
+               if(nmerge>0){    
                  for(i=0; i<nmerge; i++){   
                    cnt=0;  
                    mergeN [i] = Matrix<double>(2,noff);           

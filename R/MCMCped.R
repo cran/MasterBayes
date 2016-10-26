@@ -57,7 +57,6 @@ function(PdP=PdataPed(),
       GdP$id<-match(GdP$id, unique_id)                                # convert genetic id's to numeric
       GdP$G<-lapply(GdP$G, function(x){x[grouped_by_id]})             # reorder genotype records
       GdP$categories<-GdP$categories[grouped_by_id]                   # reorder error catgeories
-      GdP$categories<-match(GdP$categories, unique(GdP$categories))   # convert error cat's to numeric
     }
 
     nsamp<-length(GdP$id)
@@ -114,6 +113,8 @@ function(PdP=PdataPed(),
   sPtP<-getsPandtP(sP, tP, PdP=PdP, GdP=GdP, X.list=X.list, nbeta=nbeta, unique_id=unique_id, checkP=checkP)
   sP<-sPtP$sP
   tP<-sPtP$tP
+
+  GdP$categories<-match(GdP$categories, unique(GdP$categories))   # convert error cat's to numeric
 
 ################################ write some C++ stuff #########################################################
 
