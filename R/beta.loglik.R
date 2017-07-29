@@ -1,4 +1,4 @@
-"beta.loglik"<-function(X, dam_pos=NULL, sire_pos=NULL, par_pos=NULL, beta=NULL, beta_map=NULL, merge=NULL, mergeN=NULL, nUS=c(0,0)){
+"beta.loglik"<-function(X, dam_pos=NULL, sire_pos=NULL, par_pos=NULL, beta=NULL, beta_map=NULL, merge=NULL, mergeN=NULL, nUS=c(0,0), shrink=NULL){
 
    ndamcol<-0
    nsirecol<-0
@@ -11,22 +11,27 @@
      if(is.null(X[[1]]$S)==FALSE){
        nsirecol<-ncol(X[[1]]$S)
      }
-     nbeta<-ndamcol+nsirecol
-   }else{
-     nbeta<-ncol(X[[1]]$DS)
    }
 
+   nbeta<-length(unique(beta_map))
+   
    if(length(beta)==0){
      beta<-matrix(0, nbeta,1)
    }else{
-     if(length(beta)!=length(unique(beta_map))){
+     if(length(beta)!=nbeta){
        stop("beta is wrong size in ped.loglik")
      }else{
-       beta<-matrix(beta, length(unique(beta_map)),1)
+       beta<-matrix(beta, nbeta,1)
      }
    }
 
- llik<-0
+ if(!is.null(shrink)){
+   if(shrink<=0){stop("shrink must be positive")}
+   llik<-sum(dnorm(beta, 0,sqrt(shrink), log=TRUE))
+ }else{
+   llik<-0
+ }
+
  for(i in 1:length(X)){
 
       beta_tmp<-beta[beta_map]
@@ -42,7 +47,7 @@
    if(is.null(X[[i]]$DS)){
      if(ndamcol>0){
         if(is.na(dam_pos[i])==FALSE){
-          Dpred<-exp(X[[i]]$D%*%beta_tmp[beta_map[1:ndamcol]])
+          Dpred<-exp(X[[i]]$D%*%beta_tmp[1:ndamcol])
 	  l_par<-log(Dpred[dam_pos[i]])
           if(nUS[1]>0){
             Dpred[length(Dpred)]<-Dpred[length(Dpred)]*nUS[1]
@@ -55,7 +60,7 @@
      }
      if(nsirecol>0){    
         if(is.na(sire_pos[i])==FALSE){    
-          Spred<-exp(X[[i]]$S%*%beta_tmp[beta_map[ndamcol+c(1:nsirecol)]])
+          Spred<-exp(X[[i]]$S%*%beta_tmp[ndamcol+c(1:nsirecol)])
 	  l_par<-log(Spred[sire_pos[i]])         
           if(nUS[2]>0){
             Spred[length(Spred)]<-Spred[length(Spred)]*nUS[2]

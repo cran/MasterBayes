@@ -322,8 +322,8 @@ if(length(restrict)==0){
   
         # OFFSPRING RELATIONAL - NUMERIC
 
-        if((relational=="OFFSPRING" | relational=="OFFSPRINGV") & "numeric"%in%facnum){   
-          var_tmp<-as.matrix(as.matrix(var_tmp)[time_for_P,])      
+        if((relational=="OFFSPRING" | relational=="OFFSPRINGV") & "numeric"%in%facnum){  
+          var_tmp<-as.matrix(var_tmp)[time_for_P,,drop=FALSE]      
           id_tmp<-id_tmp[time_for_P]
            if(is.null(dim(var_tmp))){
             var_tmp<-t(as.matrix(var_tmp)) 

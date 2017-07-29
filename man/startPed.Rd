@@ -7,7 +7,7 @@
 startPed(G=NULL, id=NULL, estG=TRUE, A=NULL, estA=TRUE, E1=NULL, 
    estE1=TRUE, E2=NULL, estE2=TRUE, ped=NULL, estP=TRUE, 
    beta=NULL, estbeta=TRUE,  USdam=NULL, estUSdam=TRUE, 
-   USsire=NULL, estUSsire=TRUE)
+   USsire=NULL, estUSsire=TRUE, shrink=NULL)
 }
 \arguments{
   \item{G}{list of genotype objects}
@@ -27,6 +27,7 @@ startPed(G=NULL, id=NULL, estG=TRUE, A=NULL, estA=TRUE, E1=NULL,
   \item{estUSdam}{logical; should the female population sizes be estimated?}
   \item{USsire}{vector of unsampled male population sizes}
   \item{estUSsire}{logical or character; if \code{TRUE} the male population size is estimated separately from the female population size, if \code{"USdam"} male and female population sizes are constrained to be the same.}
+  \item{shrink}{optional scalar for the variance defining the ridge-regression likelihood penalisation used to obatain starting values for beta and/or unsampled population sizes.}
 }
 \details{
 If \code{estG=FALSE} an approximation is used for genotyping error.  In this case error rates and allele frequencies are not estimated but fixed at the starting parameterisation.  If indivdiuals have been typed more than once, then the approxiamtion only uses the genotype that first appears in the \code{GdP$G} object passed to \code{\link{MCMCped}}.  If \code{A} is not specified estimates are taken directly from \code{GdP$G} using \code{\link{extractA}}.  If \code{E1} and \code{E2} are not specified they are set to 0.005.  Note that if the approximation for genotyping error is used with codominant markers, Wang's (2005) model is not used, and the CEVUS model (Marshall 1998) is adopted.  In this case \code{E2} is the per-allele error rate and \code{E2}(2-\code{E2}) is the per-genotype error rate used by CERVUS.  If \code{dam} and \code{sire} are not specified the most likely set of parents given the genetic data are used (see \code{\link{MLE.ped}}).  The starting value of \code{beta}, if not given, is the MLE of beta given the starting pedigree (see \code{\link{MLE.beta}}).   The starting values of \code{USdam} and \code{USsire}, if not given, are the MLE based on the genotype data (see \code{\link{MLE.popsize}}).     

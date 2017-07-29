@@ -1,4 +1,4 @@
-"popsize.loglik"<-function(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE){
+"popsize.loglik"<-function(X, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, USsiredam=FALSE, shrink=NULL){
 
 # Nielsen's likelihood function for N: only exact when the genetic likelihoods are calculated in the absence 
 # of genotyping error.  fillX_G(E=0). Alsdo works when females are unsampled.
@@ -41,7 +41,12 @@
   }
 
 
-  llik<-0
+  if(!is.null(shrink)){
+    if(shrink<=0){stop("shrink must be positive")}
+    llik<-sum(dnorm(log(nUS), 0,sqrt(shrink), log=TRUE))
+  }else{
+    llik<-0
+  }
 
       for(i in 1:length(X)){
         d_cat<-match(USdam[i], betaDcat)

@@ -4,7 +4,7 @@
 \description{  
 Finds MLE for beta given a pedigree, via a call to optim. Beta is the paramater vector of a multinomial log-linear model.}
 \usage{
-MLE.beta(X.list, ped, beta=NULL, nUSdam=NULL, nUSsire=NULL)
+MLE.beta(X.list, ped, beta=NULL, nUSdam=NULL, nUSsire=NULL, shrink=NULL)
 }
 \arguments{
   \item{X.list}{list of design matrices for each offspring derived using \code{\link{getXlist}}}
@@ -12,6 +12,7 @@ MLE.beta(X.list, ped, beta=NULL, nUSdam=NULL, nUSsire=NULL)
   \item{beta}{optional starting vector for beta}
   \item{nUSdam}{optional number of unsampled females. Only required if unsampled females have known phenotype.}
   \item{nUSsire}{optional number of unsampled males. Only required if unsampled males have known phenotype.}
+  \item{shrink}{optional scalar for the variance defining the ridge-regression likelihood penalisation.}
 }
 \value{
  \item{beta}{vector of MLE's for beta}

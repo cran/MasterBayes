@@ -56,9 +56,9 @@ is.GdataPed<-function(x){
 inherits(x, "GdataPed")
  }
 
-startPed<-function(G=NULL,id=NULL, estG=TRUE, A=NULL, estA=TRUE, E1=NULL, estE1=TRUE, E2=NULL, estE2=TRUE, ped=NULL, estP=TRUE, beta=NULL, estbeta=TRUE,  USdam=NULL, estUSdam=TRUE, USsire=NULL, estUSsire=TRUE){
+startPed<-function(G=NULL,id=NULL, estG=TRUE, A=NULL, estA=TRUE, E1=NULL, estE1=TRUE, E2=NULL, estE2=TRUE, ped=NULL, estP=TRUE, beta=NULL, estbeta=TRUE,  USdam=NULL, estUSdam=TRUE, USsire=NULL, estUSsire=TRUE, shrink=NULL){
 
-object<-list(G=G, id=id, estG=estG, A=A, estA=estA, E1=E1, estE1=estE1, E2=E2, estE2=estE2, ped=ped, estP=estP, beta=beta, estbeta=estbeta,  USdam=USdam, estUSdam=estUSdam, USsire=USsire, estUSsire=estUSsire)
+object<-list(G=G, id=id, estG=estG, A=A, estA=estA, E1=E1, estE1=estE1, E2=E2, estE2=estE2, ped=ped, estP=estP, beta=beta, estbeta=estbeta,  USdam=USdam, estUSdam=estUSdam, USsire=USsire, estUSsire=estUSsire, shrink=shrink)
 
  class(object)<-c("startPed", "list")
  object

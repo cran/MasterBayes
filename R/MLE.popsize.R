@@ -1,6 +1,5 @@
-"MLE.popsize"<-function(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL){
+"MLE.popsize"<-function(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL, ped=NULL, shrink=NULL){
  
-
   if(length(USdam)==1){
     if(USdam==TRUE){
       nbetaD<-1
@@ -45,6 +44,7 @@
 
     lower<-rep(1E-5,nbetaD+nbetaS*(USsiredam==FALSE))
     upper<-rep(1E+7,nbetaD+nbetaS*(USsiredam==FALSE))
+    ndpes<-rep(5E-6,nbetaD+nbetaS*(USsiredam==FALSE))
 
     nsire<-unlist(lapply(X.list$X, function(x){length(x$sire.id)}))
     ndam<-unlist(lapply(X.list$X, function(x){length(x$dam.id)}))
@@ -94,7 +94,7 @@
           }         
         }
 
-    optim.out <- optim(nUS, popsize.loglik, method = "L-BFGS-B",lower=lower, upper=upper, control = list(fnscale = -1), hessian = TRUE, X=X, USdam=USdam, USsire=USsire, ped=ped, USsiredam=USsiredam)
+    optim.out <- optim(nUS, popsize.loglik, method = "L-BFGS-B",lower=lower, upper=upper, control = list(fnscale = -1, ndeps=ndpes), hessian = TRUE, X=X, USdam=USdam, USsire=USsire, ped=ped, USsiredam=USsiredam, shrink=shrink)
 
     if(USsiredam){
       C<-diag(nbetaD+nbetaS) 

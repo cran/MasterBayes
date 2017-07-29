@@ -96,9 +96,9 @@
 
     if(sP$estUSdam==TRUE | sP$estUSsire==TRUE){
       if(sP$estUSsire=="USdam"){
-        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire="USdam", ped=sP$ped)
+        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire="USdam", ped=sP$ped, shrink=sP$shrink)
       }else{
-        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=sP$ped)
+        MLENus<-MLE.popsize(X.list, USdam=PdP$USdam, USsire=PdP$USsire, ped=sP$ped, shrink=sP$shrink)
       }
     }
 
@@ -133,7 +133,7 @@
   }
 
   if(sP$estbeta==TRUE){
-    MLEestimates<-MLE.beta(X.list, ped=sP$ped, beta=sP$beta, nUSdam=sP$USdam, nUSsire=sP$USsire)
+    MLEestimates<-MLE.beta(X.list, ped=sP$ped, beta=sP$beta, nUSdam=sP$USdam, nUSsire=sP$USsire, shrink=sP$shrink)
   }
   
  
