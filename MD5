@@ -1,4 +1,4 @@
-2a6890e465a8e5963edd6440e25727ca *DESCRIPTION
+c8f79ae39ab3c1c731685355df3cd588 *DESCRIPTION
 f41290672626e46ac80fea18acd29315 *NAMESPACE
 cb67561831993c6110c0241fd6865991 *R/ErrorCheck.R
 ba7066c31830e079a380c3e86dda2f6b *R/GtoC.R
@@ -29,18 +29,18 @@ d16aa077fe36c931247f7334377800af *R/reordXlist.R
 b7289f155dd5e36b0f937bc7914229df *R/simgenotypes.R
 45813cdf881c85868ea619bd4b068aae *R/simpedigree.R
 d3029c139cb2e1257a5f4b4310c727b9 *R/varPed.R
-7e83474a26a9949e70dfd8f4e4c0b6a4 *build/vignette.rds
+50aa415efce3e4bd516fb0700006a5ba *build/vignette.rds
 78e5c8bae7d2fbf8bab82e0195daf9a3 *data/WarblerG.tab.gz
 f69bffadd1a67de8ad5b557f311b5e0d *data/WarblerP.tab.gz
 2e4fc447aa224e47ce3c59820c2a7702 *inst/CITATION
 370bc72151048a91eed63b60f046b416 *inst/doc/Tutorial.Rnw
-03882087cf04ed7d8884df19935c10ef *inst/doc/Tutorial.pdf
+666410af8ea5ff9fe1ce0501a105c48a *inst/doc/Tutorial.pdf
 d4ec3e1cb38b276f391b5466ee6a6fcb *man/GdataPed.Rd
 a1f3cf0a3ac93e505919ea28a6db180e *man/MCMCped.Rd
 3907b56a8fdeba71f7c796c914dbc484 *man/MLE.beta.Rd
 282b8fe41ffa1f0bd48e6d5ff8764793 *man/MLE.ped.Rd
 d996faa7fafe43c9dbc0aef88758f32e *man/MLE.popsize.Rd
-498caabfc34d7e1f1df4a7a5eae890a0 *man/MasterBayes.Rd
+9b219b4c78e241da49aac0653d7ea57b *man/MasterBayes.Rd
 abf114b25d5d009ece4d3cd5b173f06f *man/PdataPed.Rd
 62f79140649aef95c03315a2ec335cb0 *man/WarblerG.Rd
 17ebec5f20bd7dc94965297b8916b347 *man/WarblerP.Rd
@@ -65,7 +65,7 @@ c674a83d498e21e907be3cc27834b650 *man/priorPed.Rd
 3a816b294a119e8cb27798344398d3a9 *man/simgenotypes.Rd
 ba4efcf9c60caee4761e6f154aff7603 *man/simpedigree.Rd
 27984d05041a7353efd849333e041bb2 *man/startPed.Rd
-1f51868cf4fff030deefe400a6ad5e84 *man/summary.genotypeD.Rd
+8177276a2863694b13e6b0c69526479c *man/summary.genotypeD.Rd
 8693c897fe2a060c70128f4f48066ba3 *man/tunePed.Rd
 47cc16910ccbe2a4027082d2afda028d *man/varPed.Rd
 647888e173efb943397bb91ce2665af9 *src/ErrorMat.cc
@@ -93,7 +93,7 @@ c8d8c29e756585e39d0a5c2cb5e7fdcd *src/SampP.cc
 6a4d35b66243bef12e49a3669ca148b3 *src/SampS.h
 82d58d81929209f30c9f181ebb706e9b *src/SpecRand.cc
 1ef1f94296b1228311186044c5eafe8c *src/SpecRand.h
-5362ed41a42ce34cf7817f6bfd988935 *src/algorithm.h
+1e8e4743434cb112ee908b1cef2d77a1 *src/algorithm.h
 8e75c9f3289df145948f38873f3d717b *src/calcX_G.cc
 919a0356a6ce46ea15152d76f8bb4f16 *src/calcX_G.h
 80b420bebda2285d18df2e4c8f41dce0 *src/calcX_GD.cc
@@ -118,7 +118,7 @@ f924b218cd6eaed80846ed0cba534b03 *src/matrix_forward_iterator.h
 d2d2e5b0d4106a3562cbe80c1d611c6a *src/mismatches.cc
 a111bb9e9e66be7cb044ad27ea675124 *src/optimize.h
 374de28976ad1e0023c89d5a1c0f9a01 *src/smath.h
-a5574b5829f3cab30cd73eb26725ae68 *src/stat.h
+49de167bf3995fbd672fc7c051d8730b *src/stat.h
 5911b0a48048e32971c24b00825b1f97 *vignettes/Figures/Tutorial.Rnw
 b4a6814bfa621e535462bd98b18c7c2b *vignettes/Figures/buildCN.R
 71e2d06f9cd5c0afdac82ce67f0e5606 *vignettes/MasterBayes.bib
