@@ -11,7 +11,7 @@ insertPed<-function(ped, founders=NULL){
    }
    mparents<-unique(c(mmothers, mfathers, founders))
 
-   nped<-ped[rep(1,length(mparents)),]
+   nped<-ped[rep(1,length(mparents)),,drop=FALSE]
    nped[,1]<-mparents
    nped[,2]<-NA
    nped[,3]<-NA

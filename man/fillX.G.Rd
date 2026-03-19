@@ -28,7 +28,6 @@ Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 }
 \seealso{\code{\link{getXlist}}}
 \examples{
-\dontrun{
 data(WarblerG)
 A<-extractA(WarblerG)
 
@@ -64,6 +63,5 @@ X.list.G$X$"5"$sire.id
 X.list.G$X$"5"$G
 
 # The true parents have the highest likelihood in this case
-}
 }
 \keyword{manip}

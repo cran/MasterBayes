@@ -2,7 +2,7 @@
 \alias{MLE.beta}
 \title{Maximum Likelihood Estimation of Beta}
 \description{  
-Finds MLE for beta given a pedigree, via a call to optim. Beta is the paramater vector of a multinomial log-linear model.}
+Finds Maximum Likelihood estimate (MLE) for beta given a pedigree, via a call to optim. Beta is the paramater vector of a multinomial log-linear model.}
 \usage{
 MLE.beta(X.list, ped, beta=NULL, nUSdam=NULL, nUSsire=NULL, shrink=NULL)
 }
@@ -25,7 +25,6 @@ Smouse P.E. \emph{et al} (1999) Journal of Evolutionary Biology 12 1069-1077
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}, \code{\link{beta.loglik}}}
 \examples{
-\dontrun{
 data(WarblerP)
 data(WarblerG)
 
@@ -44,7 +43,6 @@ X.list<-getXlist(PdP=PdP, GdP=GdP, E2=0.005)
 ped<-MLE.ped(X.list)$P
 beta<-MLE.beta(X.list, ped) 
 beta
-}
 }
 \keyword{models}
 \keyword{optimize}

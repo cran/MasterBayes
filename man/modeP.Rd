@@ -7,9 +7,9 @@ modeP(postP, threshold=0, marginal=FALSE, USasNA=TRUE)
 }
 \arguments{
   \item{postP}{posterior distribution of parentage}
-  \item{threshold}{threshold probability under which ML parents are replaced by NA}
+  \item{threshold}{threshold probability under which maximum likelihood parents are replaced by NA}
   \item{marginal}{logical; should the marginal mode be calculated from the joint distribution?}
-  \item{USasNA}{logical; should usampled parents be replaced by NA?}
+  \item{USasNA}{logical; should unsampled parents be replaced by NA?}
 }
 \details{
 Individuals that do not have a parent assignment with a posterior probability exceeding the \code{threshold}, or whose parents belong to the base or unsampled population (if \code{USasNA=TRUE}), have NA as their parents. Please bear in mind that the mode of the marginal distribution (returned by \code{\link{MCMCped}} if \code{write_postP="MARGINAL"}) may be different from the mode of the joint distribution (\code{write_postP="JOINT"}).  For example the male that has the highest marginal probability (marginal with respect to potential mothers) may not be the male that is in the parental category (i.e. dam/sire combination) with the highest probability.  If \code{write_postP="JOINT"} was sepcified, then the mode of the marginal distribution can be obtained by specifying \code{marginal=TRUE}.  The modes are marginal with respect to other offspring and with multigenerational pedigrees may not coincide with the mode of the distribution of pedigrees. 
@@ -22,7 +22,7 @@ Individuals that do not have a parent assignment with a posterior probability ex
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
-\dontrun{
+\donttest{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)

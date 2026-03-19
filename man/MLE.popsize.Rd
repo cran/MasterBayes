@@ -2,7 +2,7 @@
 \alias{MLE.popsize}
 \title{Maximum Likelihood Estimation of the Unsampled Population Size}
 \description{  
-Finds the MLE for the number of unsampled males and/or females following Nielsen \emph{et al.} (2001). The size of the unsampled population can vary over time and space, and genotyping error is accomodated using the CERVUS model of genotyping error (Kalinwoski \emph{et al.} 2006). 
+Finds the Maximum Likelihood estimate (MLE) for the number of unsampled males and/or females following Nielsen \emph{et al.} (2001). The size of the unsampled population can vary over time and space, and genotyping error is accomodated using the CERVUS model of genotyping error (Kalinwoski \emph{et al.} 2006). 
 }
 \usage{
 MLE.popsize(X.list, USdam=FALSE, USsire=FALSE, nUS=NULL, 
@@ -27,7 +27,7 @@ Nielsen's original model does not account for genotyping error, and estimation o
 }
 \seealso{\code{\link{MCMCped}}, \code{\link{popsize.loglik}}}
 \examples{
-\dontrun{
+\donttest{
 data(WarblerP)
 data(WarblerG)
 

@@ -13,6 +13,9 @@ GdataPed(G, id = NULL, categories = NULL, perlocus=FALSE, marker.type="MSW")
  \item{perlocus}{if \code{TRUE} different error rates are estimated for each locus} 
  \item{marker.type}{\code{"MSW"} or \code{"MSC"} for co-dominant markers with Wang's (2004) model of genotyping error or CERVUS's model of genotyping error (Kalinowski, 2006; Marshall, 1998) or \code{"AFLP"} for dominant markers (Hadfield, 2009).}
 }
+\value{
+  a \code{GdataPed} object containing genotype information
+}
 \references{
 Marshall, T. C. \emph{et al} (1998) Molecular Ecology 7 5 639-655
 Kalinowski S.T. \emph{et al} (2007) Molecular Ecology 16 5 1099-1106
@@ -21,10 +24,8 @@ Hadfield J. D.  \emph{et al} (2009) \emph{in prep}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
-\dontrun{
 data(WarblerG)
 GdP<-GdataPed(WarblerG)
-}
 }
 \keyword{classes}
 

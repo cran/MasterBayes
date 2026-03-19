@@ -29,7 +29,6 @@ Smouse P.E. \emph{et al} (1999) Journal of Evolutionary Biology 12 1069-1077
 \note{Intended to be used within \code{\link{MLE.beta}}}
 \seealso{\code{\link{MLE.beta}}, \code{\link{MCMCped}}, \code{\link{varPed}}, \code{\link{getXlist}}}
 \examples{
-\dontrun{
 data(WarblerP)
 data(WarblerG)
 
@@ -68,6 +67,5 @@ beta_Loglik<-1:100
   }
 
 plot(beta_Loglik~beta, type="l", main="Profile Log-likelihood for beta")
-}
 }
 \keyword{models}

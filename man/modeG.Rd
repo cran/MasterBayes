@@ -7,7 +7,7 @@ modeG(postG, threshold=0)
 }
 \arguments{
   \item{postG}{posterior distribution of genotypes from an \code{\link{MCMCped}} model with argument \code{write_postG=TRUE}}
-  \item{threshold}{threshold probability under which ML genotypes are replaced by NA}
+  \item{threshold}{threshold probability under which maximum likelihood genotypes are replaced by NA}
 }
 
 \value{
@@ -18,7 +18,7 @@ modeG(postG, threshold=0)
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}, \code{genotype}}
 \examples{
-\dontrun{
+\donttest{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)

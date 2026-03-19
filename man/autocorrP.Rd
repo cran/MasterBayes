@@ -9,7 +9,7 @@ autocorrP(postP)
   \item{postP}{JOINT posterior distribution of parentage}
 }
 \details{
-For each offspring the proportion of transitions is calculated at lags 1, 2, 5, 10, 50 and 100 (i.e. the proportion of times that the parentage assignment at time t is different from the parentage assignment at time t+lag).  The difference between these proportions and the proportion at lag 1 is then calculated, and the mean over offspring given.  When the parentage assignments in successive MCMC iterations are independent these autocorrelation metrics should be randomly distributed about zero and should not decrease with increasing lag.
+For each offspring the proportion of transitions is calculated at lags 1, 2, 5, 10, 50 and 100 (i.e. the proportion of times that the parentage assignment at time t is different from the parentage assignment at time t+lag).  The difference between these proportions and the proportion at lag 1 is then calculated, and the mean over offspring given.  When the parentage assignments in successive Markoc chain Monte Carlo (MCMC) iterations are independent these autocorrelation metrics should be randomly distributed about zero and should not decrease with increasing lag.
 }
 \value{
    matrix
@@ -17,7 +17,7 @@ For each offspring the proportion of transitions is calculated at lags 1, 2, 5, 
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
-\dontrun{
+\donttest{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)

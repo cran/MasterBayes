@@ -23,7 +23,6 @@ tunePed(E1 = NULL, E2 = NULL, beta = NULL, USdam = NULL,
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
-\dontrun{
 data(WarblerG)
 A<-extractA(WarblerG)
 
@@ -51,7 +50,6 @@ model2<-MCMCped(GdP=GdP, tP=tunePed(E1=10), nitt=1500,
 
 plot(model2$E1)
 autocorr(model2$E1)
-}
 }
 \keyword{classes}
   

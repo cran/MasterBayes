@@ -1,6 +1,6 @@
 \name{MCMCped}
 \alias{MCMCped}
-\title{Markov chain Monte Carlo Methods for Pedigree Reconstruction and Analysis}
+\title{Markov chain Monte Carlo (MCMC) Methods for Pedigree Reconstruction and Analysis}
 \description{
   Markov chain Monte Carlo methods for estimating the joint posterior distribution of a pedigree and the parameters that predict its structure using genetic and non-genetic data.  These parameters can be associated with covariates of fecundity such as a sexually selected trait or age, or can be associated with spatial or heritable traits that relate parents to specific offspring.  Population size, allele frequencies, allelic dropout rates, and stochastic genotyping error rates can also be simultaneously estimated. 
 }

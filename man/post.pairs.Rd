@@ -19,7 +19,7 @@ post.pairs(postP, threshold=0, rel="PO")
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{modeP}}}
 \examples{
-\dontrun{
+\donttest{
 data(WarblerP)
 data(WarblerG)
 GdP<-GdataPed(WarblerG)

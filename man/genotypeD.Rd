@@ -10,13 +10,14 @@ genotypeD(a1, locus=NULL)
   \item{a1}{vector of scored genotypes (0 or 1) for dominant markers}
   \item{locus}{object of class locus, gene, or marker, holding information about the source of this genotype.}
 }
+\value{
+  the \code{genotypeD} class extends the \code{genotype} class.
+}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{genotype}, \code{summary.genotypeD}}
 \examples{
-\dontrun{
 l1<-rbinom(100,1,0.5)
 l1<-genotypeD(l1)
-}
 }
 \keyword{classes}
 

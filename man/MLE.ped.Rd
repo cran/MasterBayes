@@ -2,7 +2,7 @@
 \alias{MLE.ped}
 \title{Maximum Likelihood Estimation of the Pedigree}
 \description{  
-Finds the MLE pedigree using the genetic data only.  An approximation is used for genotyping error.
+Finds the Maximum Likelihood estimate (MLE) of the pedigree using the genetic data only.  An approximation is used for genotyping error.
 }
 \usage{
 MLE.ped(X.list, ped=NULL, USdam=FALSE, nUSdam=NULL, USsire=FALSE, 
@@ -33,7 +33,6 @@ Kalinowski S.T. \emph{et al}, Molecular Ecology \emph{in press}
 \author{Jarrod Hadfield \email{j.hadfield@ed.ac.uk}}
 \seealso{\code{\link{MCMCped}}}
 \examples{
-\dontrun{
 data(WarblerP)
 data(WarblerG)
 
@@ -48,7 +47,6 @@ PdP<-PdataPed(formula=list(res1,res2), data=WarblerP, USsire=TRUE)
 X.list<-getXlist(PdP=PdP, GdP=GdP, E2=0.005)
 
 ped<-MLE.ped(X.list, USsire=TRUE, nUSsire=10, threshold=0.75)
-}
 }
 \keyword{models}
 \keyword{optimize}

@@ -1,14 +1,22 @@
 citHeader("To cite package MasterBayes in publications use:")
 
-citEntry(entry="Article",
-         title = "Towards unbiased parentage assignment: combining genetic, behavioural and spatial data in a Bayesian framework",
-         author = personList(as.person("J.D. Hadfield"), as.person("D.S. Richardson"), as.person("T. Burke")),
-         language = "English",
-         year = 2006,
-         journal      = "Molecular Ecology",
-         volume       = 15,
-         number       = 12,
-         pages        = 3715-31,
-         month        = 1,
+bibentry(
+  bibtype = "Article",
+  title = "Towards unbiased parentage assignment: combining genetic, behavioural and spatial data in a Bayesian framework",
+  author = c(
+    person("J.","Hadfield", role = c("aut", "cre"),  email = "j.hadfield@ed.ac.uk"),
+    person("D.S.", "Richardson", role = c("ctb")),
+    person("T.", "Burke", role = c("ctb"))),
+  language = "English",
+  year = 2006,
+  journal      = "Molecular Ecology",
+  volume       = 15,
+  number       = 12,
+  pages        = 3715-31,
+  month        = 1,
+
 textVersion = paste("Hadfield J.D., Richardson D.S. & Burke T. (2009)",
-                    "Towards unbiased parentage assignment: combining genetic, behavioural and spatial data in a Bayesian framework"))
+                    "Towards unbiased parentage assignment: combining genetic, behavioural and spatial data in a Bayesian framework",
+                    "Molecular Ecology, 15(12), 3715-31.",
+                    "URL https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-294X.2006.03050.x")
+)

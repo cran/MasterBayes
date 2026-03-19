@@ -2,8 +2,8 @@ useDynLib(MasterBayes, .registration = TRUE)
 import(genetics)
 import(coda)
 import(gtools)
-import(kinship2)
 importFrom(methods, as)
+importFrom(kinship2, kindepth)
 importFrom(stats, model.matrix, na.omit, optim, rbinom, dnorm)
 export(
   MCMCped,

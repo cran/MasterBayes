@@ -541,7 +541,7 @@ namespace scythe {
   T
   max (const Matrix<T,PO,PS> &A)
   {
-    return *(max_element(A.begin_f(), A.end_f()));
+    return *(std::max_element(A.begin_f(), A.end_f()));
   }
 
    /*! 

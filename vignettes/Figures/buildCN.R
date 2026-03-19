@@ -2,6 +2,7 @@
 set.seed(33)
 forCRAN=TRUE
 LINUX=TRUE
+old <- options(digits = 3)
 options(width=80)
 
 MCpath="~/Work/MasterBayes/MasterBayes_2.50/inst/doc/"
@@ -38,7 +39,7 @@ MCpath="~/Work/MasterBayes/MasterBayes_2.50/inst/doc/"
 
   system(paste("rm Tutorial*-[A-Z]*\\.pdf", sep=""))
 
-
+options(old)
 
 
 

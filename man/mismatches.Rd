@@ -19,7 +19,6 @@ mismatches(X.list, G, mm.tol=999)
 }
 \seealso{\code{\link{MCMCped}}}
 \examples{
-\dontrun{
 data(WarblerG)
 A<-extractA(WarblerG)
 
@@ -57,6 +56,5 @@ X.list.MM$X$"5"$dam.id
 X.list.MM$X$"5"$restsire.id
 X.list.MM$X$"5"$sire.id
 # sires with mismatches are excluded  mismatch (mm.tol=0)
-}
 }
 \keyword{manip}
