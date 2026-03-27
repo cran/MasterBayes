@@ -608,7 +608,7 @@ Even larger! The estimates of the unsampled population size are sensitive to eve
 \end{Sinput}
 \end{Schunk}
 
-Perhaps we had underestimated the level of genotyping error in our original models, and this possibility will be returned to in Section \ref{GE-sec}.  Another possible reason why our estimate of the unsampled population may be to high, is because Equation \ref{Nielsen-eq} makes the assumption that unsampled males and sampled males do not systematically differ in their ability to sire the sampled offspring.\\
+Perhaps we had underestimated the level of genotyping error in our original models, and this possibility will be returned to in Section \ref{GE-sec}.  Another possible reason why our estimate of the unsampled population may be too high, is because Equation \ref{Nielsen-eq} makes the assumption that unsampled males and sampled males do not systematically differ in their ability to sire the sampled offspring.\\
 
   When we estimate the number of unsampled males using \texttt{MCMCped} Equation \ref{Nielsen-eq} has a simpler form because the parameter space is augmented with the pedigree (See Equation \ref{pedigree-eq}):
 
@@ -623,7 +623,7 @@ Here we have replaced the genetic likelihoods in Nielsen's original equation wit
 \textrm{MLE}(N-n) = \frac{n_{o}^{us}n_{o}^{s}}{n}
 \end{equation}
 
-where $n_{o}^{us}$ and $n_{o}^{s}$ are the number of offspring with sampled and unsampled parents parents, respectively.\\
+where $n_{o}^{us}$ and $n_{o}^{s}$ are the number of offspring with unsampled and sampled parents parents, respectively.\\
 
 A more general solution than Equation \ref{us-eq} is: 
 
@@ -644,7 +644,7 @@ The parentage of each offspring is sampled from a multinomial distribution with 
 p(\sum^{N-n}{\bm{\hat{p}}^{(miss)}} | \bm{\hat{p}}^{(obs)}) \approx N(\frac{(N-n)}{n}\sum^{n}\bm{\hat{p}}^{(obs)}, \frac{N(N-n)}{n}S_{obs}^{2})
 \end{equation}
 
-which takes into account the sampling variance in calculating the expectation from the sampled population (avoiding assumption c), and the sampling variance that arises because the size of the unsampled population is finite (assumption d). $S_{obs}^{2}$ is the sample variance of the observed linear predictors \citep[see][Chapter 7]{Gelman.2004}   I should emphasise at this point that the approximated linear predictors for missing individuals do not enter into the likelihoood for $\beta$, they are only there to simplify the estimation of the pedigree.  However, if the phenotypes of unsampled individuals are known, then the linear predictors of unsampled individuals do not need to be estimated and can enter into the likelihood for $\beta$.  In  this instance the ratio in Equation \ref{usgen-eq} may not be unity and assumption f) is relaxed (See Section \ref{EPP-sec} for an example).\\
+which takes into account the sampling variance in calculating the expectation from the sampled population (avoiding assumption c), and the sampling variance that arises because the size of the unsampled population is finite (assumption d). $S_{obs}^{2}$ is the sample variance of the observed linear predictors \citep[see][Chapter 7]{Gelman.2004}   I should emphasise at this point that the approximated linear predictors for missing individuals do not enter into the likelihood for $\beta$, they are only there to simplify the estimation of the pedigree.  However, if the phenotypes of unsampled individuals are known, then the linear predictors of unsampled individuals do not need to be estimated and can enter into the likelihood for $\beta$.  In  this instance the ratio in Equation \ref{usgen-eq} may not be unity and assumption f) is relaxed (See Section \ref{EPP-sec} for an example).\\
 
 We have no information regarding the phenotypes of unsampled males in the Seychelles Warbler, and therefore the data do not allow us to distinguish between a large unsampled population and a smaller population with a reduced chance of paternity.  However, as noted earlier, the discrepancy between our estimate of 30.98 unsampled males and our prior belief that the number of males should be less than 15 may be a consequence of underestimating the level of genotyping error.
 
@@ -665,10 +665,10 @@ Pr({\bm G} | {\bm G}_{obs}, {\bm P}, {\bm \varepsilon}, {\bm A}).
 \label{G_error_p}
 \end{equation}
 
-The distinction is subtle.  The approximation implicitly assumes that the genotypes are collected from unrelated individuals, whereas the exact solution acknowledges the fact that the individuals are related.  By acknowledging this fact we become aware that the approximation actually throws some information away; if individuals are related then the observed genotypes of some individuals actually provide information regarding the actual genotypes of others. The exact solution comes at a computational cost.  Because the pedigree is estimated, ${\bm P}$ may change with every iteration of the Markov chain and the probability in Equation \ref{G_error_p} has to be updated each cycle.  Beacase the probability distribution of $\bm{G}$ does not depend on $\bm{P}$ in the approximation, Equation \ref{G_error_np} only needs to be evaluated once, prior to pedigree estimation.  This is only true, however, if error rates and allele frequencies (in the base population) are known with complete certainty.\\
+The distinction is subtle.  The approximation implicitly assumes that the genotypes are collected from unrelated individuals, whereas the exact solution acknowledges the fact that the individuals are related.  By acknowledging this fact we become aware that the approximation actually throws some information away; if individuals are related then the observed genotypes of some individuals actually provide information regarding the actual genotypes of others. The exact solution comes at a computational cost.  Because the pedigree is estimated, ${\bm P}$ may change with every iteration of the Markov chain and the probability in Equation \ref{G_error_p} has to be updated each cycle.  Because the probability distribution of $\bm{G}$ does not depend on $\bm{P}$ in the approximation, Equation \ref{G_error_np} only needs to be evaluated once, prior to pedigree estimation.  This is only true, however, if error rates and allele frequencies (in the base population) are known with complete certainty.\\
 
 
- At this point we can drop the approximation for genotyping error and work with the exact solution, allowing us to estimate genotyping error rates and the allele frequencies in the parental generation. This becomes computationally demanding, as the probability distribution for each individual's genotype has to be calculated and sampled from each iteration of the Markov chain. We are using the default model of genotyping error which is a two parameter model developed by \citet{Wang.2004}. In Wang's model an allele is assumed to be miss-scored as any other allele with equal probability (${\bm \varepsilon_{2}}$) and allele's of heterozgote genotypes can also dropout with probability ${\bm \varepsilon_{1}}$. The model implemented in CERVUS can also be used by specifying \texttt{marker.type="MSC"} in the \texttt{GdataPed} object. However, although the CERVUS model is mathematically convenient it may be less biologically realistic.  The model only includes stochastic errors and these errors are not independent for the two alleles within a genotype; if a genotyping error has occurred at one allele then a genotyping error occurs at the other allele with probability one. Accordingly, \texttt{E2}(2-\texttt{E2}) is the per-genotype rate defined in CERVUS and so a default value of \texttt{E1=0.005} is close to the CERVUS's default of 0.01 defined at the genotypic level. Perhaps a less realistic assumption of the CERVUS model is that an erroneous genotype is scored as another genotype (including itself) with a probability equal to that genotypes frequency in the population.  Consequently, rare genotypes are believed to be miss-scored much less often than common genotypes.
+ At this point we can drop the approximation for genotyping error and work with the exact solution, allowing us to estimate genotyping error rates and the allele frequencies in the parental generation. This becomes computationally demanding, as the probability distribution for each individual's genotype has to be calculated and sampled from each iteration of the Markov chain. We are using the default model of genotyping error which is a two parameter model developed by \citet{Wang.2004}. In Wang's model an allele is assumed to be miss-scored as any other allele with equal probability (${\bm \varepsilon_{2}}$) and allele's of heterozgote genotypes can also dropout with probability ${\bm \varepsilon_{1}}$. The model implemented in CERVUS can also be used by specifying \texttt{marker.type="MSC"} in the \texttt{GdataPed} object. However, although the CERVUS model is mathematically convenient it may be less biologically realistic.  The model only includes stochastic errors and these errors are not independent for the two alleles within a genotype; if a genotyping error has occurred at one allele then a genotyping error occurs at the other allele with probability one. Accordingly, \texttt{E2}(2-\texttt{E2}) is the per-genotype rate defined in CERVUS and so a default value of \texttt{E1=0.005} is close to the CERVUS's default of 0.01 defined at the genotypic level. Perhaps a less realistic assumption of the CERVUS model is that an erroneous genotype is scored as another genotype (including itself) with a probability equal to that genotype's frequency in the population.  Consequently, rare genotypes are believed to be miss-scored much less often than common genotypes.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -734,14 +734,14 @@ To illustrate some further functionality we will use the functions \texttt{simpe
 \begin{Schunk}
 \begin{Sinput}
 > A<-extractA(WarblerG)
-> # list off allele frequencies
+> # list of allele frequencies
 \end{Sinput}
 \end{Schunk}
 
 \subsection{Error Rate Estimation with and without a Pedigree}
 \label{Error-sec}
 
- To start we will simply estimate genotyping error for two data sets, one in which the information comes from individuals being sampled multiple times and one in which the information comes from the pedigree.  We will simulate a large dropout rate (10\% of alleles in a heterozygous state) but a low level of of stochastic error  ($\approx$ 1\% of single locus genotypes).
+ To start we will simply estimate genotyping error for two data sets, one in which the information comes from individuals being sampled multiple times and one in which the information comes from the pedigree.  We will simulate a large dropout rate (10\% of alleles in a heterozygous state) but a low level of stochastic error  ($\approx$ 1\% of single locus genotypes).
 
 \begin{Schunk}
 \begin{Sinput}
@@ -872,7 +872,7 @@ Sample size per chain = 1000
 
 The posterior from the second data set has greater variance.  With respect to genotyping error, multiple samples from the same individual are more informative than genotypes typed once in mother-offspring pairs.  If individuals have been typed more than once then this information should be included in pedigree reconstruction as it improves error rate estimation and increases the precision with which an individual's genotype is estimated.\\
 
-In Section \ref{MCMC.D-sec} I mentioned the fact that MCMC may be sensitive to the starting parameterisation, and that this is particularly so when the posterior distribution is high-dimensional and multimodal.  The posterior distribution of genotypes has these properties, and high probability genotype configurations may separated by regions of zero probability when pedigree data exist.  As an example we will specify a random (but legal) starting configuration for the previous model:
+In Section \ref{MCMC.D-sec} I mentioned the fact that MCMC may be sensitive to the starting parameterisation, and that this is particularly so when the posterior distribution is high-dimensional and multimodal.  The posterior distribution of genotypes has these properties, and high probability genotype configurations may be separated by regions of zero probability when pedigree data exist.  As an example we will specify a random (but legal) starting configuration for the previous model:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -1078,7 +1078,7 @@ The modal parentage assignments are close to the true pedigree, with 95\% of ass
 
 \subsection{Interactions and Reparameterisation}
 
-Next we will consider a model similar to that above, but we will have a constant effect of size for both sexes.  However, we will include a second variable \texttt{age} which has two levels: \texttt{old} and \texttt{young}. We will fit both main effects together with an interaction.  Interactions can fitted by adding an extra element to the \texttt{formula} argument that is a list containing the two \texttt{varPed} expressions to be combined.\\
+Next we will consider a model similar to that above, but we will have a constant effect of size for both sexes.  However, we will include a second variable \texttt{age} which has two levels: \texttt{old} and \texttt{young}. We will fit both main effects together with an interaction.  Interactions can be fitted by adding an extra element to the \texttt{formula} argument that is a list containing the two \texttt{varPed} expressions to be combined.\\
 
 \begin{equation}
 p^{(o)}_{i,j} \propto \textrm{exp}(\beta_{1}\delta_{i}+\beta_{1}\delta_{j}+\beta_{2}\textrm{\texttt{size}}_{i}\delta_{i}+\beta_{2}\textrm{\texttt{size}}_{j}\delta_{j}+\beta_{3}\textrm{\texttt{size}}_{i}(1-\delta_{i})+\beta_{3}\textrm{\texttt{size}}_{j}(1-\delta_{j}))
@@ -1130,7 +1130,7 @@ Lag 50  0.02226050  0.021094381   -0.018000246
 \label{INT-fig}
 \end{figure}
 
-The dependency between slopes and intercepts in regression models is well know and we can alleviate the problem by simply centering the covariate, \texttt{size}.  The intercept is now evaluated at the population mean for size (10) rather than at a size of zero
+The dependency between slopes and intercepts in regression models is well known and we can alleviate the problem by simply centering the covariate, \texttt{size}.  The intercept is now evaluated at the population mean for size (10) rather than at a size of zero
 
 \begin{Schunk}
 \begin{Sinput}
@@ -1159,7 +1159,7 @@ Lag 50 -0.065998770 -0.005993626     0.03736367
 \label{INT.cntr-fig}
 \end{figure}
 
-Despite having similar Metropolis-Hastings acceptance rates the second chain mixes better, and the parameters have a better biological interpretation: at the average size no differences in the ability to reproduce exists between young and old individuals;  the posterior distribution of \texttt{age.young} is centered around zero (Figure \ref{INT.cntr-fig}).  However, as old individuals get larger their ability to reproduce increases (\texttt{size} is positive - the true underlying slope is 0.5), but young individuals have a significantly shallower slope (\texttt{size.age.young} is less than zero).  The contrasts are set up so that \texttt{size.age.young} is is the difference between the slopes of young and old individuals.  Inference from posterior samples is very flexible.  If we wish to see whether the slope is so shallow it is in fact likely to be negative we can create the posterior distribution for the young slope
+Despite having similar Metropolis-Hastings acceptance rates the second chain mixes better, and the parameters have a better biological interpretation: at the average size no differences in the ability to reproduce exists between young and old individuals;  the posterior distribution of \texttt{age.young} is centered around zero (Figure \ref{INT.cntr-fig}).  However, as old individuals get larger their ability to reproduce increases (\texttt{size} is positive - the true underlying slope is 0.5), but young individuals have a significantly shallower slope (\texttt{size.age.young} is less than zero).  The contrasts are set up so that \texttt{size.age.young} is the difference between the slopes of young and old individuals.  Inference from posterior samples is very flexible.  If we wish to see whether the slope is so shallow it is in fact likely to be negative we can create the posterior distribution for the young slope
 
 \begin{Schunk}
 \begin{Sinput}
